@@ -1,0 +1,7 @@
+{
+    "total_scenarios_evaluated": 9,
+    "total_scenarios": 9,
+    "pareto_optimal_count": 2,
+    "best_scenario_by_score": "chem_lto_heavy_cycle",
+    "best_scenario": "chem_lto_heavy_cycle"
+}

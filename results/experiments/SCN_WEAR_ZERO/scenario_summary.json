@@ -1,0 +1,18 @@
+{
+    "scenario_id": "SCN_WEAR_ZERO",
+    "category": "Degradation_Penalty",
+    "parameter_tested": "Hurdle",
+    "parameter_value": "$0/MWh (Zero Wear)",
+    "gross_revenue_usd": 5391140.74,
+    "degradation_cost_usd": 425972.77,
+    "net_revenue_usd": 4965167.97,
+    "fixed_om_cost_usd": 359589.04,
+    "variable_om_cost_usd": 24497.385120925344,
+    "net_ebitda_usd": 4581081.54,
+    "final_soh": 0.9755,
+    "capacity_fade_pct": 2.45,
+    "equivalent_full_cycles": 245.0,
+    "sharpe_ratio": 37.518,
+    "value_capture_ratio_pct": 94.5,
+    "forecast_opportunity_loss_usd": 313901.91
+}

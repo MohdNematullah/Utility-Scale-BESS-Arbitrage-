@@ -1,0 +1,7 @@
+parameter,baseline_value,low_value,high_value,low_revenue_usd,high_revenue_usd,swing_usd,sensitivity_rank
+System Duration / Sizing,100.0,50.0,200.0,424150.0,1696600.0,1272450.0,1
+Degradation Hurdle Penalty,10.0,0.0,25.0,848300.0,1102000.0,253700.0,2
+Forecast Look-Ahead,48.0,12.0,72.0,680384.0,901735.0,221351.0,3
+Round-Trip Efficiency,90.25,85.0,95.0,727080.0,936460.0,209380.0,4
+Operating Temperature,25.0,15.0,45.0,683395.0,886355.0,202960.0,5
+Battery Chemistry,1.0,0.5,2.0,848300.0,994495.0,146195.0,6

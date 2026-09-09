@@ -1,0 +1,11 @@
+parameter_dimension,parameter_variation,base_param,varied_param,pct_delta_param,base_net_revenue_usd,varied_net_revenue_usd,pct_delta_revenue,arc_elasticity,marginal_rate_usd
+Forecast_Horizon,12h vs 48h,48.0,12.0,-75.0,848300.0,680384.0,-19.79,0.1831,4664.33
+Forecast_Horizon,24h vs 48h,48.0,24.0,-50.0,848300.0,792328.0,-6.6,0.1023,2332.17
+Forecast_Horizon,36h vs 48h,48.0,36.0,-25.0,848300.0,848300.0,0.0,-0.0,-0.0
+Forecast_Horizon,72h vs 48h,48.0,72.0,50.0,848300.0,901735.0,6.3,0.1527,2226.46
+Thermal_Sensitivity,15°C vs 25°C,25.0,15.0,-40.0,848300.0,886355.0,4.49,-0.0878,-3805.5
+Thermal_Sensitivity,35°C vs 25°C,25.0,35.0,40.0,848300.0,848300.0,0.0,0.0,0.0
+Thermal_Sensitivity,45°C vs 25°C,25.0,45.0,80.0,848300.0,683395.0,-19.44,-0.3768,-8245.25
+Efficiency_Sensitivity,85.0% vs 90.0%,90.0,85.0,-5.56,848300.0,727080.0,-14.29,2.6931,24244.0
+Efficiency_Sensitivity,92.0% vs 90.0%,90.0,92.0,2.22,848300.0,848300.0,0.0,0.0,0.0
+Efficiency_Sensitivity,95.0% vs 90.0%,90.0,95.0,5.56,848300.0,936460.0,10.39,1.8277,17632.0

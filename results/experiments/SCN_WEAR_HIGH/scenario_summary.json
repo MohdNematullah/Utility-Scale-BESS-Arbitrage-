@@ -1,0 +1,18 @@
+{
+    "scenario_id": "SCN_WEAR_HIGH",
+    "category": "Degradation_Penalty",
+    "parameter_tested": "Hurdle",
+    "parameter_value": "$25/MWh (High Hurdle)",
+    "gross_revenue_usd": 4559051.55,
+    "degradation_cost_usd": 143095.63,
+    "net_revenue_usd": 4415955.92,
+    "fixed_om_cost_usd": 359589.04,
+    "variable_om_cost_usd": 14198.484437434281,
+    "net_ebitda_usd": 4042168.4,
+    "final_soh": 0.9858,
+    "capacity_fade_pct": 1.42,
+    "equivalent_full_cycles": 142.0,
+    "sharpe_ratio": 35.444,
+    "value_capture_ratio_pct": 79.91,
+    "forecast_opportunity_loss_usd": 1145991.1
+}

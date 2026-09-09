@@ -1,0 +1,52 @@
+[
+    {
+        "step": "Gross Revenue",
+        "name": "Gross Revenue",
+        "delta": 2658457.05,
+        "delta_usd": 2658457.05,
+        "running_total": 2658457.05,
+        "running_total_usd": 2658457.05,
+        "value": 2658457.05,
+        "type": "positive"
+    },
+    {
+        "step": "Degradation Cost",
+        "name": "Degradation Cost",
+        "delta": -253757.0,
+        "delta_usd": -253757.0,
+        "running_total": 2404700.05,
+        "running_total_usd": 2404700.05,
+        "value": -253757.0,
+        "type": "negative"
+    },
+    {
+        "step": "Fixed O&M",
+        "name": "Fixed O&M",
+        "delta": -359589.04,
+        "delta_usd": -359589.04,
+        "running_total": 2045111.0099999998,
+        "running_total_usd": 2045111.0099999998,
+        "value": -359589.04,
+        "type": "negative"
+    },
+    {
+        "step": "Variable O&M",
+        "name": "Variable O&M",
+        "delta": -19017.97,
+        "delta_usd": -19017.97,
+        "running_total": 2026093.0399999998,
+        "running_total_usd": 2026093.0399999998,
+        "value": -19017.97,
+        "type": "negative"
+    },
+    {
+        "step": "Net Profit (EBITDA)",
+        "name": "Net Profit (EBITDA)",
+        "delta": 2026093.0399999998,
+        "delta_usd": 2026093.0399999998,
+        "running_total": 2026093.0399999998,
+        "running_total_usd": 2026093.0399999998,
+        "value": 2026093.0399999998,
+        "type": "total"
+    }
+]

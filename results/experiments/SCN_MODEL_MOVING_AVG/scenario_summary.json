@@ -1,0 +1,18 @@
+{
+    "scenario_id": "SCN_MODEL_MOVING_AVG",
+    "category": "Forecast_Model",
+    "parameter_tested": "Algorithm",
+    "parameter_value": "Moving Average",
+    "gross_revenue_usd": 4085707.4,
+    "degradation_cost_usd": 205063.04,
+    "net_revenue_usd": 3880644.36,
+    "fixed_om_cost_usd": 359589.04,
+    "variable_om_cost_usd": 16798.206940063093,
+    "net_ebitda_usd": 3504257.11,
+    "final_soh": 0.9828,
+    "capacity_fade_pct": 1.72,
+    "equivalent_full_cycles": 168.0,
+    "sharpe_ratio": 32.739,
+    "value_capture_ratio_pct": 71.62,
+    "forecast_opportunity_loss_usd": 1619335.25
+}

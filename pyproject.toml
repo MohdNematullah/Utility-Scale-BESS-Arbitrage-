@@ -1,0 +1,26 @@
+[project]
+name = "battery-trading-arbitrage"
+version = "1.0.0"
+
+description = "Forecast-aware rolling horizon battery arbitrage with dynamic ageing."
+
+requires-python = ">=3.11"
+
+dependencies = [
+    "numpy",
+    "pandas",
+    "scipy",
+    "matplotlib",
+    "scikit-learn",
+    "xgboost",
+    "pyomo",
+    "highspy",
+    "rainflow",
+    "statsmodels"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.black]
+line-length = 88

@@ -1,0 +1,18 @@
+{
+    "scenario_id": "SCN_HORIZON_24H",
+    "category": "Forecast_Horizon",
+    "parameter_tested": "Horizon",
+    "parameter_value": "24h",
+    "gross_revenue_usd": 4673650.66,
+    "degradation_cost_usd": 230568.18,
+    "net_revenue_usd": 4443082.48,
+    "fixed_om_cost_usd": 359589.04,
+    "variable_om_cost_usd": 18048.073527865407,
+    "net_ebitda_usd": 4065445.37,
+    "final_soh": 0.982,
+    "capacity_fade_pct": 1.8,
+    "equivalent_full_cycles": 180.5,
+    "sharpe_ratio": 35.545,
+    "value_capture_ratio_pct": 81.92,
+    "forecast_opportunity_loss_usd": 1031391.99
+}

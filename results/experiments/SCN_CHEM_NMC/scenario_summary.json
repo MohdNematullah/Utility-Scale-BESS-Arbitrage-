@@ -1,0 +1,18 @@
+{
+    "scenario_id": "SCN_CHEM_NMC",
+    "category": "Battery_Chemistry",
+    "parameter_tested": "Chemistry",
+    "parameter_value": "NMC 811 (Base)",
+    "gross_revenue_usd": 4982570.0,
+    "degradation_cost_usd": 253757.0,
+    "net_revenue_usd": 4728813.0,
+    "fixed_om_cost_usd": 359589.04,
+    "variable_om_cost_usd": 19017.97,
+    "net_ebitda_usd": 4350205.99,
+    "final_soh": 0.9812,
+    "capacity_fade_pct": 1.88,
+    "equivalent_full_cycles": 190.2,
+    "sharpe_ratio": 36.692,
+    "value_capture_ratio_pct": 87.34,
+    "forecast_opportunity_loss_usd": 722472.65
+}

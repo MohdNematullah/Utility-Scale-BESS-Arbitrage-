@@ -1,0 +1,90 @@
+{
+    "dm_evaluations_count": 6,
+    "paired_tests_count": 6,
+    "bootstrap_intervals": [
+        {
+            "metric_name": "XGBoost_MAE",
+            "point_estimate": 7.9333,
+            "ci_95_lower": 7.5604,
+            "ci_95_upper": 8.2959,
+            "ci_99_lower": 7.4518,
+            "ci_99_upper": 8.409,
+            "standard_error": 0.1882,
+            "bootstrap_iterations": 2000
+        },
+        {
+            "metric_name": "XGBoost_RMSE",
+            "point_estimate": 14.322,
+            "ci_95_lower": 13.5863,
+            "ci_95_upper": 15.026,
+            "ci_99_lower": 13.3725,
+            "ci_99_upper": 15.2584,
+            "standard_error": 0.3634,
+            "bootstrap_iterations": 2000
+        },
+        {
+            "metric_name": "XGBoost_Mean_Daily_Rev",
+            "point_estimate": 2432.5006,
+            "ci_95_lower": 2402.0417,
+            "ci_95_upper": 2471.7101,
+            "ci_99_lower": 2388.0749,
+            "ci_99_upper": 2484.6873,
+            "standard_error": 17.5384,
+            "bootstrap_iterations": 2000
+        },
+        {
+            "metric_name": "XGBoost_Sharpe_Ratio",
+            "point_estimate": 133.5193,
+            "ci_95_lower": 123.3712,
+            "ci_95_upper": 146.8609,
+            "ci_99_lower": 119.9992,
+            "ci_99_upper": 150.8829,
+            "standard_error": 6.1339,
+            "bootstrap_iterations": 2000
+        }
+    ],
+    "effect_sizes": [
+        {
+            "comparison_name": "XGBoost_vs_Persistence",
+            "cohens_d": 0.9542,
+            "hedges_g": 0.9522,
+            "cles_pct": 83.43,
+            "magnitude_interpretation": "Large"
+        },
+        {
+            "comparison_name": "XGBoost_vs_Moving_Average",
+            "cohens_d": 1.1284,
+            "hedges_g": 1.126,
+            "cles_pct": 86.86,
+            "magnitude_interpretation": "Large"
+        },
+        {
+            "comparison_name": "XGBoost_vs_Perfect_Foresight",
+            "cohens_d": -1.5772,
+            "hedges_g": -1.5738,
+            "cles_pct": 6.57,
+            "magnitude_interpretation": "Large"
+        },
+        {
+            "comparison_name": "Persistence_vs_Moving_Average",
+            "cohens_d": 0.234,
+            "hedges_g": 0.2335,
+            "cles_pct": 59.43,
+            "magnitude_interpretation": "Small"
+        },
+        {
+            "comparison_name": "Persistence_vs_Perfect_Foresight",
+            "cohens_d": -2.4198,
+            "hedges_g": -2.4145,
+            "cles_pct": 0.29,
+            "magnitude_interpretation": "Large"
+        },
+        {
+            "comparison_name": "Moving_Average_vs_Perfect_Foresight",
+            "cohens_d": -2.4451,
+            "hedges_g": -2.4399,
+            "cles_pct": 1.14,
+            "magnitude_interpretation": "Large"
+        }
+    ]
+}

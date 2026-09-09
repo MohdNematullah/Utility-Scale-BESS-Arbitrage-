@@ -1,0 +1,43 @@
+# Virtual environment
+
+.venv/
+venv/
+
+# Python cache
+
+**pycache**/
+*.pyc
+.pytest_cache/
+
+# Jupyter
+
+.ipynb_checkpoints/
+
+# Streamlit cache
+
+.streamlit/secrets.toml
+
+# Build cache
+
+build/
+dist/
+
+# Logs
+
+logs/
+*.log
+
+# Temporary outputs
+
+results/tmp/
+results/cache/
+
+# OS
+
+.DS_Store
+Thumbs.db
+
+# IDE
+
+.vscode/
+.idea/

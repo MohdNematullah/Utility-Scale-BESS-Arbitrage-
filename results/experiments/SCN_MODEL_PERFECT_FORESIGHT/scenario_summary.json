@@ -1,0 +1,18 @@
+{
+    "scenario_id": "SCN_MODEL_PERFECT_FORESIGHT",
+    "category": "Forecast_Model",
+    "parameter_tested": "Algorithm",
+    "parameter_value": "Perfect Foresight",
+    "gross_revenue_usd": 5705042.65,
+    "degradation_cost_usd": 320411.0,
+    "net_revenue_usd": 5384631.65,
+    "fixed_om_cost_usd": 359589.04,
+    "variable_om_cost_usd": 21497.70531019979,
+    "net_ebitda_usd": 5003544.9,
+    "final_soh": 0.979,
+    "capacity_fade_pct": 2.1,
+    "equivalent_full_cycles": 215.0,
+    "sharpe_ratio": 38.831,
+    "value_capture_ratio_pct": 100.0,
+    "forecast_opportunity_loss_usd": 0.0
+}

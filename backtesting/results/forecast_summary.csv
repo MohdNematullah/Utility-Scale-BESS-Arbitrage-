@@ -1,0 +1,9 @@
+metric,value
+forecast_horizon_hours,48.0
+implementation_horizon_hours,24.0
+rolling_step_hours,24.0
+forecast_mae,7.933
+forecast_rmse,14.322
+forecast_mape_pct,22.19
+forecast_bias,3.574
+forecast_r2,0.2241

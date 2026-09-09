@@ -1,0 +1,18 @@
+{
+    "scenario_id": "SCN_CHEM_LTO",
+    "category": "Battery_Chemistry",
+    "parameter_tested": "Chemistry",
+    "parameter_value": "LTO Heavy Duty",
+    "gross_revenue_usd": 5839572.04,
+    "degradation_cost_usd": 62626.69,
+    "net_revenue_usd": 5776945.35,
+    "fixed_om_cost_usd": 359589.04,
+    "variable_om_cost_usd": 18008.077797055732,
+    "net_ebitda_usd": 5399348.23,
+    "final_soh": 0.9951,
+    "capacity_fade_pct": 0.49,
+    "equivalent_full_cycles": 180.1,
+    "sharpe_ratio": 39.874,
+    "value_capture_ratio_pct": 102.36,
+    "forecast_opportunity_loss_usd": 0.0
+}

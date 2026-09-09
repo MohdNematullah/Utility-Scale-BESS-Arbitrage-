@@ -1,0 +1,18 @@
+{
+    "scenario_id": "SCN_SIZE_100MW_200MWH",
+    "category": "System_Sizing",
+    "parameter_tested": "Sizing",
+    "parameter_value": "100MW / 200MWh (2h)",
+    "gross_revenue_usd": 9965140.0,
+    "degradation_cost_usd": 253757.0,
+    "net_revenue_usd": 9711383.0,
+    "fixed_om_cost_usd": 719178.08,
+    "variable_om_cost_usd": 38035.94,
+    "net_ebitda_usd": 8954168.98,
+    "final_soh": 0.9812,
+    "capacity_fade_pct": 1.88,
+    "equivalent_full_cycles": 190.2,
+    "sharpe_ratio": 37.156,
+    "value_capture_ratio_pct": 174.67,
+    "forecast_opportunity_loss_usd": 0.0
+}

@@ -1,0 +1,18 @@
+{
+    "scenario_id": "SCN_CHEM_LFP",
+    "category": "Battery_Chemistry",
+    "parameter_tested": "Chemistry",
+    "parameter_value": "LFP Stationary",
+    "gross_revenue_usd": 5475844.43,
+    "degradation_cost_usd": 143412.13,
+    "net_revenue_usd": 5332432.3,
+    "fixed_om_cost_usd": 359589.04,
+    "variable_om_cost_usd": 18538.021230283914,
+    "net_ebitda_usd": 4954305.24,
+    "final_soh": 0.9891,
+    "capacity_fade_pct": 1.09,
+    "equivalent_full_cycles": 185.4,
+    "sharpe_ratio": 38.689,
+    "value_capture_ratio_pct": 95.98,
+    "forecast_opportunity_loss_usd": 229198.22
+}

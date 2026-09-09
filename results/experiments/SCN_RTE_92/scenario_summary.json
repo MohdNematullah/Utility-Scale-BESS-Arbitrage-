@@ -1,0 +1,18 @@
+{
+    "scenario_id": "SCN_RTE_92",
+    "category": "Round_Trip_Efficiency",
+    "parameter_tested": "RTE",
+    "parameter_value": "92.5%",
+    "gross_revenue_usd": 5196820.51,
+    "degradation_cost_usd": 260231.93,
+    "net_revenue_usd": 4936588.58,
+    "fixed_om_cost_usd": 359589.04,
+    "variable_om_cost_usd": 19297.940115667723,
+    "net_ebitda_usd": 4557701.6,
+    "final_soh": 0.981,
+    "capacity_fade_pct": 1.9,
+    "equivalent_full_cycles": 193.0,
+    "sharpe_ratio": 37.438,
+    "value_capture_ratio_pct": 91.09,
+    "forecast_opportunity_loss_usd": 508222.14
+}

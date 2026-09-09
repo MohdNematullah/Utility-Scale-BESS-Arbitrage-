@@ -1,0 +1,5 @@
+metric_name,point_estimate,ci_95_lower,ci_95_upper,ci_99_lower,ci_99_upper,standard_error,bootstrap_iterations
+XGBoost_MAE,7.9333,7.5604,8.2959,7.4518,8.409,0.1882,2000
+XGBoost_RMSE,14.322,13.5863,15.026,13.3725,15.2584,0.3634,2000
+XGBoost_Mean_Daily_Rev,2432.5006,2402.0417,2471.7101,2388.0749,2484.6873,17.5384,2000
+XGBoost_Sharpe_Ratio,133.5193,123.3712,146.8609,119.9992,150.8829,6.1339,2000

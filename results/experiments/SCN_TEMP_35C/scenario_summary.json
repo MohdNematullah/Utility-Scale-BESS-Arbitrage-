@@ -1,0 +1,18 @@
+{
+    "scenario_id": "SCN_TEMP_35C",
+    "category": "Operating_Temperature",
+    "parameter_tested": "Temperature",
+    "parameter_value": "35\u00b0C Elevated",
+    "gross_revenue_usd": 4593929.54,
+    "degradation_cost_usd": 323595.95,
+    "net_revenue_usd": 4270333.59,
+    "fixed_om_cost_usd": 359589.04,
+    "variable_om_cost_usd": 19237.94651945321,
+    "net_ebitda_usd": 3891506.6,
+    "final_soh": 0.9763,
+    "capacity_fade_pct": 2.37,
+    "equivalent_full_cycles": 192.4,
+    "sharpe_ratio": 34.762,
+    "value_capture_ratio_pct": 80.52,
+    "forecast_opportunity_loss_usd": 1111113.11
+}

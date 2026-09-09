@@ -1,0 +1,10 @@
+metric,value
+round_trip_efficiency_pct,252.37
+energy_throughput_mwh,38035.94
+equivalent_full_cycles,190.17
+average_daily_cycles,0.543
+utilization_factor,0.543
+initial_soh,1.0
+final_soh,0.9812
+capacity_fade,0.0188
+cycle_loss,0.0037

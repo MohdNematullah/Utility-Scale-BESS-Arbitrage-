@@ -1,0 +1,25 @@
+{
+    "financial_summary": {
+        "gross_revenue_usd": 2658006.1,
+        "degradation_wear_cost_usd": 253757.0,
+        "fixed_om_cost_usd": 359589.04,
+        "variable_om_cost_usd": 19017.97,
+        "net_ebitda_usd": 2025642.09,
+        "net_arbitrage_margin_pct": 90.45,
+        "annualized_yield_usd_per_kw_yr": 48.08
+    },
+    "technical_summary": {
+        "final_soh": 0.982,
+        "capacity_loss_pct": 1.803,
+        "cumulative_efc": 190.05,
+        "avg_daily_cycles": 0.543,
+        "round_trip_efficiency_pct": 90.25
+    },
+    "risk_summary": {
+        "annualized_sharpe_ratio": 4.583,
+        "annualized_volatility_usd": 241609.09,
+        "max_drawdown_usd": 0.0,
+        "historical_95_var_usd": -11491.16,
+        "conditional_95_cvar_usd": -12825.14
+    }
+}

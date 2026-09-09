@@ -1,0 +1,11 @@
+{
+    "markdown_chapter": "THESIS_RESULTS_CHAPTER.md",
+    "master_excel_workbook": "master_thesis_evaluation.xlsx",
+    "latex_tables": [
+        "table_arbitrage_kpis.tex",
+        "table_forecast_accuracy.tex",
+        "table_risk_tail_metrics.tex",
+        "table_sensitivity_tornado.tex",
+        "table_statistical_tests.tex"
+    ]
+}

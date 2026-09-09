@@ -1,0 +1,18 @@
+{
+    "scenario_id": "SCN_TEMP_45C",
+    "category": "Operating_Temperature",
+    "parameter_tested": "Temperature",
+    "parameter_value": "45\u00b0C Stress",
+    "gross_revenue_usd": 4010968.85,
+    "degradation_cost_usd": 428988.82,
+    "net_revenue_usd": 3581980.03,
+    "fixed_om_cost_usd": 359589.04,
+    "variable_om_cost_usd": 19497.918769716092,
+    "net_ebitda_usd": 3202893.07,
+    "final_soh": 0.969,
+    "capacity_fade_pct": 3.1,
+    "equivalent_full_cycles": 195.0,
+    "sharpe_ratio": 30.826,
+    "value_capture_ratio_pct": 70.31,
+    "forecast_opportunity_loss_usd": 1694073.8
+}

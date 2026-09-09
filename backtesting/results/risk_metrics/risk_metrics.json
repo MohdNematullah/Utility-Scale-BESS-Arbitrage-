@@ -1,0 +1,23 @@
+{
+    "annualized_return_usd": 884690.13,
+    "daily_volatility_usd": 596.25,
+    "annualized_volatility_usd": 11391.43,
+    "downside_deviation_usd": 0.0,
+    "sharpe_ratio": 77.326,
+    "sortino_ratio": 99.99,
+    "calmar_ratio": 99.99,
+    "omega_ratio": 99.99,
+    "max_drawdown_usd": 0.0,
+    "max_drawdown_pct": 0.0,
+    "max_drawdown_duration_days": 0,
+    "historical_var_95_usd": -1654.1,
+    "historical_var_99_usd": -1365.83,
+    "parametric_var_95_usd": -1443.06,
+    "parametric_var_99_usd": -1036.71,
+    "cvar_95_usd": -1469.08,
+    "cvar_99_usd": -1222.75,
+    "skewness": 1.076,
+    "excess_kurtosis": 2.082,
+    "profitable_days_pct": 100.0,
+    "total_evaluated_days": 350
+}

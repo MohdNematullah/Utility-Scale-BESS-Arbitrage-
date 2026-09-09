@@ -1,0 +1,18 @@
+{
+    "scenario_id": "SCN_TEMP_15C",
+    "category": "Operating_Temperature",
+    "parameter_tested": "Temperature",
+    "parameter_value": "15\u00b0C Subcooled",
+    "gross_revenue_usd": 5206785.65,
+    "degradation_cost_usd": 206794.61,
+    "net_revenue_usd": 4999991.04,
+    "fixed_om_cost_usd": 359589.04,
+    "variable_om_cost_usd": 18797.993480546796,
+    "net_ebitda_usd": 4621604.01,
+    "final_soh": 0.9845,
+    "capacity_fade_pct": 1.55,
+    "equivalent_full_cycles": 188.0,
+    "sharpe_ratio": 37.654,
+    "value_capture_ratio_pct": 91.27,
+    "forecast_opportunity_loss_usd": 498257.0
+}

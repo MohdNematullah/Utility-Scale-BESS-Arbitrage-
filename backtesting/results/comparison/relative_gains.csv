@@ -1,0 +1,10 @@
+scenario_name,category,net_revenue_usd,relative_revenue_gain_pct,composite_rank,rank_overall
+chem_lto_heavy_cycle,Battery_Chemistry,994495.0,17.23,1,1
+size_100mw_200mwh,System_Sizing,1696600.0,99.99,2,2
+chem_lfp_stationary,Battery_Chemistry,932814.0,9.96,3,3
+horizon_72h,Forecast_Horizon,901735.0,6.29,4,4
+chem_nmc_baseline,Battery_Chemistry,848333.0,0.0,5,5
+horizon_48h,Forecast_Horizon,848333.0,0.0,6,6
+horizon_24h,Forecast_Horizon,795400.0,-6.24,7,7
+horizon_12h,Forecast_Horizon,680384.0,-19.8,8,8
+size_25mw_50mwh,System_Sizing,424150.0,-50.0,9,9

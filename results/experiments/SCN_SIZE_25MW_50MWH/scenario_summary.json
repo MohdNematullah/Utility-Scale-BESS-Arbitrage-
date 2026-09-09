@@ -1,0 +1,18 @@
+{
+    "scenario_id": "SCN_SIZE_25MW_50MWH",
+    "category": "System_Sizing",
+    "parameter_tested": "Sizing",
+    "parameter_value": "25MW / 50MWh (2h)",
+    "gross_revenue_usd": 2491285.0,
+    "degradation_cost_usd": 253757.0,
+    "net_revenue_usd": 2237528.0,
+    "fixed_om_cost_usd": 179794.52,
+    "variable_om_cost_usd": 9508.985,
+    "net_ebitda_usd": 2048224.49,
+    "final_soh": 0.9812,
+    "capacity_fade_pct": 1.88,
+    "equivalent_full_cycles": 190.2,
+    "sharpe_ratio": 35.678,
+    "value_capture_ratio_pct": 43.67,
+    "forecast_opportunity_loss_usd": 3213757.65
+}

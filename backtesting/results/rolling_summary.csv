@@ -1,0 +1,2 @@
+rolling_windows,hours_executed,forecast_horizon_hours,implementation_horizon_hours,rolling_step_hours,gross_revenue_usd,degradation_cost_usd,net_revenue_usd,initial_soh,final_soh,capacity_remaining_mwh,equivalent_full_cycles
+350,8400,48,24,24,1102091.72,253758.69,848333.04,1.0,0.9812,98.12,190.18

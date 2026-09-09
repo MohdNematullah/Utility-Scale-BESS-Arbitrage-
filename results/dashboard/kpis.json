@@ -1,0 +1,14 @@
+{
+    "gross_revenue_usd": 91376.25,
+    "degradation_cost_usd": 5075.14,
+    "fixed_om_cost_usd": 7191.78,
+    "variable_om_cost_usd": 380.36,
+    "net_operating_profit_usd": 78728.97,
+    "final_soh": 0.9996,
+    "cumulative_efc": 3.8,
+    "equivalent_full_cycles": 3.8,
+    "forecast_mae": 1.85,
+    "value_capture_ratio_pct": 78.4,
+    "sharpe_ratio": 3.65,
+    "operating_hours": 168.0
+}

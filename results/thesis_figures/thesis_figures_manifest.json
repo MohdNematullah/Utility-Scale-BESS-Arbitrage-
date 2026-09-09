@@ -1,0 +1,502 @@
+{
+    "total_figures_count": 44,
+    "formats_exported": [
+        "png",
+        "pdf",
+        "svg",
+        "tiff"
+    ],
+    "output_directory": "D:\\Energy\\\\results\\thesis_figures",
+    "subdirectories": {
+        "png": "D:\\Energy\\\\results\\thesis_figures\\png",
+        "pdf": "D:\\Energy\\\\results\\thesis_figures\\pdf",
+        "svg": "D:\\Energy\\\\results\\thesis_figures\\svg",
+        "tiff": "D:\\Energy\\\\results\\thesis_figures\\tiff"
+    },
+    "figures_inventory": [
+        {
+            "figure_id": "Figure 10.2.1",
+            "title": "Forecast vs. Actual Price Profile",
+            "chapter": "Chapter 4 \u2014 Forecasting Results",
+            "files": {
+                "png": "Figure_10_2_1_Forecast_vs_Actual.png",
+                "pdf": "Figure_10_2_1_Forecast_vs_Actual.pdf",
+                "svg": "Figure_10_2_1_Forecast_vs_Actual.svg",
+                "tiff": "Figure_10_2_1_Forecast_vs_Actual.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.2.2",
+            "title": "Forecast Residual Error Distribution",
+            "chapter": "Chapter 4 \u2014 Forecasting Results",
+            "files": {
+                "png": "Figure_10_2_2_Residual_Distribution.png",
+                "pdf": "Figure_10_2_2_Residual_Distribution.pdf",
+                "svg": "Figure_10_2_2_Residual_Distribution.svg",
+                "tiff": "Figure_10_2_2_Residual_Distribution.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.2.3",
+            "title": "Longitudinal Residual Error Time Series",
+            "chapter": "Chapter 4 \u2014 Forecasting Results",
+            "files": {
+                "png": "Figure_10_2_3_Residual_Timeseries.png",
+                "pdf": "Figure_10_2_3_Residual_Timeseries.pdf",
+                "svg": "Figure_10_2_3_Residual_Timeseries.svg",
+                "tiff": "Figure_10_2_3_Residual_Timeseries.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.2.4",
+            "title": "Horizon Accuracy Degradation (12h to 72h)",
+            "chapter": "Chapter 4 \u2014 Forecasting Results",
+            "files": {
+                "png": "Figure_10_2_4_Forecast_Horizon_Accuracy.png",
+                "pdf": "Figure_10_2_4_Forecast_Horizon_Accuracy.pdf",
+                "svg": "Figure_10_2_4_Forecast_Horizon_Accuracy.svg",
+                "tiff": "Figure_10_2_4_Forecast_Horizon_Accuracy.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.2.5",
+            "title": "Parity Calibration Scatter",
+            "chapter": "Chapter 4 \u2014 Forecasting Results",
+            "files": {
+                "png": "Figure_10_2_5_Forecast_Scatter.png",
+                "pdf": "Figure_10_2_5_Forecast_Scatter.pdf",
+                "svg": "Figure_10_2_5_Forecast_Scatter.svg",
+                "tiff": "Figure_10_2_5_Forecast_Scatter.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.2.6",
+            "title": "Diurnal & Seasonal Error Heatmap",
+            "chapter": "Chapter 4 \u2014 Forecasting Results",
+            "files": {
+                "png": "Figure_10_2_6_Forecast_Heatmap.png",
+                "pdf": "Figure_10_2_6_Forecast_Heatmap.pdf",
+                "svg": "Figure_10_2_6_Forecast_Heatmap.svg",
+                "tiff": "Figure_10_2_6_Forecast_Heatmap.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.3.1",
+            "title": "Price & Net Dispatch Power Co-Optimization",
+            "chapter": "Chapter 5 \u2014 Rolling Optimization Results",
+            "files": {
+                "png": "Figure_10_3_1_Price_Power_Dispatch.png",
+                "pdf": "Figure_10_3_1_Price_Power_Dispatch.pdf",
+                "svg": "Figure_10_3_1_Price_Power_Dispatch.svg",
+                "tiff": "Figure_10_3_1_Price_Power_Dispatch.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.3.2",
+            "title": "State of Charge (SOC) Trajectory",
+            "chapter": "Chapter 5 \u2014 Rolling Optimization Results",
+            "files": {
+                "png": "Figure_10_3_2_State_Of_Charge.png",
+                "pdf": "Figure_10_3_2_State_Of_Charge.pdf",
+                "svg": "Figure_10_3_2_State_Of_Charge.svg",
+                "tiff": "Figure_10_3_2_State_Of_Charge.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.3.3",
+            "title": "Diurnal Operating Regime Heatmap",
+            "chapter": "Chapter 5 \u2014 Rolling Optimization Results",
+            "files": {
+                "png": "Figure_10_3_3_Dispatch_Heatmap.png",
+                "pdf": "Figure_10_3_3_Dispatch_Heatmap.pdf",
+                "svg": "Figure_10_3_3_Dispatch_Heatmap.svg",
+                "tiff": "Figure_10_3_3_Dispatch_Heatmap.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.3.4",
+            "title": "Daily Energy Absorption & Delivery Throughput",
+            "chapter": "Chapter 5 \u2014 Rolling Optimization Results",
+            "files": {
+                "png": "Figure_10_3_4_Daily_Energy_Throughput.png",
+                "pdf": "Figure_10_3_4_Daily_Energy_Throughput.pdf",
+                "svg": "Figure_10_3_4_Daily_Energy_Throughput.svg",
+                "tiff": "Figure_10_3_4_Daily_Energy_Throughput.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.3.5",
+            "title": "Rolling Horizon Implementation Architecture",
+            "chapter": "Chapter 5 \u2014 Rolling Optimization Results",
+            "files": {
+                "png": "Figure_10_3_5_Rolling_Window_Dispatch_Timeline.png",
+                "pdf": "Figure_10_3_5_Rolling_Window_Dispatch_Timeline.pdf",
+                "svg": "Figure_10_3_5_Rolling_Window_Dispatch_Timeline.svg",
+                "tiff": "Figure_10_3_5_Rolling_Window_Dispatch_Timeline.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.3.6",
+            "title": "State of Charge (SOC) Density Distribution",
+            "chapter": "Chapter 5 \u2014 Rolling Optimization Results",
+            "files": {
+                "png": "Figure_10_3_6_SOC_Density_Plot.png",
+                "pdf": "Figure_10_3_6_SOC_Density_Plot.pdf",
+                "svg": "Figure_10_3_6_SOC_Density_Plot.svg",
+                "tiff": "Figure_10_3_6_SOC_Density_Plot.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.3.7",
+            "title": "Wholesale Arbitrage Price Spread Capture",
+            "chapter": "Chapter 5 \u2014 Rolling Optimization Results",
+            "files": {
+                "png": "Figure_10_3_7_Price_Spread_Capture.png",
+                "pdf": "Figure_10_3_7_Price_Spread_Capture.pdf",
+                "svg": "Figure_10_3_7_Price_Spread_Capture.svg",
+                "tiff": "Figure_10_3_7_Price_Spread_Capture.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.4.1",
+            "title": "State of Health (SOH) Degradation Trajectory",
+            "chapter": "Chapter 6 \u2014 Battery Ageing Analysis",
+            "files": {
+                "png": "Figure_10_4_1_SOH_Curve.png",
+                "pdf": "Figure_10_4_1_SOH_Curve.pdf",
+                "svg": "Figure_10_4_1_SOH_Curve.svg",
+                "tiff": "Figure_10_4_1_SOH_Curve.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.4.2",
+            "title": "Usable Capacity Fade & Energy Loss",
+            "chapter": "Chapter 6 \u2014 Battery Ageing Analysis",
+            "files": {
+                "png": "Figure_10_4_2_Capacity_Fade.png",
+                "pdf": "Figure_10_4_2_Capacity_Fade.pdf",
+                "svg": "Figure_10_4_2_Capacity_Fade.svg",
+                "tiff": "Figure_10_4_2_Capacity_Fade.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.4.3",
+            "title": "Calendar vs. Cycle Fatigue Loss Decomposition",
+            "chapter": "Chapter 6 \u2014 Battery Ageing Analysis",
+            "files": {
+                "png": "Figure_10_4_3_Calendar_Cycle_Loss.png",
+                "pdf": "Figure_10_4_3_Calendar_Cycle_Loss.pdf",
+                "svg": "Figure_10_4_3_Calendar_Cycle_Loss.svg",
+                "tiff": "Figure_10_4_3_Calendar_Cycle_Loss.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.4.4",
+            "title": "ASTM E1049 Rainflow Cycle Depth-of-Discharge Histogram",
+            "chapter": "Chapter 6 \u2014 Battery Ageing Analysis",
+            "files": {
+                "png": "Figure_10_4_4_Rainflow_Histogram.png",
+                "pdf": "Figure_10_4_4_Rainflow_Histogram.pdf",
+                "svg": "Figure_10_4_4_Rainflow_Histogram.svg",
+                "tiff": "Figure_10_4_4_Rainflow_Histogram.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.4.5",
+            "title": "Equivalent Full Cycles (EFC) Accumulation",
+            "chapter": "Chapter 6 \u2014 Battery Ageing Analysis",
+            "files": {
+                "png": "Figure_10_4_5_EFC_Curve.png",
+                "pdf": "Figure_10_4_5_EFC_Curve.pdf",
+                "svg": "Figure_10_4_5_EFC_Curve.svg",
+                "tiff": "Figure_10_4_5_EFC_Curve.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.4.6",
+            "title": "Battery Degradation Wear Cost Accumulation",
+            "chapter": "Chapter 6 \u2014 Battery Ageing Analysis",
+            "files": {
+                "png": "Figure_10_4_6_Degradation_Cost_Curve.png",
+                "pdf": "Figure_10_4_6_Degradation_Cost_Curve.pdf",
+                "svg": "Figure_10_4_6_Degradation_Cost_Curve.svg",
+                "tiff": "Figure_10_4_6_Degradation_Cost_Curve.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.5.1",
+            "title": "Cumulative Techno-Economic Revenue Trajectory",
+            "chapter": "Chapter 7 \u2014 Economic Analysis",
+            "files": {
+                "png": "Figure_10_5_1_Cumulative_Revenue.png",
+                "pdf": "Figure_10_5_1_Cumulative_Revenue.pdf",
+                "svg": "Figure_10_5_1_Cumulative_Revenue.svg",
+                "tiff": "Figure_10_5_1_Cumulative_Revenue.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.5.2",
+            "title": "Daily Net Arbitrage Cash Flow Profile",
+            "chapter": "Chapter 7 \u2014 Economic Analysis",
+            "files": {
+                "png": "Figure_10_5_2_Daily_Revenue.png",
+                "pdf": "Figure_10_5_2_Daily_Revenue.pdf",
+                "svg": "Figure_10_5_2_Daily_Revenue.svg",
+                "tiff": "Figure_10_5_2_Daily_Revenue.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.5.3",
+            "title": "Techno-Economic Value Waterfall",
+            "chapter": "Chapter 7 \u2014 Economic Analysis",
+            "files": {
+                "png": "Figure_10_5_3_Revenue_Waterfall.png",
+                "pdf": "Figure_10_5_3_Revenue_Waterfall.pdf",
+                "svg": "Figure_10_5_3_Revenue_Waterfall.svg",
+                "tiff": "Figure_10_5_3_Revenue_Waterfall.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.5.4",
+            "title": "Daily Net Arbitrage P&L Density",
+            "chapter": "Chapter 7 \u2014 Economic Analysis",
+            "files": {
+                "png": "Figure_10_5_4_Revenue_Distribution.png",
+                "pdf": "Figure_10_5_4_Revenue_Distribution.pdf",
+                "svg": "Figure_10_5_4_Revenue_Distribution.svg",
+                "tiff": "Figure_10_5_4_Revenue_Distribution.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.5.5",
+            "title": "Monthly Revenue Yield & Realized Spread Dynamics",
+            "chapter": "Chapter 7 \u2014 Economic Analysis",
+            "files": {
+                "png": "Figure_10_5_5_Monthly_Revenue.png",
+                "pdf": "Figure_10_5_5_Monthly_Revenue.pdf",
+                "svg": "Figure_10_5_5_Monthly_Revenue.svg",
+                "tiff": "Figure_10_5_5_Monthly_Revenue.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.5.6",
+            "title": "10-Year Asset Life-Cycle Net Present Value Breakdown",
+            "chapter": "Chapter 7 \u2014 Economic Analysis",
+            "files": {
+                "png": "Figure_10_5_6_Lifetime_Value_Breakdown.png",
+                "pdf": "Figure_10_5_6_Lifetime_Value_Breakdown.pdf",
+                "svg": "Figure_10_5_6_Lifetime_Value_Breakdown.svg",
+                "tiff": "Figure_10_5_6_Lifetime_Value_Breakdown.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.6.1",
+            "title": "Daily Arbitrage Net Cash Flow Distribution",
+            "chapter": "Chapter 8 \u2014 Risk & Sensitivity Analysis",
+            "files": {
+                "png": "Figure_10_6_1_Daily_Profit_Distribution.png",
+                "pdf": "Figure_10_6_1_Daily_Profit_Distribution.pdf",
+                "svg": "Figure_10_6_1_Daily_Profit_Distribution.svg",
+                "tiff": "Figure_10_6_1_Daily_Profit_Distribution.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.6.2",
+            "title": "Capital Growth & High-Water Mark Drawdown Curve",
+            "chapter": "Chapter 8 \u2014 Risk & Sensitivity Analysis",
+            "files": {
+                "png": "Figure_10_6_2_Drawdown_Curve.png",
+                "pdf": "Figure_10_6_2_Drawdown_Curve.pdf",
+                "svg": "Figure_10_6_2_Drawdown_Curve.svg",
+                "tiff": "Figure_10_6_2_Drawdown_Curve.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.6.3",
+            "title": "Extreme Tail Risk: 95%/99% VaR and Expected Shortfall",
+            "chapter": "Chapter 8 \u2014 Risk & Sensitivity Analysis",
+            "files": {
+                "png": "Figure_10_6_3_VaR_CVaR_Tail.png",
+                "pdf": "Figure_10_6_3_VaR_CVaR_Tail.pdf",
+                "svg": "Figure_10_6_3_VaR_CVaR_Tail.svg",
+                "tiff": "Figure_10_6_3_VaR_CVaR_Tail.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.6.4",
+            "title": "Rolling Volatility & Annualized Sharpe Profile",
+            "chapter": "Chapter 8 \u2014 Risk & Sensitivity Analysis",
+            "files": {
+                "png": "Figure_10_6_4_Rolling_Volatility.png",
+                "pdf": "Figure_10_6_4_Rolling_Volatility.pdf",
+                "svg": "Figure_10_6_4_Rolling_Volatility.svg",
+                "tiff": "Figure_10_6_4_Rolling_Volatility.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.6.5",
+            "title": "Standardized Return Distribution Moments",
+            "chapter": "Chapter 8 \u2014 Risk & Sensitivity Analysis",
+            "files": {
+                "png": "Figure_10_6_5_Return_Distribution.png",
+                "pdf": "Figure_10_6_5_Return_Distribution.pdf",
+                "svg": "Figure_10_6_5_Return_Distribution.svg",
+                "tiff": "Figure_10_6_5_Return_Distribution.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.7.1",
+            "title": "Techno-Economic Pareto Frontier",
+            "chapter": "Chapter 8 \u2014 Risk & Sensitivity Analysis",
+            "files": {
+                "png": "Figure_10_7_1_Pareto_Frontier.png",
+                "pdf": "Figure_10_7_1_Pareto_Frontier.pdf",
+                "svg": "Figure_10_7_1_Pareto_Frontier.svg",
+                "tiff": "Figure_10_7_1_Pareto_Frontier.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.7.2",
+            "title": "Parametric Tornado Sensitivity Hierarchy",
+            "chapter": "Chapter 8 \u2014 Risk & Sensitivity Analysis",
+            "files": {
+                "png": "Figure_10_7_2_Tornado_Sensitivity.png",
+                "pdf": "Figure_10_7_2_Tornado_Sensitivity.pdf",
+                "svg": "Figure_10_7_2_Tornado_Sensitivity.svg",
+                "tiff": "Figure_10_7_2_Tornado_Sensitivity.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.7.3",
+            "title": "Top Experimental Scenario Rankings",
+            "chapter": "Chapter 8 \u2014 Risk & Sensitivity Analysis",
+            "files": {
+                "png": "Figure_10_7_3_Scenario_Ranking.png",
+                "pdf": "Figure_10_7_3_Scenario_Ranking.pdf",
+                "svg": "Figure_10_7_3_Scenario_Ranking.svg",
+                "tiff": "Figure_10_7_3_Scenario_Ranking.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.7.4",
+            "title": "Cross-Category Techno-Economic Matrix Heatmap",
+            "chapter": "Chapter 8 \u2014 Risk & Sensitivity Analysis",
+            "files": {
+                "png": "Figure_10_7_4_Heatmap_Revenue_Across_Scenarios.png",
+                "pdf": "Figure_10_7_4_Heatmap_Revenue_Across_Scenarios.pdf",
+                "svg": "Figure_10_7_4_Heatmap_Revenue_Across_Scenarios.svg",
+                "tiff": "Figure_10_7_4_Heatmap_Revenue_Across_Scenarios.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.7.5",
+            "title": "Forecast Horizon & Model Benchmark Comparison",
+            "chapter": "Chapter 8 \u2014 Risk & Sensitivity Analysis",
+            "files": {
+                "png": "Figure_10_7_5_Horizon_Comparison.png",
+                "pdf": "Figure_10_7_5_Horizon_Comparison.pdf",
+                "svg": "Figure_10_7_5_Horizon_Comparison.svg",
+                "tiff": "Figure_10_7_5_Horizon_Comparison.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.7.6",
+            "title": "Battery Chemistry Architecture Comparison",
+            "chapter": "Chapter 8 \u2014 Risk & Sensitivity Analysis",
+            "files": {
+                "png": "Figure_10_7_6_Chemistry_Comparison.png",
+                "pdf": "Figure_10_7_6_Chemistry_Comparison.pdf",
+                "svg": "Figure_10_7_6_Chemistry_Comparison.svg",
+                "tiff": "Figure_10_7_6_Chemistry_Comparison.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.7.7",
+            "title": "Arrhenius Thermal Acceleration Sensitivity",
+            "chapter": "Chapter 8 \u2014 Risk & Sensitivity Analysis",
+            "files": {
+                "png": "Figure_10_7_7_Temperature_Sensitivity.png",
+                "pdf": "Figure_10_7_7_Temperature_Sensitivity.pdf",
+                "svg": "Figure_10_7_7_Temperature_Sensitivity.svg",
+                "tiff": "Figure_10_7_7_Temperature_Sensitivity.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.7.8",
+            "title": "Round-Trip Efficiency (RTE) Revenue Elasticity",
+            "chapter": "Chapter 8 \u2014 Risk & Sensitivity Analysis",
+            "files": {
+                "png": "Figure_10_7_8_Efficiency_Sensitivity.png",
+                "pdf": "Figure_10_7_8_Efficiency_Sensitivity.pdf",
+                "svg": "Figure_10_7_8_Efficiency_Sensitivity.svg",
+                "tiff": "Figure_10_7_8_Efficiency_Sensitivity.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.8.1",
+            "title": "Executive Master KPI Synthesis Dashboard",
+            "chapter": "Chapter 8 / Appendix \u2014 Executive Synthesis",
+            "files": {
+                "png": "Figure_10_8_1_Executive_KPI_Dashboard.png",
+                "pdf": "Figure_10_8_1_Executive_KPI_Dashboard.pdf",
+                "svg": "Figure_10_8_1_Executive_KPI_Dashboard.svg",
+                "tiff": "Figure_10_8_1_Executive_KPI_Dashboard.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.8.2",
+            "title": "System Architecture & Stage-by-Stage Energy Balance",
+            "chapter": "Chapter 8 / Appendix \u2014 Executive Synthesis",
+            "files": {
+                "png": "Figure_10_8_2_System_Architecture_Energy_Balance.png",
+                "pdf": "Figure_10_8_2_System_Architecture_Energy_Balance.pdf",
+                "svg": "Figure_10_8_2_System_Architecture_Energy_Balance.svg",
+                "tiff": "Figure_10_8_2_System_Architecture_Energy_Balance.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.8.3",
+            "title": "Multi-Objective Radar Synthesis Across Chemistries",
+            "chapter": "Chapter 8 / Appendix \u2014 Executive Synthesis",
+            "files": {
+                "png": "Figure_10_8_3_Multi_Objective_Radar_Synthesis.png",
+                "pdf": "Figure_10_8_3_Multi_Objective_Radar_Synthesis.pdf",
+                "svg": "Figure_10_8_3_Multi_Objective_Radar_Synthesis.svg",
+                "tiff": "Figure_10_8_3_Multi_Objective_Radar_Synthesis.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.8.4",
+            "title": "Risk-Return Efficient Frontier & Sharpe Spectrum",
+            "chapter": "Chapter 8 / Appendix \u2014 Executive Synthesis",
+            "files": {
+                "png": "Figure_10_8_4_Risk_Return_Efficient_Frontier.png",
+                "pdf": "Figure_10_8_4_Risk_Return_Efficient_Frontier.pdf",
+                "svg": "Figure_10_8_4_Risk_Return_Efficient_Frontier.svg",
+                "tiff": "Figure_10_8_4_Risk_Return_Efficient_Frontier.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.8.5",
+            "title": "Thermal Degradation Cost vs. Wear Hurdle Sensitivity",
+            "chapter": "Chapter 8 / Appendix \u2014 Executive Synthesis",
+            "files": {
+                "png": "Figure_10_8_5_Degradation_Cost_Sensitivity_Surface.png",
+                "pdf": "Figure_10_8_5_Degradation_Cost_Sensitivity_Surface.pdf",
+                "svg": "Figure_10_8_5_Degradation_Cost_Sensitivity_Surface.svg",
+                "tiff": "Figure_10_8_5_Degradation_Cost_Sensitivity_Surface.tiff"
+            }
+        },
+        {
+            "figure_id": "Figure 10.8.6",
+            "title": "Comprehensive Thesis Research Question Scorecard",
+            "chapter": "Chapter 8 / Appendix \u2014 Executive Synthesis",
+            "files": {
+                "png": "Figure_10_8_6_Comprehensive_Thesis_Scorecard.png",
+                "pdf": "Figure_10_8_6_Comprehensive_Thesis_Scorecard.pdf",
+                "svg": "Figure_10_8_6_Comprehensive_Thesis_Scorecard.svg",
+                "tiff": "Figure_10_8_6_Comprehensive_Thesis_Scorecard.tiff"
+            }
+        }
+    ]
+}

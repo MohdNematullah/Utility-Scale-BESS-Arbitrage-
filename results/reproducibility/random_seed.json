@@ -1,0 +1,6 @@
+{
+    "master_seed": 42,
+    "python_random": true,
+    "numpy_random": true,
+    "hash_seed_env": "42"
+}
