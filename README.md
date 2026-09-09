@@ -551,20 +551,6 @@ tests/backtesting/test_experiment_framework.py::TestCLIParser::test_cli_compare_
 
 ```
 
----
-
-## Citation & Academic Attribution
-
-If you utilize this framework, model formulations, or scenario datasets in your research, publications, or industrial analyses, please cite:
-
-```bibtex
-@software{bess_arbitrage_framework_2026,
-  author       = {Energy Storage & Quantitative Analytics Research Group},
-  title        = {A Techno-Economic Framework for Utility-Scale Energy Storage Arbitrage Under Recursive Multi-Step Price Forecasting and ASTM E1049 Rainflow Ageing},
-  year         = {2026},
-  publisher    = {GitHub},
-  url          = {https://utility-scale-bess-arbitrage.streamlit.app/}
-}
 
 ```
 
