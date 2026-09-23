@@ -1742,18 +1742,15 @@ Where:
 
 Cycle degradation is estimated using ASTM E1049-85 Rainflow Counting and Miner's Rule.
 
-$$
-D_{cycle}
-=
-\sum_{i=1}^{N}
-\frac{n_i}{N_f(DoD_i)}
-$$
+$$D_{cycle} = \sum_{i=1}^{N} \frac{n_i}{N_f(DoD_i)}$$
 
-Where:
+**Variable Definitions:**
 
-- $DoD_i$ = depth of discharge of cycle $i$.
-- $N_f$ = allowable cycles before failure.
-- $n_i$ = cycle count contribution.
+| **Symbol** | **Description** |
+| --- | --- |
+| $DoD_i$ | Depth of discharge of cycle $i$ |
+| $N_f$ | Allowable cycles before failure |
+| $n_i$ | Cycle count contribution |
 
 ---
 
@@ -1761,24 +1758,16 @@ Where:
 
 Calendar aging depends on temperature and average battery State of Charge.
 
-$$
-D_{calendar}
-=
-k
-\exp
-\left(
--\frac{E_a}{RT}
-\right)
-\exp(k_{soc}\overline{SOC})
-t^z
-$$
+$$D_{calendar} = k \exp \left( -\frac{E_a}{RT} \right) \exp(k_{soc}\overline{SOC}) t^z$$
 
-Where:
+**Variable Definitions:**
 
-- $E_a$ = activation energy.
-- $R$ = universal gas constant.
-- $T$ = cell temperature (Kelvin).
-- $\overline{SOC}$ = average State of Charge.
+| **Symbol** | **Description** |
+| --- | --- |
+| $E_a$ | Activation energy |
+| $R$ | Universal gas constant |
+| $T$ | Cell temperature (Kelvin) |
+| $\overline{SOC}$ | Average State of Charge |
 
 ---
 
@@ -1786,17 +1775,9 @@ Where:
 
 Battery utilization is measured using Equivalent Full Cycles.
 
-$$
-EFC
-=
-\frac
-{\sum(P_t^{chg}\eta_{chg}+P_t^{dis})\Delta t}
-{2E_{nom}}
-$$
+$$EFC = \frac{\sum(P_t^{chg}\eta_{chg}+P_t^{dis})\Delta t}{2E_{nom}}$$
 
 EFC provides a normalized measure of battery throughput independent of operating strategy.
-
----
 
 ## 7. Forecast Accuracy Metrics
 
