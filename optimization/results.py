@@ -1,14 +1,11 @@
-"""
+﻿"""
 results.py
 ==========
 
-Research-grade optimization results processor for .
+optimization results processor.
 
 Extracts solved battery dispatch results and generates
-publication-quality experiment outputs.
-
-Author : Mohd Nematullah
-Project:  Thesis
+publication-quality experiment outputs with realistic price settlement.
 """
 
 from dataclasses import dataclass, asdict
@@ -24,7 +21,6 @@ import pyomo.environ as pyo
 
 @dataclass(slots=True)
 class BatteryExperimentSummary:
-
     experiment_name: str
     market: str
     horizon_hours: int
@@ -54,9 +50,7 @@ class BatteryResultsProcessor:
         self,
         output_directory="optimization/results",
     ):
-
         self.output_directory = Path(output_directory)
-
         self.output_directory.mkdir(
             parents=True,
             exist_ok=True,
@@ -67,38 +61,47 @@ class BatteryResultsProcessor:
     # --------------------------------------------------------
 
     def dispatch_schedule(self, model):
-
         forecast = model.forecast_dataframe.copy()
 
-        dataframe = pd.DataFrame({
-
+        data = {
             "timestamp": forecast["timestamp"],
-
             "forecast_price": forecast["prediction"],
-
             "charge_power_mw": [
                 pyo.value(model.charge_power[t])
                 for t in model.T
             ],
-
             "discharge_power_mw": [
                 pyo.value(model.discharge_power[t])
                 for t in model.T
             ],
-
             "soc_mwh": [
                 pyo.value(model.soc[t])
                 for t in model.T
             ],
-        })
+        }
+
+        # Ingest ground-truth actual price if available in the model's dataset
+        for col in ["actual_price", "price", "settlement_price", "system_lambda"]:
+            if col in forecast.columns:
+                data["actual_price"] = forecast[col].values
+                break
+
+        dataframe = pd.DataFrame(data)
 
         dataframe["net_power_mw"] = (
             dataframe["discharge_power_mw"]
             - dataframe["charge_power_mw"]
         )
 
+        # Settle revenue against actual prices if present; fallback to forecast
+        price_column = (
+            "actual_price"
+            if "actual_price" in dataframe.columns
+            else "forecast_price"
+        )
+
         dataframe["hourly_revenue_$"] = (
-            dataframe["forecast_price"]
+            dataframe[price_column]
             * dataframe["net_power_mw"]
         )
 
@@ -118,16 +121,22 @@ class BatteryResultsProcessor:
     # --------------------------------------------------------
 
     def revenue_breakdown(self, dispatch):
-
         revenue = dispatch.copy()
 
+        # Realized cash flows determined by settlement price
+        price_column = (
+            "actual_price"
+            if "actual_price" in revenue.columns
+            else "forecast_price"
+        )
+
         revenue["charging_cost_$"] = (
-            revenue["forecast_price"]
+            revenue[price_column]
             * revenue["charge_power_mw"]
         )
 
         revenue["discharging_income_$"] = (
-            revenue["forecast_price"]
+            revenue[price_column]
             * revenue["discharge_power_mw"]
         )
 
@@ -145,47 +154,38 @@ class BatteryResultsProcessor:
     # --------------------------------------------------------
 
     def battery_summary(self, model, dispatch):
-
         battery = model
 
+        price_column = (
+            "actual_price"
+            if "actual_price" in dispatch.columns
+            else "forecast_price"
+        )
+
         summary = BatteryExperimentSummary(
-
             experiment_name="Rolling_Horizon_Battery_Arbitrage",
-
             market="ERCOT_DAM",
-
             horizon_hours=len(model.T),
-
             total_revenue=float(
                 dispatch["hourly_revenue_$"].sum()
             ),
-
             total_charge_energy=float(
                 dispatch["energy_charged_mwh"].sum()
             ),
-
             total_discharge_energy=float(
                 dispatch["energy_discharged_mwh"].sum()
             ),
-
             round_trip_efficiency=float(
                 pyo.value(battery.charge_efficiency)
                 * pyo.value(battery.discharge_efficiency)
             ),
-
             soc_min=float(dispatch["soc_mwh"].min()),
-
             soc_max=float(dispatch["soc_mwh"].max()),
-
-            soc_initial=float(dispatch["soc_mwh"].iloc[0]),
-
+            soc_initial=float(pyo.value(model.initial_soc)),
             soc_terminal=float(dispatch["soc_mwh"].iloc[-1]),
-
-            average_price=float(dispatch["forecast_price"].mean()),
-
-            maximum_price=float(dispatch["forecast_price"].max()),
-
-            minimum_price=float(dispatch["forecast_price"].min()),
+            average_price=float(dispatch[price_column].mean()),
+            maximum_price=float(dispatch[price_column].max()),
+            minimum_price=float(dispatch[price_column].min()),
         )
 
         return summary
@@ -195,31 +195,16 @@ class BatteryResultsProcessor:
     # --------------------------------------------------------
 
     def experiment_metadata(self, model):
-
         dispatch = self.dispatch_schedule(model)
 
         metadata = {
-
-            "forecast_start":
-                str(dispatch.timestamp.min()),
-
-            "forecast_end":
-                str(dispatch.timestamp.max()),
-
-            "rows":
-                len(dispatch),
-
-            "objective":
-                "Energy Arbitrage",
-
-            "battery_capacity_mwh":
-                pyo.value(model.energy_capacity),
-
-            "charge_efficiency":
-                pyo.value(model.charge_efficiency),
-
-            "discharge_efficiency":
-                pyo.value(model.discharge_efficiency),
+            "forecast_start": str(dispatch.timestamp.min()),
+            "forecast_end": str(dispatch.timestamp.max()),
+            "rows": len(dispatch),
+            "objective": "Energy Arbitrage",
+            "battery_capacity_mwh": pyo.value(model.energy_capacity),
+            "charge_efficiency": pyo.value(model.charge_efficiency),
+            "discharge_efficiency": pyo.value(model.discharge_efficiency),
         }
 
         return pd.DataFrame([metadata])
@@ -229,13 +214,9 @@ class BatteryResultsProcessor:
     # --------------------------------------------------------
 
     def export(self, model):
-
         dispatch = self.dispatch_schedule(model)
-
         revenue = self.revenue_breakdown(dispatch)
-
         summary = self.battery_summary(model, dispatch)
-
         metadata = self.experiment_metadata(model)
 
         dispatch.to_csv(

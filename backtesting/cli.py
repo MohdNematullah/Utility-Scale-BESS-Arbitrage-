@@ -1,4 +1,4 @@
-"""
+﻿"""
 backtesting/cli.py
 ==================
 
@@ -160,12 +160,12 @@ def handle_export_dashboard(args):
     print("DASHBOARD DATASETS EXPORTED")
     print("=" * 70)
     print(f"Directory: {builder.output_dir}")
-    print(f"  • {datasets.kpis_json.name}")
-    print(f"  • {datasets.dispatch_timeseries.name}")
-    print(f"  • {datasets.forecast_residuals.name}")
-    print(f"  • {datasets.soh_evolution.name}")
-    print(f"  • {datasets.financial_waterfall.name}")
-    print(f"  • {datasets.scenario_matrix.name}\n")
+    print(f"  â€¢ {datasets.kpis_json.name}")
+    print(f"  â€¢ {datasets.dispatch_timeseries.name}")
+    print(f"  â€¢ {datasets.forecast_residuals.name}")
+    print(f"  â€¢ {datasets.soh_evolution.name}")
+    print(f"  â€¢ {datasets.financial_waterfall.name}")
+    print(f"  â€¢ {datasets.scenario_matrix.name}\n")
 
 
 def handle_resume(args):
@@ -208,7 +208,7 @@ def main():
     p_batch = subparsers.add_parser("run-batch", help="Run a batch of scenarios.")
     p_batch.add_argument("--category", type=str, default=None, help="Specific category to run.")
     p_batch.add_argument("--workers", type=int, default=1, help="Number of parallel worker processes.")
-    p_batch.add_argument("--experiment-name", type=str, default="thesis_batch", help="Experiment name container.")
+    p_batch.add_argument("--experiment-name", type=str, default="_batch", help="Experiment name container.")
     p_batch.set_defaults(func=handle_run_batch)
 
     # 4. Compare Command

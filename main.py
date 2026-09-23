@@ -1,10 +1,10 @@
-"""
+﻿"""
 ================================================================================
 UTILITY-SCALE BATTERY ENERGY STORAGE SYSTEM (BESS) ARBITRAGE ENGINE
 ================================================================================
 Master Research Pipeline Orchestrator (Part 11 & Part 12 Integration)
 
-Thesis Title:
+Title:
     "Techno-Economic Valuation of Utility-Scale Battery Storage Under
      Multi-Step Recursive Price Forecasting and Dynamic Electrochemical Ageing"
 
@@ -19,7 +19,7 @@ Architecture:
     11.7 Main Entrypoint, System Validation, and Final Research Synthesis Box
 
 Supported CLI Commands:
-    python main.py --run                    # Complete 12-stage thesis pipeline
+    python main.py --run                    # Complete 12-stage pipeline
     python main.py --run --fast             # Fast verification run (truncated horizon)
     python main.py --backtest               # Rolling-horizon backtest only (Stages 1-7)
     python main.py --metrics                # Compute techno-economic and risk metrics (Stages 8-10)
@@ -80,8 +80,8 @@ DEFAULT_WORKSPACE_ROOT = Path(__file__).resolve().parent
 DEFAULT_DATA_DIR = DEFAULT_WORKSPACE_ROOT / "data"
 DEFAULT_RESULTS_DIR = DEFAULT_WORKSPACE_ROOT / "backtesting" / "results"
 DEFAULT_OUTPUT_DIR = DEFAULT_WORKSPACE_ROOT / "results"
-DEFAULT_FIGURES_DIR = DEFAULT_OUTPUT_DIR / "thesis_figures"
-DEFAULT_REPORTS_DIR = DEFAULT_RESULTS_DIR / "thesis_report"
+DEFAULT_FIGURES_DIR = DEFAULT_OUTPUT_DIR / "_figures"
+DEFAULT_REPORTS_DIR = DEFAULT_RESULTS_DIR / "_report"
 DEFAULT_LOGS_DIR = DEFAULT_WORKSPACE_ROOT / "logs"
 
 # Default BESS Technical & Market Benchmarks
@@ -832,7 +832,7 @@ class BTAPipeline:
     # --------------------------------------------------------------------------
     # Stage 12: Publication Synthesis, Reports, & Figure Suite
     # --------------------------------------------------------------------------
-    def stage_12_thesis_synthesis(self) -> None:
+    def stage_12__synthesis(self) -> None:
         """Synthesizes LaTeX tables, Master Excel workbook, and all 44 IEEE figures."""
         self.logger.info("Stage 12: Publication Synthesis & Master Reports")
         from backtesting.dashboard_data import DashboardDataBuilder
@@ -842,7 +842,7 @@ class BTAPipeline:
         rep_gen = ThesisReportGenerator(output_directory=self.config.reports_dir)
         rep_arts = rep_gen.generate_all_reports()
         self.state.exported_artifacts["master_excel"] = rep_arts.master_excel
-        self.state.exported_artifacts["thesis_markdown"] = rep_arts.report_markdown
+        self.state.exported_artifacts["_markdown"] = rep_arts.report_markdown
 
         # 2. Frontend Dashboard Data Feeds
         dash_builder = DashboardDataBuilder(output_directory=self.config.results_dir / "dashboard")
@@ -858,7 +858,7 @@ class BTAPipeline:
 
         # 3. Master IEEE Publication Figures Suite (44 Figures)
         if not self.config.skip_figures:
-            from visualization.thesis_figure_exporter import ThesisFigureExporter
+            from visualization._figure_exporter import ThesisFigureExporter
 
             fig_exporter = ThesisFigureExporter(
                 output_directory=self.config.figures_dir,
@@ -871,7 +871,7 @@ class BTAPipeline:
                 scenarios_df=self.state.scenario_rankings,
                 summary_dict=self.state.summary_metrics,
             )
-            self.state.exported_artifacts["figure_manifest"] = Path(manifest.output_directory) / "thesis_figures_manifest.json"
+            self.state.exported_artifacts["figure_manifest"] = Path(manifest.output_directory) / "_figures_manifest.json"
             self.logger.info(f"Stage 12 Complete: 44 publication-ready figures exported across {self.config.export_formats}.")
         else:
             self.logger.info("Stage 12 Complete: Figure rendering skipped via flag.")
@@ -902,13 +902,13 @@ class BTAPipeline:
             )
             self.state.exported_artifacts["reproducibility_report"] = r_rep
 
-            # Final Thesis Multi-Tab Workbook
+            # Final Multi-Tab Workbook
             final_builder = FinalResearchReportBuilder(output_dir=self.config.output_dir / "final_report")
             scen_df = self.state.scenario_rankings if self.state.scenario_rankings is not None else pd.DataFrame()
-            f_json, f_csv, f_xlsx, f_md = final_builder.build_complete_thesis_package(
+            f_json, f_csv, f_xlsx, f_md = final_builder.build_complete__package(
                 scen_df, self.state.summary_metrics
             )
-            self.state.exported_artifacts["final_thesis_report"] = f_md
+            self.state.exported_artifacts["final__report"] = f_md
 
             # Master Artifact Manifest
             m_gen = ArtifactManifestGenerator(root_dir=self.config.output_dir, output_dir=self.config.output_dir / "manifests")
@@ -960,12 +960,12 @@ class BTAPipeline:
         self._ensure_backtest_loaded()
         self.stage_8_arbitrage_metrics()
         self.stage_10_risk_analytics()
-        with self.tracker.track_stage(12, "Thesis Reports & LaTeX Synthesis"):
+        with self.tracker.track_stage(12, "Reports & LaTeX Synthesis"):
             from backtesting.report_generator import ThesisReportGenerator
             rep_gen = ThesisReportGenerator(output_directory=self.config.reports_dir)
             rep_arts = rep_gen.generate_all_reports()
             self.state.exported_artifacts["master_excel"] = rep_arts.master_excel
-            self.state.exported_artifacts["thesis_markdown"] = rep_arts.report_markdown
+            self.state.exported_artifacts["_markdown"] = rep_arts.report_markdown
 
     def run_figures_pipeline(self) -> None:
         """Exports the complete 44-figure publication visualization suite."""
@@ -974,7 +974,7 @@ class BTAPipeline:
         self.stage_10_risk_analytics()
         self.stage_11_sensitivity_and_scenarios()
         with self.tracker.track_stage(12, "Publication Figures Suite (44 Figures)"):
-            from visualization.thesis_figure_exporter import ThesisFigureExporter
+            from visualization._figure_exporter import ThesisFigureExporter
             fig_exporter = ThesisFigureExporter(
                 output_directory=self.config.figures_dir,
                 formats=self.config.export_formats,
@@ -986,7 +986,7 @@ class BTAPipeline:
                 scenarios_df=self.state.scenario_rankings,
                 summary_dict=self.state.summary_metrics,
             )
-            self.state.exported_artifacts["figure_manifest"] = Path(manifest.output_directory) / "thesis_figures_manifest.json"
+            self.state.exported_artifacts["figure_manifest"] = Path(manifest.output_directory) / "_figures_manifest.json"
 
     def run_dashboard_pipeline(self) -> None:
         """Exports frontend feeds for interactive dashboard inspection."""
@@ -1041,9 +1041,9 @@ class BTAPipeline:
             [self.config.output_dir / "experiments" / "scenario_matrix.csv"],
         )
 
-        # 3. Final Thesis Multi-Tab Workbook & Summary Chapter
+        # 3. Final Multi-Tab Workbook & Summary Chapter
         report_builder = FinalResearchReportBuilder(output_dir=self.config.output_dir / "final_report")
-        report_builder.build_complete_thesis_package(df_matrix, self.state.summary_metrics)
+        report_builder.build_complete__package(df_matrix, self.state.summary_metrics)
 
         # 4. Manifest
         manifest_gen = ArtifactManifestGenerator(root_dir=self.config.output_dir, output_dir=self.config.output_dir / "manifests")
@@ -1064,7 +1064,7 @@ class BTAPipeline:
                 self.run_backtest_pipeline()
                 self.run_metrics_pipeline()
                 with self.tracker.track_stage(12, "Publication Reports & Figure Suite"):
-                    self.stage_12_thesis_synthesis()
+                    self.stage_12__synthesis()
 
             elif self.config.mode == ExecutionMode.BACKTEST_ONLY:
                 self.run_backtest_pipeline()
@@ -1093,7 +1093,7 @@ class BTAPipeline:
             self._export_research_manifest()
 
             # Display Institutional Summary
-            self._print_thesis_summary_box()
+            self._print__summary_box()
             return 0
 
         except Exception as exc:
@@ -1142,7 +1142,7 @@ class BTAPipeline:
         with open(manifest_path, "w", encoding="utf-8") as f:
             json.dump(manifest_data, f, indent=4)
 
-    def _print_thesis_summary_box(self) -> None:
+    def _print__summary_box(self) -> None:
         """Prints formatted research summary box."""
         tot_time = self.tracker.total_elapsed_seconds
         mins, secs = divmod(int(tot_time), 60)
@@ -1161,7 +1161,7 @@ class BTAPipeline:
         print("=" * 82 + LogColor.RESET)
         for t in self.tracker.timings:
             st = "PASS" if t.status == "COMPLETED" else "FAIL"
-            print(f"  • {t.name:<42} : [{st}] ({t.duration_seconds:>6.2f}s)")
+            print(f"  â€¢ {t.name:<42} : [{st}] ({t.duration_seconds:>6.2f}s)")
         print("-" * 82)
         print(f"  Gross Arbitrage Revenue      : ${gross:>12,.2f}")
         print(f"  Cell Degradation Wear Cost   : -${deg:>11,.2f}")
@@ -1201,7 +1201,7 @@ def build_argument_parser() -> argparse.ArgumentParser:
 
     # Primary Execution Commands (Mutually Exclusive group)
     mode_group = parser.add_mutually_exclusive_group()
-    mode_group.add_argument("--run", action="store_true", help="Execute the full 12-stage thesis research pipeline.")
+    mode_group.add_argument("--run", action="store_true", help="Execute the full 12-stage research pipeline.")
     mode_group.add_argument("--backtest", action="store_true", help="Execute rolling-horizon simulation backtest only (Stages 1-7).")
     mode_group.add_argument("--metrics", action="store_true", help="Evaluate techno-economic, forecast realism, and risk metrics (Stages 8-10).")
     mode_group.add_argument("--reports", action="store_true", help="Generate LaTeX tables, Chapter 5 Markdown, and Master Excel workbook.")
@@ -1261,7 +1261,7 @@ def parse_arguments_to_config(args: argparse.Namespace) -> PipelineConfig:
         data_dir=DEFAULT_DATA_DIR,
         results_dir=DEFAULT_RESULTS_DIR,
         reports_dir=DEFAULT_REPORTS_DIR,
-        figures_dir=args.output_dir / "thesis_figures",
+        figures_dir=args.output_dir / "_figures",
         output_dir=args.output_dir,
         logs_dir=DEFAULT_LOGS_DIR,
         system_power_mw=args.power,
@@ -1290,8 +1290,8 @@ def execute_clean(output_dir: Path, results_dir: Path) -> int:
     for target in [results_dir / "checkpoint.json", results_dir / "runtime_profile.csv"]:
         if target.exists():
             target.unlink()
-            print(f"  • Removed {target.name}")
-    print(f"{LogColor.GREEN}✓ Cleanup complete.{LogColor.RESET}")
+            print(f"  â€¢ Removed {target.name}")
+    print(f"{LogColor.GREEN}âœ“ Cleanup complete.{LogColor.RESET}")
     return 0
 
 
@@ -1338,9 +1338,9 @@ def main(cli_args: Optional[Sequence[str]] = None) -> int:
     exit_code = pipeline.execute()
 
     if exit_code == 0:
-        print(f"{LogColor.GREEN}{LogColor.BOLD}✓  Pipeline Executed Successfully.{LogColor.RESET}\n")
+        print(f"{LogColor.GREEN}{LogColor.BOLD}âœ“  Pipeline Executed Successfully.{LogColor.RESET}\n")
     else:
-        print(f"{LogColor.RED}{LogColor.BOLD}✗  Pipeline Terminated With Errors. Check logs/bta_pipeline.log.{LogColor.RESET}\n")
+        print(f"{LogColor.RED}{LogColor.BOLD}âœ—  Pipeline Terminated With Errors. Check logs/bta_pipeline.log.{LogColor.RESET}\n")
 
     return exit_code
 

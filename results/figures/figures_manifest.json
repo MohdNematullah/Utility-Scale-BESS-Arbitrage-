@@ -1,4 +1,4 @@
-{
+﻿{
     "total_figures_count": 44,
     "formats_exported": [
         "png",
@@ -6,12 +6,12 @@
         "svg",
         "tiff"
     ],
-    "output_directory": "D:\\Energy\\\\results\\thesis_figures",
+    "output_directory": "D:\\Energy\\\\results\\_figures",
     "subdirectories": {
-        "png": "D:\\Energy\\\\results\\thesis_figures\\png",
-        "pdf": "D:\\Energy\\\\results\\thesis_figures\\pdf",
-        "svg": "D:\\Energy\\\\results\\thesis_figures\\svg",
-        "tiff": "D:\\Energy\\\\results\\thesis_figures\\tiff"
+        "png": "D:\\Energy\\\\results\\_figures\\png",
+        "pdf": "D:\\Energy\\\\results\\_figures\\pdf",
+        "svg": "D:\\Energy\\\\results\\_figures\\svg",
+        "tiff": "D:\\Energy\\\\results\\_figures\\tiff"
     },
     "figures_inventory": [
         {
@@ -489,13 +489,13 @@
         },
         {
             "figure_id": "Figure 10.8.6",
-            "title": "Comprehensive Thesis Research Question Scorecard",
+            "title": "Comprehensive Research Question Scorecard",
             "chapter": "Chapter 8 / Appendix \u2014 Executive Synthesis",
             "files": {
-                "png": "Figure_10_8_6_Comprehensive_Thesis_Scorecard.png",
-                "pdf": "Figure_10_8_6_Comprehensive_Thesis_Scorecard.pdf",
-                "svg": "Figure_10_8_6_Comprehensive_Thesis_Scorecard.svg",
-                "tiff": "Figure_10_8_6_Comprehensive_Thesis_Scorecard.tiff"
+                "png": "Figure_10_8_6_Comprehensive__Scorecard.png",
+                "pdf": "Figure_10_8_6_Comprehensive__Scorecard.pdf",
+                "svg": "Figure_10_8_6_Comprehensive__Scorecard.svg",
+                "tiff": "Figure_10_8_6_Comprehensive__Scorecard.tiff"
             }
         }
     ]

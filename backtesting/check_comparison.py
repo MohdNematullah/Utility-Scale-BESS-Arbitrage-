@@ -1,4 +1,4 @@
-"""
+﻿"""
 backtesting/check_comparison.py
 ===============================
 
@@ -66,7 +66,7 @@ for s in scenarios:
 
     synthetic_records.append({
         "experiment_id": cid,
-        "experiment_name": "thesis_comparison_test",
+        "experiment_name": "_comparison_test",
         "scenario_name": sname,
         "category": cat,
         "forecast_horizon": s.experiment_config.forecast_horizon_hours,
@@ -101,7 +101,7 @@ print(f"Sensitivity Excel : {artifacts.sensitivity_excel.exists()} ({artifacts.s
 figures = list(artifacts.figures_directory.glob("*.png"))
 print(f"\nGenerated Visualizations ({len(figures)} total):")
 for f in sorted(figures):
-    print(f"  • {f.name}")
+    print(f"  â€¢ {f.name}")
 
 # 3. Read and Display Executive Ranking Preview
 print("\n" + "-" * 75)
@@ -117,5 +117,5 @@ print(f"\nPareto Optimal Frontier Scenarios Identified: {len(pareto_df)}")
 print(pareto_df[["scenario_name", "net_revenue_usd", "final_soh"]].to_string(index=False))
 
 print("\n" + LINE)
-print("Scenario comparison engine verified successfully ✓")
+print("Scenario comparison engine verified successfully âœ“")
 print(LINE)

@@ -1,16 +1,16 @@
-"""
+﻿"""
 optimization/model_builder.py
 =============================
 
-Research-grade optimization model builder for .
+optimization model builder for .
 
 Creates a Pyomo ConcreteModel for battery energy arbitrage using
 recursive multi-step electricity price forecasts.
 
 Compatible with:
-    • Python 3.14
-    • Pyomo 6.10+
-    •  Config (energy_capacity_mwh, charge_power_mw, etc.)
+    â€¢ Python 3.14
+    â€¢ Pyomo 6.10+
+    â€¢  Config (energy_capacity_mwh, charge_power_mw, etc.)
 """
 
 from dataclasses import dataclass
@@ -87,7 +87,7 @@ class BatteryOptimizationModelBuilder:
         """
 
         # --------------------------------------------------
-        # ForecastHorizon → DataFrame
+        # ForecastHorizon â†’ DataFrame
         # --------------------------------------------------
         if hasattr(forecast, "dataframe"):
             forecast = forecast.dataframe.copy()
@@ -240,7 +240,7 @@ class BatteryOptimizationModelBuilder:
         )
 
         # =============================================================
-        # SOC PARAMETERS (Convert fractions → MWh)
+        # SOC PARAMETERS (Convert fractions â†’ MWh)
         # =============================================================
 
         capacity = float(battery.energy_capacity_mwh)

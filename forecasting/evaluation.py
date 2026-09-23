@@ -1,9 +1,9 @@
-
+﻿
 """
 evaluation.py
 =============
 
-Research-grade Forecast Evaluation Framework
+Forecast Evaluation Framework
 for .
 
 Evaluates recursive forecasts using statistical
@@ -106,7 +106,7 @@ class ForecastEvaluator:
         return float(value * 100)
 
     # -------------------------------
-    # R²
+    # RÂ²
     # -------------------------------
     def r2(self, y_true, y_pred):
 

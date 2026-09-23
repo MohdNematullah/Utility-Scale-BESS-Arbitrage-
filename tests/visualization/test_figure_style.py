@@ -1,4 +1,4 @@
-"""
+﻿"""
 tests/visualization/test_figure_style.py
 ========================================
 
@@ -40,7 +40,7 @@ class TestFigureStyleEngine:
         assert w == 3.5
         assert h == 2.16
 
-        w_full, h_full = get_figure_dimensions("thesis_full")
+        w_full, h_full = get_figure_dimensions("_full")
         assert w_full == 6.5
         assert h_full == 4.0
 

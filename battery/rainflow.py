@@ -1,10 +1,10 @@
-"""
+﻿"""
 battery/rainflow.py
 ===================
 
 ASTM E1049 Rainflow Cycle Counting implementation.
 
-Research-grade implementation for .
+implementation for .
 
 Outputs:
 - Half cycles

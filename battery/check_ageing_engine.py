@@ -1,7 +1,7 @@
-"""
+﻿"""
 battery/check_ageing_engine.py
 
-Research-grade verification for combined battery ageing engine.
+verification for combined battery ageing engine.
 """
 
 from battery.ageing_engine import BatteryAgeingEngine
@@ -44,5 +44,5 @@ print(f"Replacement Required      : {result.replacement_required}")
 print(f"Degradation Cost (USD)    : ${result.degradation_cost_usd:,.2f}")
 
 print("=" * 70)
-print("Combined ageing engine verified successfully ✓")
+print("Combined ageing engine verified successfully âœ“")
 print("=" * 70)

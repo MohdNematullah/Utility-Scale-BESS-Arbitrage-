@@ -1,4 +1,4 @@
-{
+﻿{
     "project": "",
     "version": "5.0.0",
     "python_version": "3.14.2",
@@ -59,8 +59,8 @@
         "forecast_realism_json": "D:\\Energy\\\\backtesting\\results\\forecast_realism\\forecast_realism.json",
         "scenario_ranking": "D:\\Energy\\\\backtesting\\results\\comparison\\scenario_ranking.csv",
         "pareto_frontier": "D:\\Energy\\\\backtesting\\results\\comparison\\pareto_frontier.csv",
-        "master_excel": "D:\\Energy\\\\backtesting\\results\\thesis_report\\master_thesis_evaluation.xlsx",
-        "thesis_markdown": "D:\\Energy\\\\backtesting\\results\\thesis_report\\THESIS_RESULTS_CHAPTER.md",
+        "master_excel": "D:\\Energy\\\\backtesting\\results\\_report\\master__evaluation.xlsx",
+        "_markdown": "D:\\Energy\\\\backtesting\\results\\_report\\_RESULTS_CHAPTER.md",
         "dashboard_kpis": "D:\\Energy\\\\backtesting\\results\\dashboard\\kpis.json",
         "environment_snapshot": "D:\\Energy\\\\results\\reproducibility\\environment_snapshot.json"
     }

@@ -1,4 +1,4 @@
-"""
+﻿"""
 visualization/forecast_figures.py
 =================================
 
@@ -7,12 +7,12 @@ Publication-Grade Forecast Realism & Accuracy Visualizations (Part 10.2)
 
 
 Generates the 6 core research figures for Chapter 4 / Chapter 5:
-1. Figure 10.2.1 — Forecast vs. Actual (Actual, Recursive ML, Clairvoyant Upper Bound, ±1 MAE Band)
-2. Figure 10.2.2 — Residual Error Distribution (Gaussian/KDE fit, Moments: Mean, Std, Skewness, Kurtosis)
-3. Figure 10.2.3 — Residual Time Series (Chronological error trajectory, rolling 7-day mean and volatility)
-4. Figure 10.2.4 — Forecast Horizon Comparison (Look-ahead accuracy degradation: MAE/RMSE vs. Directional Accuracy)
-5. Figure 10.2.5 — Forecast vs. Actual Parity Scatter (Calibration curve, linear regression fit, R² score)
-6. Figure 10.2.6 — Forecast Error Heatmap (24-Hour of Day vs. 12 Months MAE error surface)
+1. Figure 10.2.1 â€” Forecast vs. Actual (Actual, Recursive ML, Clairvoyant Upper Bound, Â±1 MAE Band)
+2. Figure 10.2.2 â€” Residual Error Distribution (Gaussian/KDE fit, Moments: Mean, Std, Skewness, Kurtosis)
+3. Figure 10.2.3 â€” Residual Time Series (Chronological error trajectory, rolling 7-day mean and volatility)
+4. Figure 10.2.4 â€” Forecast Horizon Comparison (Look-ahead accuracy degradation: MAE/RMSE vs. Directional Accuracy)
+5. Figure 10.2.5 â€” Forecast vs. Actual Parity Scatter (Calibration curve, linear regression fit, RÂ² score)
+6. Figure 10.2.6 â€” Forecast Error Heatmap (24-Hour of Day vs. 12 Months MAE error surface)
 """
 
 from __future__ import annotations
@@ -66,7 +66,7 @@ class ForecastFigureGenerator:
         set_ieee_style()
 
     # ------------------------------------------------------------------------
-    # Figure 10.2.1 — Forecast vs Actual Price Profile
+    # Figure 10.2.1 â€” Forecast vs Actual Price Profile
     # ------------------------------------------------------------------------
     def plot_forecast_vs_actual(
         self,
@@ -77,7 +77,7 @@ class ForecastFigureGenerator:
         sample_hours: int = 168,
         filename_stem: str = "Figure_10_2_1_Forecast_vs_Actual",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("thesis_full_tall")
+        dims = get_figure_dimensions("_full_tall")
         fig, (ax1, ax2) = plt.subplots(
             2, 1, figsize=dims, sharex=True, gridspec_kw={"height_ratios": [2.3, 1.0]}
         )
@@ -129,14 +129,14 @@ class ForecastFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.2.2 — Residual Error Distribution & Moments
+    # Figure 10.2.2 â€” Residual Error Distribution & Moments
     # ------------------------------------------------------------------------
     def plot_residual_distribution(
         self,
         residuals: np.ndarray,
         filename_stem: str = "Figure_10_2_2_Residual_Distribution",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("thesis_full")
+        dims = get_figure_dimensions("_full")
         fig, ax = plt.subplots(figsize=dims)
 
         clean_res = residuals[np.isfinite(residuals)]
@@ -158,7 +158,7 @@ class ForecastFigureGenerator:
         ax.axvline(0.0, color=COLOR_PALETTE.actual, linestyle="-", linewidth=1.2, label=r"Zero Error Reference ($e=0$)")
         ax.axvline(mu, color=COLOR_PALETTE.forecast, linestyle=":", linewidth=1.5, label=rf"Mean Bias ($\mu={mu:.2f}$)")
 
-        format_axes(ax, title="Empirical Forecast Error Distribution & Gaussian Parity", xlabel="Residual Error [Forecast − Actual] ($/MWh)", ylabel="Probability Density")
+        format_axes(ax, title="Empirical Forecast Error Distribution & Gaussian Parity", xlabel="Residual Error [Forecast âˆ’ Actual] ($/MWh)", ylabel="Probability Density")
         ax.legend(loc="upper right", framealpha=0.95)
 
         # Statistical Moments Callout
@@ -181,7 +181,7 @@ class ForecastFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.2.3 — Longitudinal Residual Time Series
+    # Figure 10.2.3 â€” Longitudinal Residual Time Series
     # ------------------------------------------------------------------------
     def plot_residual_timeseries(
         self,
@@ -189,7 +189,7 @@ class ForecastFigureGenerator:
         window: int = 168,
         filename_stem: str = "Figure_10_2_3_Residual_Timeseries",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("thesis_full")
+        dims = get_figure_dimensions("_full")
         fig, ax = plt.subplots(figsize=dims)
 
         x = np.arange(len(residuals))
@@ -210,14 +210,14 @@ class ForecastFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.2.4 — Horizon Accuracy Degradation (12h to 72h)
+    # Figure 10.2.4 â€” Horizon Accuracy Degradation (12h to 72h)
     # ------------------------------------------------------------------------
     def plot_forecast_horizon_accuracy(
         self,
         horizon_records: list[dict[str, Any]] | None = None,
         filename_stem: str = "Figure_10_2_4_Forecast_Horizon_Accuracy",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("thesis_full")
+        dims = get_figure_dimensions("_full")
         fig, ax1 = plt.subplots(figsize=dims)
         ax2 = ax1.twinx()
 
@@ -259,7 +259,7 @@ class ForecastFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.2.5 — Parity Calibration Scatter
+    # Figure 10.2.5 â€” Parity Calibration Scatter
     # ------------------------------------------------------------------------
     def plot_forecast_scatter(
         self,
@@ -298,7 +298,7 @@ class ForecastFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.2.6 — Hour of Day vs. Month Error Heatmap
+    # Figure 10.2.6 â€” Hour of Day vs. Month Error Heatmap
     # ------------------------------------------------------------------------
     def plot_forecast_heatmap(
         self,
@@ -307,7 +307,7 @@ class ForecastFigureGenerator:
         timestamps: Any | None = None,
         filename_stem: str = "Figure_10_2_6_Forecast_Heatmap",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("thesis_full")
+        dims = get_figure_dimensions("_full")
         fig, ax = plt.subplots(figsize=dims)
         n = len(y_true)
 
@@ -327,7 +327,7 @@ class ForecastFigureGenerator:
         cbar = fig.colorbar(im, ax=ax, shrink=0.9, pad=0.03)
         cbar.set_label("Mean Absolute Error (MAE $/MWh)", fontsize=8.5)
 
-        format_axes(ax, title="Diurnal & Seasonal Predictive Error Distribution Surface", xlabel="Month of Backtest", ylabel="Diurnal Hour of Day (0–23)", hide_top_right=False)
+        format_axes(ax, title="Diurnal & Seasonal Predictive Error Distribution Surface", xlabel="Month of Backtest", ylabel="Diurnal Hour of Day (0â€“23)", hide_top_right=False)
         ax.set_xticks(range(len(pivot.columns)))
         ax.set_xticklabels(pivot.columns)
         ax.set_yticks(range(0, 24, 4))

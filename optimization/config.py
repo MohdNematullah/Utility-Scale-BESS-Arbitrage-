@@ -1,16 +1,16 @@
-
+﻿
 """
 config.py
 =========
 
-Research-grade optimization configuration for .
+optimization configuration for .
 
 Used by:
-    • optimization/model_builder.py
-    • optimization/solver.py
-    • battery/state.py
-    • battery/aging.py
-    • backtesting/rolling_runner.py
+    â€¢ optimization/model_builder.py
+    â€¢ optimization/solver.py
+    â€¢ battery/state.py
+    â€¢ battery/aging.py
+    â€¢ backtesting/rolling_runner.py
 
 All optimization experiments use this configuration.
 """
@@ -155,7 +155,7 @@ class ForecastConfig:
 @dataclass(slots=True)
 class ExperimentConfig:
     """
-    Configuration for thesis experiments.
+    Configuration for experiments.
     """
 
     experiment_name: str = (

@@ -1,12 +1,11 @@
-
+﻿
 """
 engineering.py
 ==============
 
-Research-grade feature engineering for electricity price forecasting.
+feature engineering for electricity price forecasting.
 
- Thesis
----------------
+ ---------------
 
 Creates leakage-free features for:
 - Multi-step forecasting (24h / 48h)

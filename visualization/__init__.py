@@ -1,8 +1,8 @@
-"""
+﻿"""
 visualization
 =============
 
- Research-Grade Publication Visualization Package
+ Publication Visualization Package
 
 Implements IEEE/Elsevier/Nature-compliant visual rendering, 600-DPI publication
 exports, multi-format vector graphics (PNG/PDF/SVG/TIFF), and figure themes.

@@ -1,7 +1,7 @@
-"""
+﻿"""
 check_model_builder.py
 
-Research-grade verification of model_builder.py
+verification of model_builder.py
 """
 
 import pyomo.environ as pyo
@@ -68,5 +68,5 @@ print("=" * 70)
 
 builder.export_prices(model)
 
-print("ConcreteModel Ready ✓")
-print("Forecast parameters exported ✓")
+print("ConcreteModel Ready âœ“")
+print("Forecast parameters exported âœ“")

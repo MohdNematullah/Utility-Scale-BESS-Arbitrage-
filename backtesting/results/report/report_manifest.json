@@ -1,6 +1,6 @@
-{
-    "markdown_chapter": "THESIS_RESULTS_CHAPTER.md",
-    "master_excel_workbook": "master_thesis_evaluation.xlsx",
+﻿{
+    "markdown_chapter": "_RESULTS_CHAPTER.md",
+    "master_excel_workbook": "master__evaluation.xlsx",
     "latex_tables": [
         "table_arbitrage_kpis.tex",
         "table_forecast_accuracy.tex",

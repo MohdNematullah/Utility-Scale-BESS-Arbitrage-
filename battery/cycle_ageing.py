@@ -1,8 +1,8 @@
-"""
+﻿"""
 cycle_ageing.py
 ===============
 
-Research-grade cycle ageing model for .
+cycle ageing model for .
 
 Implements:
 1. Equivalent Full Cycles (EFC).
@@ -66,7 +66,7 @@ class CycleAgeingModel:
         discharged_energy_mwh: float,
     ) -> float:
         """
-        EFC = throughput / (2 × nominal capacity)
+        EFC = throughput / (2 Ã— nominal capacity)
         """
 
         throughput = charged_energy_mwh + discharged_energy_mwh

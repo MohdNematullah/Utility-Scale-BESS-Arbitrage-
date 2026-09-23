@@ -1,8 +1,8 @@
-"""
+﻿"""
 backtesting/export_reports.py
 =============================
 
-Research-Grade Backtest Export & Reporting Engine
+Backtest Export & Reporting Engine
 
 
 
@@ -60,7 +60,7 @@ class ExportReportResult:
 
 class BacktestExportEngine:
     """
-    Research-grade exporter for rolling-horizon backtesting results.
+    exporter for rolling-horizon backtesting results.
     """
 
     def __init__(self, output_directory: str = "backtesting/results"):
@@ -411,7 +411,7 @@ class BacktestExportEngine:
             ax1.plot(x, actual, label="Actual Settlement Price", color="#1f77b4", linewidth=1.5)
             ax1.plot(x, forecast, label="Day-Ahead Forecast", color="#ff7f0e", linestyle="--", linewidth=1.5)
             ax1.fill_between(
-                x, forecast - mae, forecast + mae, color="#ff7f0e", alpha=0.2, label=f"±1 MAE Confidence Band (${mae:.2f})"
+                x, forecast - mae, forecast + mae, color="#ff7f0e", alpha=0.2, label=f"Â±1 MAE Confidence Band (${mae:.2f})"
             )
 
             ax2.bar(x, residuals, color=np.where(residuals >= 0, "#e1974c", "#7293cb"), width=0.8, alpha=0.8)

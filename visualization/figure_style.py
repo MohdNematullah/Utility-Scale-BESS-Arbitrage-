@@ -1,4 +1,4 @@
-"""
+﻿"""
 visualization/figure_style.py
 =============================
 
@@ -24,8 +24,8 @@ Capabilities:
 3. Journal Layout & Golden Ratio Dimensioning:
    - IEEE single column: 3.5 in (88.9 mm)
    - IEEE double column: 7.0 in (177.8 mm)
-   - Thesis full-page: 6.5 in (165.1 mm)
-   - Thesis half-page: 4.8 in (121.9 mm)
+   - full-page: 6.5 in (165.1 mm)
+   - half-page: 4.8 in (121.9 mm)
 4. Multi-Format Exporter:
    - Synchronous export to PNG, PDF, SVG, and TIFF formats.
 """
@@ -75,9 +75,9 @@ FIGURE_DIMENSIONS = {
     "ieee_single_tall": (3.5, 2.80),    # 3.5 inches width (Taller aspect)
     "ieee_double": (7.0, 3.80),         # 7.0 inches width (Full span double-column)
     "ieee_double_tall": (7.0, 5.00),    # 7.0 inches width (Two-row stacked subplots)
-    "thesis_full": (6.5, 4.00),         # Standard Thesis page width
-    "thesis_full_tall": (6.5, 6.20),    # Multi-panel stacked analysis
-    "thesis_half": (4.8, 3.20),         # Compact thesis insert
+    "_full": (6.5, 4.00),         # Standard page width
+    "_full_tall": (6.5, 6.20),    # Multi-panel stacked analysis
+    "_half": (4.8, 3.20),         # Compact insert
 }
 
 
@@ -161,9 +161,9 @@ def set_ieee_style(font_scale: float = 1.0) -> None:
     FigureTheme.apply_ieee_theme(font_scale=font_scale)
 
 
-def get_figure_dimensions(layout: str = "thesis_full") -> tuple[float, float]:
+def get_figure_dimensions(layout: str = "_full") -> tuple[float, float]:
     """Retrieves standard golden-ratio figure dimensions in inches."""
-    return FIGURE_DIMENSIONS.get(layout, FIGURE_DIMENSIONS["thesis_full"])
+    return FIGURE_DIMENSIONS.get(layout, FIGURE_DIMENSIONS["_full"])
 
 
 def format_axes(

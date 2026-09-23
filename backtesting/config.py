@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+﻿from dataclasses import dataclass, field
 from pathlib import Path
 
 
@@ -7,7 +7,7 @@ class BacktestConfig:
     """
     Rolling Horizon Backtesting configuration.
 
-    Research-grade configuration used by Part 8.
+    configuration used by Part 8.
     """
 
     # ---------------------------------------------------------

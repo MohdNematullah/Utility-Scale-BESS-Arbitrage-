@@ -1,8 +1,8 @@
-"""
+﻿"""
 tests/backtesting/test_report_generator.py
 =========================================
 
-Unit Test Suite for Thesis Report Generator Module (Part 9.6).
+Unit Test Suite for Report Generator Module (Part 9.6).
 """
 
 import json
@@ -60,7 +60,7 @@ def mock_evaluation_payloads(tmp_path):
 class TestReportGeneratorPipeline:
     def test_complete_report_generation(self, mock_evaluation_payloads, tmp_path):
         f_json, a_json, r_json, s_json, t_json = mock_evaluation_payloads
-        output_dir = tmp_path / "thesis_out"
+        output_dir = tmp_path / "_out"
 
         generator = ThesisReportGenerator(output_directory=output_dir)
         artifacts = generator.generate_all_reports(

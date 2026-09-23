@@ -2,9 +2,7 @@
 backtesting/engine.py
 =====================
 
-Rolling Horizon Backtesting Engine (Research Grade Version 6.3)
-
-
+Rolling Horizon Backtesting Engine
 """
 
 from __future__ import annotations
@@ -43,7 +41,7 @@ class RollingBacktestResult:
 
 class RollingBacktestEngine:
     """
-    Research-grade rolling horizon battery arbitrage engine with strict
+    rolling horizon battery arbitrage engine with strict
     energy continuity and wear co-optimization.
     """
 
@@ -208,25 +206,39 @@ class RollingBacktestEngine:
                     executed["actual_price"] = actual_window[p_col].iloc[: len(executed)].values
                     break
 
-            # 3. Window Revenue (Unified Single Calculation)
-            if {"forecast_price", "charge_power_mw", "discharge_power_mw"}.issubset(executed.columns):
-                executed["net_revenue_usd"] = (
-                    executed["forecast_price"]
-                    * (executed["discharge_power_mw"] - executed["charge_power_mw"])
-                )
-            elif {"forecast_price", "energy_charged_mwh", "energy_discharged_mwh"}.issubset(executed.columns):
-                executed["net_revenue_usd"] = (
-                    executed["forecast_price"]
-                    * (executed["energy_discharged_mwh"] - executed["energy_charged_mwh"])
-                )
-            elif "net_revenue_$" in executed.columns:
-                executed["net_revenue_usd"] = executed["net_revenue_$"]
-            elif "hourly_revenue_$" in executed.columns:
-                executed["net_revenue_usd"] = executed["hourly_revenue_$"]
-            else:
-                raise KeyError("Dispatch dataframe has no valid revenue columns.")
+            # 3. Calculate realised revenue from actual prices.
+            required = [
+                "actual_price",
+                "charge_power_mw",
+                "discharge_power_mw",
+            ]
+            missing = [
+                column for column in required
+                if column not in executed.columns
+            ]
+            if missing:
+                raise ValueError(f"Missing settlement columns: {missing}")
+            if executed[required].isna().any().any():
+                raise ValueError("Settlement data contains missing values.")
 
+            # The current optimiser uses one-hour intervals.
+            dt_hours = 1.0
+            net_energy_mwh = (
+                executed["discharge_power_mw"]
+                - executed["charge_power_mw"]
+            ) * dt_hours
+
+            # Cash flow before battery ageing costs.
+            executed["net_revenue_usd"] = (
+                executed["actual_price"] * net_energy_mwh
+            )
+
+            # Keep the existing report columns consistent.
             executed["net_revenue_$"] = executed["net_revenue_usd"]
+            executed["hourly_revenue_$"] = executed["net_revenue_usd"]
+            executed["cumulative_revenue_$"] = (
+                total_revenue + executed["net_revenue_usd"].cumsum()
+            )
             window_revenue = float(executed["net_revenue_usd"].sum())
             total_revenue += window_revenue
 

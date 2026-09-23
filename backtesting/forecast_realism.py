@@ -1,8 +1,8 @@
-"""
+﻿"""
 backtesting/forecast_realism.py
 ===============================
 
-Research-Grade Forecast Realism & Predictive Quality Evaluation Module (Part 9.1 Enhanced)
+Forecast Realism & Predictive Quality Evaluation Module (Part 9.1 Enhanced)
 
 
 
@@ -194,7 +194,7 @@ class ForecastRealismEngine:
             forecast_sub + mae_local,
             color="#ff7f0e",
             alpha=0.2,
-            label=f"±1 MAE Confidence Band (${mae_local:.2f})",
+            label=f"Â±1 MAE Confidence Band (${mae_local:.2f})",
         )
         ax1.set_ylabel("Price ($/MWh)", fontsize=10)
         ax1.set_title(f"Day-Ahead Forecast vs Realized Settlement Price (First {n} Hours)", fontsize=11, fontweight="bold")
@@ -254,7 +254,7 @@ class ForecastRealismEngine:
 
         ax.axvline(0.0, color="black", linestyle=":", linewidth=1.0)
         ax.set_title("Forecast Error Residual Distribution & Kurtosis Profile", fontsize=11, fontweight="bold")
-        ax.set_xlabel("Residual Error [Forecast − Actual] ($/MWh)", fontsize=10)
+        ax.set_xlabel("Residual Error [Forecast âˆ’ Actual] ($/MWh)", fontsize=10)
         ax.set_ylabel("Probability Density", fontsize=10)
         ax.grid(True, linestyle="--", alpha=0.5)
         ax.legend(loc="upper right", framealpha=0.95)
@@ -355,7 +355,7 @@ class ForecastRealismEngine:
 
         ax.set_title("Forecast MAE Across Hour of Day & Month", fontsize=11, fontweight="bold")
         ax.set_xlabel("Month of Year", fontsize=10)
-        ax.set_ylabel("Hour of Day (0–23)", fontsize=10)
+        ax.set_ylabel("Hour of Day (0â€“23)", fontsize=10)
         ax.set_xticks(range(len(pivot.columns)))
         ax.set_xticklabels(pivot.columns)
         ax.set_yticks(range(0, 24, 2))

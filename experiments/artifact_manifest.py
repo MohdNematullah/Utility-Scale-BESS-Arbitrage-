@@ -1,4 +1,4 @@
-"""
+﻿"""
 experiments/artifact_manifest.py
 ================================
 
@@ -7,7 +7,7 @@ Master Publication Artifact Manifest & Checksum Indexer (Part 12.4)
 
 
 Indexes every generated CSV, Excel, JSON, Markdown, LaTeX, PNG, PDF, SVG, TIFF file
-with cryptographic SHA256 checksums, byte sizes, and thesis chapter mappings.
+with cryptographic SHA256 checksums, byte sizes, and chapter mappings.
 """
 
 from __future__ import annotations

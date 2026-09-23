@@ -1,8 +1,8 @@
-"""
+﻿"""
 solver.py
 =========
 
-Research-grade HiGHS solver interface for .
+HiGHS solver interface for .
 
 Solves rolling-horizon battery arbitrage optimization model.
 

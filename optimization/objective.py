@@ -1,9 +1,9 @@
-
+﻿
 """
 objective.py
 ============
 
-Research-grade objective functions for  battery arbitrage optimization.
+objective functions for  battery arbitrage optimization.
 
 This module defines the optimization objective separately from the model
 builder so future experiments can compare:
@@ -29,7 +29,7 @@ def energy_arbitrage_objective(model):
     """
     Maximize arbitrage profit over the optimization horizon.
 
-    Profit = Σ price × (discharge - charge) × Δt
+    Profit = Î£ price Ã— (discharge - charge) Ã— Î”t
 
     Forecast prices are supplied from the recursive forecasting module.
     """

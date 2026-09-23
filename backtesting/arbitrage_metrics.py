@@ -1,8 +1,8 @@
-"""
+﻿"""
 backtesting/arbitrage_metrics.py
 ================================
 
-Research-Grade Battery Arbitrage Metrics & Cycle Economics Module (Part 9.2)
+Battery Arbitrage Metrics & Cycle Economics Module (Part 9.2)
 
 
 
@@ -497,7 +497,7 @@ class ArbitrageMetricsEngine:
 
         ax.set_title("BESS Dispatch Power Duration Curve", fontsize=11, fontweight="bold")
         ax.set_xlabel("Percentage of Simulation Hours (%)", fontsize=10)
-        ax.set_ylabel("Net Power [Discharge (+) / Charge (−)] (MW)", fontsize=10)
+        ax.set_ylabel("Net Power [Discharge (+) / Charge (âˆ’)] (MW)", fontsize=10)
         ax.grid(True, linestyle="--", alpha=0.5)
 
         handles, labels = ax.get_legend_handles_labels()

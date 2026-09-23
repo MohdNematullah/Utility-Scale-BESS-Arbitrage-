@@ -1,7 +1,7 @@
-"""
+﻿"""
 check_trainer.py
 
-Research-grade trainer verification script for .
+trainer verification script for .
 
 Verifies:
 1. Chronological train/validation/test split.

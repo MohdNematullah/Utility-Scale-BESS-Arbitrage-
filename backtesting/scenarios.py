@@ -1,4 +1,4 @@
-"""
+﻿"""
 backtesting/scenarios.py
 ========================
 
@@ -8,7 +8,7 @@ Implements 28 structured research scenarios spanning:
 1. Look-Ahead Forecast Horizons (12h, 24h, 36h, 48h, 72h)
 2. Forecasting Model Configurations (XGBoost, Persistence, Moving Average, Perfect Foresight)
 3. Battery Chemistries (NMC, LFP, LTO)
-4. Thermal Stress & Sensitivity (15°C, 25°C, 35°C, 45°C)
+4. Thermal Stress & Sensitivity (15Â°C, 25Â°C, 35Â°C, 45Â°C)
 5. Power & Energy Sizing / Duration (25MW/50MWh, 50MW/100MWh, 50MW/200MWh, 100MW/200MWh)
 6. AC-AC Round-Trip Efficiencies (85%, 90.25%, 92%, 95%)
 7. Degradation Model Formulations (Full Rainflow, Calendar Only, Linear Throughput, Zero Wear)
@@ -55,7 +55,7 @@ class ScenarioDefinition:
 
     def instantiate_configs(
         self,
-        base_exp_name: str = "thesis_scenarios",
+        base_exp_name: str = "_scenarios",
     ) -> tuple[ExperimentConfig, BatteryDegradationConfig]:
         """Generates ready-to-run configurations for ExperimentRunner."""
         exp_cfg = copy.deepcopy(self.experiment_config)
@@ -167,7 +167,7 @@ _SCENARIOS_LIST: list[ScenarioDefinition] = [
         scenario_id="SCN_HORIZON_48H",
         scenario_name="horizon_48h_baseline",
         category=ScenarioCategory.HORIZON,
-        description="Thesis Baseline: 48-hour rolling forecast look-ahead with 24-hour execution.",
+        description="Baseline: 48-hour rolling forecast look-ahead with 24-hour execution.",
         experiment_config=ExperimentConfig(forecast_horizon_hours=48, implementation_horizon_hours=24, rolling_step_hours=24),
     ),
     ScenarioDefinition(
@@ -249,7 +249,7 @@ _SCENARIOS_LIST: list[ScenarioDefinition] = [
         scenario_id="SCN_TEMP_15C",
         scenario_name="temp_15c_subcooled",
         category=ScenarioCategory.TEMPERATURE,
-        description="Chilled/Subcooled HVAC environment at 15°C (retards calendar SEI growth).",
+        description="Chilled/Subcooled HVAC environment at 15Â°C (retards calendar SEI growth).",
         experiment_config=ExperimentConfig(),
         battery_modifier=_mod_temp(15.0),
     ),
@@ -257,7 +257,7 @@ _SCENARIOS_LIST: list[ScenarioDefinition] = [
         scenario_id="SCN_TEMP_25C",
         scenario_name="temp_25c_reference",
         category=ScenarioCategory.TEMPERATURE,
-        description="Standard reference room temperature at 25°C.",
+        description="Standard reference room temperature at 25Â°C.",
         experiment_config=ExperimentConfig(),
         battery_modifier=_mod_temp(25.0),
     ),
@@ -265,7 +265,7 @@ _SCENARIOS_LIST: list[ScenarioDefinition] = [
         scenario_id="SCN_TEMP_35C",
         scenario_name="temp_35c_elevated",
         category=ScenarioCategory.TEMPERATURE,
-        description="Elevated operational temperature at 35°C (Arrhenius calendar acceleration).",
+        description="Elevated operational temperature at 35Â°C (Arrhenius calendar acceleration).",
         experiment_config=ExperimentConfig(),
         battery_modifier=_mod_temp(35.0),
     ),
@@ -273,7 +273,7 @@ _SCENARIOS_LIST: list[ScenarioDefinition] = [
         scenario_id="SCN_TEMP_45C",
         scenario_name="temp_45c_severe_stress",
         category=ScenarioCategory.TEMPERATURE,
-        description="Severe thermal stress at 45°C (cooling failure / harsh desert climate).",
+        description="Severe thermal stress at 45Â°C (cooling failure / harsh desert climate).",
         experiment_config=ExperimentConfig(),
         battery_modifier=_mod_temp(45.0),
     ),
@@ -420,7 +420,7 @@ def get_scenarios_by_category(category: ScenarioCategory | str) -> list[Scenario
 
 def build_scenario_configs(
     scenario_ids: Sequence[str] | None = None,
-    base_experiment_name: str = "thesis_scenarios",
+    base_experiment_name: str = "_scenarios",
 ) -> list[tuple[ExperimentConfig, BatteryDegradationConfig]]:
     """Builds runnable configuration tuples for ExperimentRunner."""
     target_scenarios = (

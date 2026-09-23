@@ -1,8 +1,8 @@
-"""
+﻿"""
 experiments/final_research_report.py
 ====================================
 
-Final Master Thesis Deliverables & Publication Report Generator (Part 12.7)
+Final Master Deliverables & Publication Report Generator (Part 12.7)
 
 
 
@@ -10,7 +10,7 @@ Builds:
 - results/final_report/research_summary.json
 - results/final_report/research_summary.csv
 - results/final_report/research_summary.xlsx (Institutional Multi-Tab Master Workbook)
-- results/final_report/FINAL_THESIS_REPORT.md (Formatted Thesis Chapter 5 Deliverable)
+- results/final_report/FINAL__REPORT.md (Formatted Chapter 5 Deliverable)
 """
 
 from __future__ import annotations
@@ -29,7 +29,7 @@ class FinalResearchReportBuilder:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-    def build_complete_thesis_package(
+    def build_complete__package(
         self,
         df_scenarios: pd.DataFrame,
         summary_kpis: dict[str, Any],
@@ -63,15 +63,15 @@ class FinalResearchReportBuilder:
             sub_temp = df_scenarios[df_scenarios["category"] == "Operating_Temperature"]
             sub_temp.to_excel(writer, sheet_name="Thermal_Sensitivity", index=False)
 
-        # 4. Final Thesis Chapter Markdown
-        md_path = self.output_dir / "FINAL_THESIS_REPORT.md"
+        # 4. Final Chapter Markdown
+        md_path = self.output_dir / "FINAL__REPORT.md"
         gross = summary_kpis.get("gross_revenue_usd", 4982570.0)
         deg = summary_kpis.get("degradation_cost_usd", 253757.0)
         ebitda = summary_kpis.get("net_operating_profit_usd", 4350206.0)
         soh = summary_kpis.get("final_soh", 0.9820) * 100.0
         sharpe = summary_kpis.get("sharpe_ratio", 3.65)
 
-        md_content = f"""# Master Thesis Research Findings: Utility-Scale BESS Arbitrage
+        md_content = f"""# Master Research Findings: Utility-Scale BESS Arbitrage
 
 ## Executive Summary
 This report compiles empirical findings evaluating a **50 MW / 100 MWh utility-scale Battery Energy Storage System (BESS)** operating in wholesale energy arbitrage under rolling-horizon look-ahead optimization.

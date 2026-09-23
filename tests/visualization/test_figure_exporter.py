@@ -1,15 +1,15 @@
-"""
-tests/visualization/test_thesis_figure_exporter.py
+﻿"""
+tests/visualization/test__figure_exporter.py
 ==================================================
 
-Unit Test Suite for Master Thesis Figure Exporter (Part 10.8 / 10.10).
+Unit Test Suite for Master Figure Exporter (Part 10.8 / 10.10).
 """
 
 import json
 from pathlib import Path
 import pytest
 
-from visualization.thesis_figure_exporter import (
+from visualization._figure_exporter import (
     ThesisExportManifest,
     ThesisFigureExporter,
     ThesisFigureGenerator,
@@ -22,7 +22,7 @@ class TestThesisFigureExporterPipeline:
 
     def test_master_export_pipeline(self, tmp_path):
         exporter = ThesisFigureExporter(
-            output_directory=tmp_path / "thesis_out",
+            output_directory=tmp_path / "_out",
             formats=("png", "pdf", "svg", "tiff"),
             dpi=100,  # Fast execution for CI/CD test
         )
@@ -41,7 +41,7 @@ class TestThesisFigureExporterPipeline:
             assert len(files) == 44, f"Expected 44 .{fmt} files, found {len(files)}"
 
         # Verify Manifest JSON
-        manifest_json_path = Path(manifest.output_directory) / "thesis_figures_manifest.json"
+        manifest_json_path = Path(manifest.output_directory) / "_figures_manifest.json"
         assert manifest_json_path.exists()
         with open(manifest_json_path, "r", encoding="utf-8") as f:
             data = json.load(f)
@@ -54,7 +54,7 @@ class TestThesisFigureExporterPipeline:
         md_text = catalog_md_path.read_text(encoding="utf-8")
         assert "Figure 10.2.1" in md_text
         assert "Figure 10.8.6" in md_text
-        assert "Master Thesis Publication Figure Catalog" in md_text
+        assert "Master Publication Figure Catalog" in md_text
 
     def test_isolated_executive_figure(self, tmp_path):
         exporter = ThesisFigureExporter(output_directory=tmp_path, formats=["png"], dpi=100)

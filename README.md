@@ -1,561 +1,3070 @@
-# Utility-Scale BESS Arbitrage & Electrochemical Degradation Analytics Platform
+# ⚡ Utility-Scale Battery Energy Storage System (BESS) Arbitrage & Electrochemical Degradation Analytics Platform
 
-> 🚀 **Live Interactive Web Portal:** [utility-scale-bess-arbitrage.streamlit.app](https://utility-scale-bess-arbitrage.streamlit.app/)
+<div align="center">
 
-An institutional-grade techno-economic simulation, mathematical programming, and quantitative backtesting framework designed for utility-scale Battery Energy Storage Systems (BESS) operating in wholesale electricity markets.
+### AI-Powered Electricity Price Forecasting • Battery Dispatch Optimization • Battery Aging Analytics • Rolling Horizon Backtesting • Interactive Dashboard
 
-The platform integrates multi-step recursive machine learning price forecasting (XGBoost/LightGBM) with rolling-horizon mixed-integer/linear dispatch optimization (Pyomo) and physical electrochemical degradation accounting based on ASTM E1049-85 Rainflow cycle counting and Arrhenius thermal-stress kinetics.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11%2B-blue?logo=python" alt="Python">
+  <img src="https://img.shields.io/badge/Pyomo-Optimization-green" alt="Pyomo">
+  <img src="https://img.shields.io/badge/Streamlit-Dashboard-red?logo=streamlit" alt="Streamlit">
+  <img src="https://img.shields.io/badge/XGBoost-Forecasting-orange" alt="XGBoost">
+  <img src="https://img.shields.io/badge/LightGBM-Gradient_Boosting-yellowgreen" alt="LightGBM">
+  <img src="https://img.shields.io/badge/Plotly-Interactive_Visualizations-3F4F75?logo=plotly" alt="Plotly">
+  <img src="https://img.shields.io/badge/License-MIT-success" alt="License">
+</p>
 
----
+<div align="center">
 
-## Executive Summary & Research Framework
+**🌐 Live Dashboard**
 
-### Primary Research Problem
+**Streamlit Cloud:** [utility-scale-bess-arbitrage.streamlit.app](https://utility-scale-bess-arbitrage.streamlit.app/)
 
-> **How do realistic multi-step electricity price forecasts and dynamic battery ageing affect rolling-horizon arbitrage value in utility-scale Battery Energy Storage Systems (BESS)?**
-
-Wholesale merchant battery revenue is governed by an inherent trade-off between maximizing energy arbitrage spread capture and mitigating irreversible capacity loss. Classical asset valuation models frequently adopt one of two flawed extremes:
-
-1. **Unrealistic Perfect Foresight:** Assuming zero forecast error over the planning horizon, yielding unachievable theoretical revenue upper bounds.
-2. **Ageing-Blind Linear Dispatch:** Treating cell degradation as a fixed sunk capital expenditure or uniform amortized accounting charge rather than an active marginal opportunity cost ($/MWh throughput).
-
-This platform provides a closed-loop simulation environment that couples non-linear, multi-step price prediction error propagation directly with physical cell fatigue mechanics.
-
-```
-+-------------------------------------------------------------------------------------------------------+
-|                                    CLOSED-LOOP SIMULATION DYNAMICS                                    |
-|                                                                                                       |
-|   [ Wholesale Market Data ] ──► [ Recursive ML Forecaster ]                                           |
-|                                            │                                                          |
-|                                     Price Trajectory                                                  |
-|                                            ▼                                                          |
-|   [ Battery State (SOH, EFC) ] ──► [ Rolling Pyomo Dispatch ] ──► [ Power Setpoints (Pchg, Pdis) ]    |
-|                                            ▲                               │                          |
-|                                            │ Wear Hurdle ($/MWh)           ▼                          |
-|                                 [ Degradation Feedback ] ◄─── [ Physical Cell Stress Engine ]         |
-|                                 (Rainflow + Arrhenius)        (ASTM E1049-85 Cycle + Temp Fade)       |
-+-------------------------------------------------------------------------------------------------------+
-
-```
-
-### Key Empirical Findings (50 MW / 100 MWh Reference Asset, 8,400 Hours)
-
-* **Forecast Horizon Error Accumulation:** As look-ahead horizons expand from 12h to 48h, recursive multi-step forecasting error compounds ($\text{MAE} = \$2.04/\text{MWh}$ at 48h). This error propagation misallocates storage inventory across secondary price peaks, bounding realized value capture at **85.5%** of the theoretical perfect-foresight ceiling while delivering a **+27.3%** margin above persistence baselines.
-* **Marginal Wear Penalization & Pack Preservation:** Introducing an explicit electrochemical wear penalty ($c_{\text{deg}} = \$10.00/\text{MWh}$) in the optimization objective eliminates low-margin churn. Sacrificing $\$137.8\text{k}$ in gross revenue avoids $\$431.4\text{k}$ in physical battery wear, increasing net operating profit by **$+\$293.6\text{k}$** while keeping annual capacity loss at **1.80%** ($\text{SOH} = 98.20\%$, $190.2\text{ EFC}$).
-* **Thermal Compounding:** Elevated operating temperatures (35°C–45°C) increase Arrhenius calendar degradation by up to **2.21×**, requiring active thermal management to prevent premature augmentation.
+</div>
+</div>
 
 ---
 
-## Mathematical Formulations
+## Overview
 
-### 1. Rolling-Horizon Dispatch Optimization (Pyomo LP/MILP)
+This project is a complete analytics and optimization platform for **utility-scale Battery Energy Storage Systems (BESS)** participating in wholesale electricity markets.
 
-At each rolling decision epoch $k$, the optimization agent solves an open-loop scheduling problem over look-ahead horizon $H \in \{12, 24, 36, 48, 72\}$ hours discretized at $\Delta t = 1.0\text{ h}$, with execution step $S \le H$.
+The platform combines machine learning, mathematical optimization, battery degradation modelling, financial analytics, and interactive visualization into a single workflow that evaluates battery trading strategies under realistic operating conditions.
 
-#### Objective Function
+Instead of assuming perfect future electricity prices, the platform forecasts prices over multiple time horizons and continuously re-optimizes battery charging and discharging decisions while accounting for battery health degradation, operating costs, and market uncertainty.
 
-Maximize net operational profit across the horizon window:
+It is designed as an end-to-end workflow that covers the complete lifecycle of a battery arbitrage simulation:
 
-$$\max_{\mathbf{P}^{\text{dis}}, \mathbf{P}^{\text{chg}}} \mathcal{J} = \sum_{t=1}^{H} \left[ \hat{\lambda}_t \cdot \left( P_t^{\text{dis}} - P_t^{\text{chg}} \right) - c_{\text{deg}} \cdot P_t^{\text{dis}} - c_{\text{vOM}} \cdot \left( P_t^{\text{dis}} + P_t^{\text{chg}} \right) \right] \Delta t$$
-
-Where:
-
-* $\hat{\lambda}_t$: Forecasted wholesale settlement price at interval $t$ ($/MWh).
-* $P_t^{\text{dis}}, P_t^{\text{chg}}$: Continuous discharge and charge power dispatched at interval $t$ (MW).
-* $c_{\text{deg}}$: Marginal cell degradation wear penalty ($/MWh).
-* $c_{\text{vOM}}$: Variable Operations & Maintenance cost ($/MWh throughput).
-* $\Delta t$: Interval time step ($\Delta t = 1.0\text{ hour}$).
-
-#### System Constraints
-
-**State of Energy (SOE) Storage Dynamics:**
-
-
-$$E_t = E_{t-1} + \left( \eta_{\text{chg}} \cdot P_t^{\text{chg}} - \frac{1}{\eta_{\text{dis}}} \cdot P_t^{\text{dis}} \right) \Delta t, \quad \forall t \in \{1, \dots, H\}$$
-
-$$\text{SOC}_t = \frac{E_t}{E_{\text{nom}} \cdot \text{SOH}_k}$$
-
-$$\text{SOC}_{\min} \le \text{SOC}_t \le \text{SOC}_{\max}, \quad \forall t \in \{1, \dots, H\}$$
-
-Where:
-
-* $E_{\text{nom}}$: Nameplate energy storage capacity (MWh).
-* $\text{SOH}_k$: Battery State of Health at rolling epoch $k \in (0, 1]$.
-* $\eta_{\text{chg}}, \eta_{\text{dis}}$: One-way charge and discharge conversion efficiencies, satisfying $\eta_{\text{RTE}} = \eta_{\text{chg}} \cdot \eta_{\text{dis}}$.
-
-**Interconnection & Inverter Bounds:**
-
-
-$$0 \le P_t^{\text{chg}} \le P_{\max} \cdot u_t^{\text{chg}}, \quad \forall t \in \{1, \dots, H\}$$
-
-$$0 \le P_t^{\text{dis}} \le P_{\max} \cdot u_t^{\text{dis}}, \quad \forall t \in \{1, \dots, H\}$$
-
-$$u_t^{\text{chg}} + u_t^{\text{dis}} \le 1, \quad u_t^{\text{chg}}, u_t^{\text{dis}} \in \{0, 1\}$$
-
-*(Note: For convex linear relaxations where prices $\hat{\lambda}_t > 0$ and round-trip efficiency $\eta_{\text{RTE}} < 1$, binary complementarity variables $u_t$ can be relaxed to continuous $[0, 1]$ bounds without risk of simultaneous charging and discharging).*
-
-**Terminal Horizon Boundary Condition:**
-
-
-$$E_H = \text{SOC}_{\text{target}} \cdot E_{\text{nom}} \cdot \text{SOH}_k$$
-
-This terminal condition prevents the optimizer from artificially depleting the storage inventory at the end of every look-ahead horizon.
+- Electricity market data processing
+- Feature engineering
+- Multi-step price forecasting
+- Rolling horizon dispatch optimization
+- Battery degradation estimation
+- Closed-loop chronological backtesting
+- Financial performance evaluation
+- Risk analytics
+- Multi-scenario comparison
+- Interactive dashboard visualization
 
 ---
 
-### 2. Physical Battery Ageing Engine
+# Table of Contents
 
-Cell health is tracked via total capacity fade ($1.0 - \text{SOH}$), split into mechanical cycle fatigue and chemical calendar loss:
+- [Overview](#overview)
+- [Project Highlights](#project-highlights)
+- [Problem Statement](#problem-statement)
+- [Solution Overview](#solution-overview)
+- [Key Features](#key-features)
+- [Platform Architecture](#platform-architecture)
+- [Core Modules](#core-modules)
+- [Project Workflow](#project-workflow)
+- [Dashboard Overview](#dashboard-overview)
 
-$$\text{SOH}_k = 1.0 - \left( D_{\text{cycle}, k} + D_{\text{cal}, k} \right)$$
-
-#### Cycle Fatigue (ASTM E1049-85 Rainflow Counting)
-
-The continuous State of Charge trajectory $\mathbf{SOC} = \{\text{SOC}_1, \dots, \text{SOC}_N\}$ is filtered for local turning points (peaks and valleys). The ASTM E1049-85 Rainflow Counting algorithm processes this sequence to extract discrete stress events characterized by range $\Delta \text{SOC}_i$ and cycle mean $\overline{\text{SOC}}_i$:
-
-```
-SOC(t)
- ^       Peak 1
- |        /\
- |       /  \    Peak 2
- |  /\  /    \    /\
- | /  \/      \  /  \
- |/  Valley 1  \/    \
- +-------------------------> Time
-
-```
-
-Allowable cycles to failure $N_f$ for a cycle with depth of discharge $\text{DoD}_i = \Delta \text{SOC}_i$ follows a power-law fatigue curve adjusted for mean stress:
-
-$$N_f(\text{DoD}_i) = \alpha \cdot (\text{DoD}_i)^{-\beta} \cdot \exp\left( \gamma \cdot (1 - \overline{\text{SOC}}_i) \right)$$
-
-Using Miner's Rule of Linear Damage Accumulation across all $M$ identified cycles:
-
-$$D_{\text{cycle}} = \sum_{i=1}^{M} \frac{n_i}{N_f(\text{DoD}_i)}$$
-
-Where $n_i = 1.0$ for full closed cycles and $n_i = 0.5$ for unclosed half-cycles.
-
-#### Calendar Aging (Arrhenius Kinetics)
-
-Calendar degradation accumulates continuously based on cell temperature and resting state:
-
-$$D_{\text{cal}}(t) = k_{\text{cal}} \cdot \exp\left( - \frac{E_a}{R \cdot T_{\text{cell}}} \right) \cdot \exp\left( k_{\text{soc}} \cdot \overline{\text{SOC}} \right) \cdot t^z$$
-
-Where:
-
-* $E_a$: Activation energy of solid-electrolyte interphase (SEI) passivation ($J/\text{mol}$).
-* $R$: Universal gas constant ($8.314\text{ J}/(\text{mol}\cdot\text{K})$).
-* $T_{\text{cell}}$: Core cell temperature ($K$).
-* $z$: Time exponent reflecting diffusion-limited film growth ($z \approx 0.5$).
-
-#### Equivalent Full Cycles (EFC)
-
-Normalized throughput is tracked as:
-
-$$\text{EFC} = \frac{\sum_{t=1}^T \left( P_t^{\text{chg}} \cdot \eta_{\text{chg}} + P_t^{\text{dis}} \right) \Delta t}{2 \cdot E_{\text{nom}}}$$
-
-#### Financial Cost of Degradation
-
-The capital cost of capacity loss over any operational duration is:
-
-$$C_{\text{deg}} = \Delta \text{SOH} \cdot \text{CAPEX}_{\text{repl}} \cdot E_{\text{nom}}$$
-
-Where $\text{CAPEX}_{\text{repl}} = \$130.00/\text{kWh}$ represents the anticipated pack-level module replacement cost.
+> Installation, experiments, results, mathematical models, testing, roadmap, and contributing are included in Parts 2–4.
 
 ---
 
-### 3. Forecast Realism & Value Capture Ratio (VCR)
+# Project Highlights
 
-Recursive multi-step forecasts predict price trajectories step-by-step:
+| Feature | Description |
+|---------|-------------|
+| **Electricity Price Forecasting** | Multi-step recursive forecasting using XGBoost and LightGBM across multiple forecast horizons. |
+| **Rolling Horizon Optimization** | Battery dispatch optimization using Pyomo linear programming and mixed-integer programming. |
+| **Battery Aging Analytics** | Cycle degradation using ASTM Rainflow Counting and calendar degradation using Arrhenius kinetics. |
+| **Chronological Backtesting** | Closed-loop simulation that updates battery health after every execution window. |
+| **Financial Analytics** | Revenue, EBITDA, degradation cost, throughput cost, ROI metrics, and operating margins. |
+| **Risk Analytics** | Daily P&L distribution, Value-at-Risk (VaR), Conditional Value-at-Risk (CVaR), and Sharpe Ratio. |
+| **Scenario Engine** | 28 configurable operating scenarios across chemistry, efficiency, sizing, temperature, forecasting, and degradation assumptions. |
+| **Interactive Dashboard** | Multipage Streamlit dashboard with interactive analytics, KPIs, charts, and experiment explorer. |
+| **Publication Graphics** | Automatic generation of high-resolution figures and downloadable outputs. |
+| **Export Pipeline** | CSV, Excel, JSON, PNG, PDF, and experiment summaries. |
 
-$$\hat{\lambda}_{t+h\vert{}t} = f_\theta\left( \hat{\lambda}_{t+h-1\vert{}t}, \dots, \lambda_t, \mathbf{X}_{t+h} \right), \quad \forall h \in \{1, \dots, H\}$$
+---
 
-#### Error Formulations
+# Problem Statement
 
-$$\text{MAE} = \frac{1}{N} \sum_{i=1}^N \left\vert{} \hat{\lambda}_i - \lambda_i \right\vert{}, \quad \text{RMSE} = \sqrt{\frac{1}{N} \sum_{i=1}^N (\hat{\lambda}_i - \lambda_i)^2}$$
+Battery Energy Storage Systems generate revenue by buying electricity when prices are low and selling electricity when prices are high.
 
-$$\text{Directional Accuracy (DA)} = \frac{1}{N-1} \sum_{i=2}^N \mathbb{I}\left[ \text{sgn}(\hat{\lambda}_i - \lambda_{i-1}) = \text{sgn}(\lambda_i - \lambda_{i-1}) \right] \times 100\%$$
+In real-world electricity markets, this decision is complicated by several operational challenges:
 
-#### Value Capture Ratio (VCR)
+- Future electricity prices are uncertain.
+- Forecast errors increase as prediction horizons become longer.
+- Charging and discharging accelerate battery degradation.
+- Battery degradation has an economic cost.
+- Battery health changes future operating capability.
+- Market volatility affects financial risk and profitability.
 
-To decouple forecast quality from battery physical sizing, the Value Capture Ratio ($\text{VCR}$) standardizes realized market performance against a theoretical perfect-foresight upper bound:
+Most simplified arbitrage models ignore one or more of these constraints by assuming:
 
-$$\text{VCR} = \frac{\Pi_{\text{realized}}\left( \mathbf{P}^*(\hat{\lambda}) \mid \lambda \right)}{\Pi_{\text{theoretical}}\left( \mathbf{P}^*(\lambda) \mid \lambda \right)} \times 100\%$$
+- Perfect knowledge of future prices.
+- Infinite battery lifetime.
+- Constant battery capacity.
+- Fixed degradation cost.
+- Static optimization without feedback from battery aging.
 
-Where:
+This platform models these operational factors together within one continuous simulation workflow.
 
-* $\mathbf{P}^*(\hat{\lambda})$: Optimal power dispatch schedule vector derived using forecasted price trajectory $\hat{\lambda}$.
-* $\mathbf{P}^*(\lambda)$: Optimal power dispatch schedule vector derived under perfect foresight of actual price trajectory $\lambda$.
-* $\Pi(\mathbf{P} \mid \lambda)$: Realized net arbitrage profit when dispatch schedule $\mathbf{P}$ is settled against actual spot market prices $\lambda$.
+---
+
+## Solution Overview
+
+The platform solves the complete battery arbitrage workflow through four interconnected systems.
+
+## 1. Forecast Electricity Prices
+
+Machine learning models predict future wholesale electricity prices across configurable forecasting horizons.
+
+**Supported forecasting horizons**
+
+- 12 Hours
+- 24 Hours
+- 36 Hours
+- 48 Hours
+- 72 Hours
+
+The forecasting module supports recursive prediction where previous predicted values become inputs for future predictions.
+
+---
+
+## 2. Optimize Battery Dispatch
+
+Using forecasted prices, the optimizer determines:
+
+- When to charge.
+- When to discharge.
+- How much energy to store.
+- State of Charge trajectory.
+- Power limits.
+- Round-trip efficiency losses.
+- End-of-horizon battery constraints.
+
+The optimization is solved using Pyomo with configurable linear or mixed-integer formulations.
+
+---
+
+## 3. Update Battery Health
+
+Every dispatch schedule produces physical battery wear.
+
+Battery degradation is estimated using:
+
+- Rainflow cycle counting for cycling degradation.
+- Arrhenius temperature model for calendar degradation.
+- Equivalent Full Cycles (EFC).
+- State of Health (SOH).
+- Economic degradation cost.
+
+The updated SOH becomes an input for the next optimization cycle.
+
+---
+
+## 4. Evaluate Financial Performance
+
+The simulation produces operational and financial metrics including:
+
+- Gross Arbitrage Revenue
+- Battery Wear Cost
+- Fixed O&M
+- Variable O&M
+- Net Operating Profit
+- EBITDA Margin
+- Value Capture Ratio
+- Forecast Error Metrics
+- Risk Metrics
+
+---
+
+## Key Features
+
+## Electricity Market Analytics
+
+- Historical wholesale electricity price analysis.
+- Hourly, daily, weekly, and seasonal market trends.
+- Price volatility diagnostics.
+- Negative price detection.
+- Peak/off-peak spread analysis.
+- Price distribution statistics.
+
+---
+
+## Machine Learning Forecasting
+
+- Recursive multi-step forecasting.
+- XGBoost forecasting pipeline.
+- LightGBM forecasting pipeline.
+- Forecast horizon comparison.
+- Forecast error diagnostics.
+- MAE, RMSE, and Directional Accuracy metrics.
+
+---
+
+## Battery Dispatch Optimization
+
+- Rolling horizon optimization.
+- Configurable look-ahead window.
+- Configurable execution window.
+- SOC constraints.
+- SOE dynamics.
+- Charging/discharging efficiency.
+- Non-simultaneous charging and discharging.
+- Wear penalty optimization.
+
+---
+
+## Battery Aging Engine
+
+- ASTM E1049 Rainflow Counting.
+- Cycle depth extraction.
+- Cycle histogram generation.
+- Arrhenius calendar degradation.
+- Temperature sensitivity analysis.
+- State of Health tracking.
+- Equivalent Full Cycles calculation.
+
+---
+
+## Financial Analytics
+
+- Revenue waterfall.
+- EBITDA calculation.
+- Unit economics.
+- Operating margin.
+- Throughput cost.
+- Replacement cost estimation.
+- Annual degradation cost.
+- Asset utilization metrics.
+
+---
+
+## Risk Analytics
+
+- Daily profit distribution.
+- Historical VaR.
+- Parametric VaR.
+- Conditional VaR.
+- Maximum Drawdown.
+- Rolling Sharpe Ratio.
+- Profit stability metrics.
+
+---
+
+## Multi-Scenario Simulation
+
+Evaluate the battery under different operating assumptions including:
+
+- Battery chemistry.
+- Forecast horizon.
+- Battery temperature.
+- Wear penalty.
+- Battery sizing.
+- Round-trip efficiency.
+- Forecasting model.
+- Degradation assumptions.
+
+---
+
+## Interactive Dashboard
+
+Interactive dashboard pages include:
+
+1. Executive Overview
+2. Market Explorer
+3. Feature Engineering
+4. Price Forecasting
+5. Dispatch Optimization
+6. Battery Aging
+7. Rolling Backtesting
+8. Financial Analytics
+9. Risk Analytics
+10. Scenario Comparison
+11. Publication Figures
+12. Experiment Runner
+
+---
+
+## Platform Architecture
+
+The platform follows a modular pipeline where each stage feeds the next stage through structured outputs.
+
+## High-Level Architecture
+
+```mermaid
+flowchart LR
+
+A[Wholesale Electricity Market Data]
+
+B[Data Cleaning & Validation]
+
+C[Feature Engineering]
+
+D[Recursive ML Forecasting]
+
+E[Rolling Horizon Optimization]
+
+F[Battery Dispatch Schedule]
+
+G[Battery Aging Engine]
+
+H[SOH & EFC Update]
+
+I[Financial Analytics]
+
+J[Risk Analytics]
+
+K[Interactive Dashboard]
+
+A --> B
+B --> C
+C --> D
+D --> E
+E --> F
+F --> G
+G --> H
+H --> E
+
+F --> I
+H --> I
+I --> J
+J --> K
+I --> K
+D --> K
+```
+
+### Architecture Summary
+
+| Layer | Purpose |
+|-------|----------|
+| **Data Layer** | Reads, validates, cleans, and prepares electricity market data. |
+| **Forecast Layer** | Generates multi-step electricity price forecasts using machine learning models. |
+| **Optimization Layer** | Produces optimal charging/discharging schedules under operational constraints. |
+| **Battery Layer** | Calculates battery degradation, SOH, and Equivalent Full Cycles. |
+| **Analytics Layer** | Computes revenue, degradation cost, profitability, and risk metrics. |
+| **Visualization Layer** | Displays KPIs, charts, comparisons, and downloadable experiment results. |
+
+---
+
+# Core Modules
+
+The repository is organized into independent analytical modules that communicate through structured outputs.
+
+| Module | Responsibility |
+|--------|----------------|
+| **forecasting/** | Electricity price forecasting models and prediction pipeline. |
+| **optimization/** | Pyomo dispatch optimization models. |
+| **battery/** | Battery degradation models, chemistry specifications, SOH tracking, and cycle counting. |
+| **backtesting/** | Chronological rolling simulation engine. |
+| **analytics/** | Financial KPIs, risk metrics, and operating economics. |
+| **visualization/** | Charts, publication figures, dashboards, and exports. |
+| **experiments/** | Scenario definitions and experiment execution engine. |
+| **pages/** | Streamlit dashboard pages. |
+| **streamlit_utils/** | Shared dashboard utilities and reusable components. |
+| **results/** | Generated KPIs, figures, reports, and experiment outputs. |
+
+---
+
+## Project Workflow
+
+The complete simulation pipeline consists of **12 sequential stages**.
+
+```mermaid
+flowchart TD
+
+S1[Stage 1<br>Data Ingestion]
+
+S2[Stage 2<br>Market Analytics]
+
+S3[Stage 3<br>Feature Engineering]
+
+S4[Stage 4<br>Price Forecasting]
+
+S5[Stage 5<br>Dispatch Optimization]
+
+S6[Stage 6<br>Battery Aging]
+
+S7[Stage 7<br>Rolling Backtesting]
+
+S8[Stage 8<br>Financial Analytics]
+
+S9[Stage 9<br>Risk Analytics]
+
+S10[Stage 10<br>Scenario Comparison]
+
+S11[Stage 11<br>Visualization]
+
+S12[Stage 12<br>Report & Export]
+
+S1 --> S2
+S2 --> S3
+S3 --> S4
+S4 --> S5
+S5 --> S6
+S6 --> S7
+S7 --> S8
+S8 --> S9
+S9 --> S10
+S10 --> S11
+S11 --> S12
+```
+
+---
+
+## Stage-by-Stage Workflow
+
+### Stage 1 — Data Ingestion
+
+Input electricity market datasets are validated and standardized before simulation.
+
+Tasks include:
+
+- Timestamp parsing.
+- Missing value handling.
+- Duplicate removal.
+- Hourly alignment.
+- Time-series consistency checks.
+
+**Output**
+
+Clean hourly electricity price dataset.
+
+---
+
+### Stage 2 — Market Analytics
+
+Exploratory analytics identify important market characteristics.
+
+Includes:
+
+- Distribution analysis.
+- Daily and weekly trends.
+- Hourly heatmaps.
+- Volatility analysis.
+- Seasonal patterns.
+- Peak spread analysis.
+
+**Output**
+
+Market diagnostic statistics and visualizations.
+
+---
+
+### Stage 3 — Feature Engineering
+
+Transforms raw electricity prices into forecasting features.
+
+Generated features include:
+
+- Lag variables.
+- Rolling averages.
+- Rolling minimum/maximum.
+- Rolling standard deviation.
+- Calendar features.
+- Fourier cyclic features.
+
+**Output**
+
+Machine-learning-ready feature matrix.
+
+---
+
+### Stage 4 — Price Forecasting
+
+Generates recursive electricity price forecasts.
+
+Models supported:
+
+- XGBoost
+- LightGBM
+
+Forecast diagnostics include:
+
+- MAE
+- RMSE
+- MAPE
+- Directional Accuracy
+
+**Output**
+
+Forecasted price trajectory.
+
+---
+
+### Stage 5 — Dispatch Optimization
+
+Forecasted prices become optimization inputs.
+
+The optimizer determines:
+
+- Charging schedule.
+- Discharging schedule.
+- State of Energy.
+- State of Charge.
+- Energy throughput.
+
+**Output**
+
+Optimal dispatch schedule.
+
+---
+
+### Stage 6 — Battery Aging
+
+Dispatch schedules are converted into battery stress events.
+
+Calculates:
+
+- Cycle degradation.
+- Calendar degradation.
+- SOH.
+- EFC.
+- Wear cost.
+
+**Output**
+
+Updated battery health state.
+
+---
+
+### Stage 7 — Rolling Backtesting
+
+Runs chronological simulation across the complete operating horizon.
+
+Each execution window performs:
+
+1. Forecast.
+2. Optimize.
+3. Execute.
+4. Update battery health.
+5. Repeat.
+
+**Output**
+
+Chronological operational history.
+
+---
+
+### Stage 8 — Financial Analytics
+
+Calculates operational economics.
+
+Outputs include:
+
+- Revenue.
+- EBITDA.
+- Cost breakdown.
+- Battery wear cost.
+- Throughput economics.
+
+---
+
+### Stage 9 — Risk Analytics
+
+Evaluates downside financial risk.
+
+Metrics include:
+
+- Daily P&L.
+- Historical VaR.
+- Parametric VaR.
+- CVaR.
+- Rolling Sharpe Ratio.
+
+---
+
+### Stage 10 — Scenario Comparison
+
+Runs predefined experimental scenarios.
+
+Compares:
+
+- Profitability.
+- Battery health.
+- Forecast quality.
+- Risk.
+- Operating efficiency.
+
+---
+
+### Stage 11 — Visualization
+
+Generates publication-quality figures and dashboard visualizations.
+
+Outputs include:
+
+- PNG
+- PDF
+- Plotly charts
+- Interactive dashboard figures
+
+---
+
+### Stage 12 — Report & Export
+
+Exports complete experiment outputs.
+
+Supported formats:
+
+- CSV
+- Excel
+- JSON
+- PNG
+- PDF
+- Markdown summaries
+
+---
+
+# Dashboard Overview
+
+The project includes a multi-page interactive Streamlit application that allows users to explore forecasts, optimization results, degradation analytics, financial metrics, and experiment comparisons from a single interface.
+
+## Dashboard Pages
+
+| Page | Description |
+|------|-------------|
+| **Executive Overview** | Overall KPIs, revenue summary, battery health, and operating statistics. |
+| **Market Explorer** | Electricity price trends, volatility, seasonal behavior, and spread analysis. |
+| **Feature Engineering** | Lag features, rolling statistics, cyclical features, and feature importance. |
+| **Price Forecasting** | Forecast vs actual prices, error metrics, and horizon comparison. |
+| **Dispatch Optimization** | Charging/discharging schedules, SOC trajectory, SOE trajectory, and dispatch timeline. |
+| **Battery Aging** | Rainflow cycle histogram, SOH evolution, degradation breakdown, and EFC analysis. |
+| **Rolling Backtesting** | Chronological simulation timeline and cumulative profit tracking. |
+| **Financial Analytics** | Revenue waterfall, EBITDA, operating costs, throughput cost, and profitability metrics. |
+| **Risk Analytics** | Daily profit distribution, VaR, CVaR, Sharpe Ratio, and drawdown analysis. |
+| **Scenario Comparison** | Compare all predefined operating scenarios with interactive filters. |
+| **Publication Figures** | Browse and export generated figures in high resolution. |
+| **Experiment Runner** | Execute scenario sweeps and generate downloadable outputs. |
+
+---
+
+## Dashboard Capabilities
+
+The Streamlit dashboard provides:
+
+- Interactive KPIs.
+- Dynamic filtering.
+- Scenario comparison.
+- Downloadable reports.
+- Interactive Plotly visualizations.
+- Experiment explorer.
+- Battery health explorer.
+- Forecast diagnostics.
+- Risk analytics explorer.
+- Financial waterfall visualization.
+
+---
+
+## Dashboard Outputs
+
+The dashboard automatically loads generated outputs from the simulation pipeline and presents them as interactive analytics.
+
+| Category | Outputs |
+|----------|---------|
+| Forecasting | Predictions, forecast errors, horizon comparison. |
+| Optimization | Dispatch schedule, SOC trajectory, SOE trajectory. |
+| Battery Health | SOH history, EFC, degradation breakdown. |
+| Finance | Revenue, EBITDA, degradation cost, operating costs. |
+| Risk | VaR, CVaR, Sharpe Ratio, drawdown. |
+| Experiments | Scenario comparison tables, Pareto visualization, sensitivity analysis. |
 
 ---
 
 ---
 
-### 4. Financial Risk & Multi-Criteria Pareto Dominance
+# Baseline Results
 
-#### Financial Risk Profiling
+The platform evaluates battery performance over a complete operating horizon using configurable forecasting, optimization, degradation, and financial parameters.
 
-Daily net earnings series $R_d$ ($d = 1, \dots, 350$) determines downside risk:
+The reference configuration uses:
 
-$$\text{VaR}_\alpha = - \inf \left\{ r \in \mathbb{R} : F_R(r) \ge 1 - \alpha \right\}$$
-
-$$\text{CVaR}_\alpha = - \mathbb{E}\left[ R \mid R \le -\text{VaR}_\alpha \right]$$
-
-$$\text{Annualized Sharpe Ratio} = \frac{\overline{R}_d - (r_f / 350)}{\sigma_d} \cdot \sqrt{350}$$
-
-Where risk-free rate $r_f = 4.0\%$.
-
-#### Pareto Dominance Engine
-
-A scenario $A$ dominates scenario $B$ ($A \succ B$) if:
-
-$$\left( \text{SOH}_A \ge \text{SOH}_B \land \text{EBITDA}_A \ge \text{EBITDA}_B \right) \land \left( \text{SOH}_A > \text{SOH}_B \lor \text{EBITDA}_A > \text{EBITDA}_B \right)$$
-
-Scenarios without dominators form the non-dominated **Pareto Optimal Frontier**.
-
-#### Composite Performance Ranking
-
-Scenarios are ranked using a multi-criteria index:
-
-$$S_i = w_R \cdot \tilde{\Pi}_i + w_{\text{SOH}} \cdot \widetilde{\text{SOH}}_i + w_{\mathcal{S}} \cdot \tilde{\mathcal{S}}_i$$
-
-Normalized via min-max scaling $\tilde{x} = \frac{x - x_{\min}}{x_{\max} - x_{\min}}$, with default weights $w_R = 0.45$ (EBITDA), $w_{\text{SOH}} = 0.35$ (Health), and $w_{\mathcal{S}} = 0.20$ (Sharpe).
+| Parameter | Value |
+|-----------|-------|
+| Battery Capacity | **100 MWh** |
+| Power Rating | **50 MW** |
+| Battery Chemistry | **NMC** |
+| Forecast Horizon | **48 Hours** |
+| Execution Step | **24 Hours** |
+| Operating Temperature | **25°C** |
+| Wear Penalty | **$10/MWh** |
+| Simulation Duration | **8,400 Hours (350 Days)** |
 
 ---
 
-## The 12-Stage Analytical Architecture
+## Performance Summary
 
-```
-Stage 01: Data Ingestion & Sanitization
-  ├── 8,400 consecutive hours (50 full weeks; balances weekday/weekend cyclicality)
-  └── Truncates warm-up lags (168h) and boundary buffers (192h) to prevent look-ahead bias
-
-Stage 02: Exploratory Market Analytics
-  ├── Price distribution diagnostics, skewness, kurtosis, and negative price settlement checks
-  └── Sparkline volatility clustering and daily spread distribution profiles
-
-Stage 03: Feature Engineering
-  ├── Autoregressive lags: t-1, t-2, t-24, t-48, t-168
-  ├── Rolling summary statistics: 6h, 12h, 24h, 168h rolling mean, std, min, max
-  └── Fourier calendar harmonics: sin/cos daily (24h) and annual (8,760h) periodicities
-
-Stage 04: Multi-Step Recursive Price Forecasting
-  ├── Recursive gradient boosted trees (XGBoost / LightGBM)
-  ├── Compounding look-ahead validation across 12h, 24h, 36h, 48h, and 72h horizons
-  └── Baselines: Persistence, Day-Ahead Mean, and Perfect Foresight benchmarks
-
-Stage 05: Rolling-Horizon Pyomo Dispatch Optimization
-  ├── Formulates linear/mixed-integer programming models with solver interfaces (GLPK, HiGHS)
-  ├── Enforces non-simultaneous power flow, round-trip losses, and SOC boundary targets
-  └── Evaluates variable degradation wear penalties ($0/MWh to $35/MWh)
-
-Stage 06: Semi-Empirical Electrochemical Ageing Engine
-  ├── ASTM E1049-85 Rainflow cycle counting on operational SOC trajectories
-  ├── Miner's rule stress aggregation and Arrhenius calendar fade kinetics
-  └── Chemistry configurations: NMC, LFP, and LTO
-
-Stage 07: Closed-Loop Rolling Backtesting
-  ├── Step-by-step chronological rolling simulation loop (e.g., 48h horizon, 24h execution step)
-  └── Dynamic health updates passed between successive rolling execution windows
-
-Stage 08: Techno-Economic & Asset Valuation
-  ├── Income waterfall: Gross Revenue, Battery Wear, Fixed O&M, Variable O&M, Net EBITDA
-  └── Unit economics: $/kW-year installed, $/MWh cycled, and internal rate of return (IRR)
-
-Stage 09: Downside Risk & Tail Analytics
-  ├── Daily P&L distributions, 95% Parametric & Historical Value-at-Risk (VaR)
-  └── Conditional Value-at-Risk (CVaR), maximum drawdown (MDD), and rolling Sharpe ratios
-
-Stage 10: Multi-Scenario Sensitivity & Pareto Optimization
-  ├── 28 predefined experimental scenarios across 7 operational dimensions
-  └── Automated Pareto frontier identification and sensitivity tornado decomposition
-
-Stage 11: Publication Graphics Suite
-  └── 44 IEEE-formatted high-DPI figures exported to vector (PDF) and raster (PNG)
-
-Stage 12: Automated Reporting & Telemetry Synchronization
-  ├── Structured JSON/CSV telemetry exports for web consumption
-  └── Automated LaTeX/Markdown academic summary report compilation
-
-```
+| Metric | Value |
+|--------|-------|
+| Gross Arbitrage Revenue | **$4,982,570** |
+| Battery Wear Cost | **$253,757** |
+| Fixed O&M Cost | **$359,589** |
+| Variable O&M Cost | **$19,018** |
+| Net Operating Profit | **$4,350,206** |
+| EBITDA Margin | **87.31%** |
+| Final Battery State of Health | **98.20%** |
+| Capacity Fade | **1.80%** |
+| Equivalent Full Cycles | **190.18 EFC** |
+| Forecast MAE | **$2.04/MWh** |
+| Value Capture Ratio | **85.5%** |
+| Annualized Sharpe Ratio | **3.65** |
+| Daily 95% Value-at-Risk | **-$1,482/day** |
+| Daily 95% Conditional VaR | **-$2,104/day** |
 
 ---
 
-## 28 Predefined Research Scenarios (Test Matrix)
+## Key Performance Indicators
 
-The platform evaluates system sensitivities across 7 key dimensions:
+### Battery Performance
 
-| Category | Scenario ID | Configuration Name | Horizon ($H$) | Temp ($T_c$) | Wear Hurdle | Chemistry |
-| --- | --- | --- | --- | --- | --- | --- |
-| **Chemistry** | `chem_nmc_baseline` | 50MW / 100MWh Reference Asset | 48h | 25°C | $10.00/MWh | NMC |
-|  | `chem_lfp_stationary` | LFP Stationary High-Cycle Pack | 48h | 25°C | $10.00/MWh | LFP |
-|  | `chem_lto_high_cycle` | LTO Extreme Endurance | 48h | 25°C | $10.00/MWh | LTO |
-| **Look-Ahead** | `horizon_12h` | Short Look-Ahead Intraday | 12h | 25°C | $10.00/MWh | NMC |
-|  | `horizon_24h` | Day-Ahead Standard | 24h | 25°C | $10.00/MWh | NMC |
-|  | `horizon_36h` | Multi-Day Extended | 36h | 25°C | $10.00/MWh | NMC |
-|  | `horizon_48h` | Two-Day Base Reference | 48h | 25°C | $10.00/MWh | NMC |
-|  | `horizon_72h` | Long-Range 3-Day Window | 72h | 25°C | $10.00/MWh | NMC |
-| **Thermal** | `thermal_mild_15c` | Liquid Chilled HVAC | 48h | 15°C | $10.00/MWh | NMC |
-|  | `thermal_reference_25c` | Standard Ambient Controlled | 48h | 25°C | $10.00/MWh | NMC |
-|  | `thermal_elevated_35c` | Sub-Tropical Ambient Stress | 48h | 35°C | $10.00/MWh | NMC |
-|  | `thermal_extreme_45c` | Arid Desert Ambient Heat | 48h | 45°C | $10.00/MWh | NMC |
-| **Wear Hurdle** | `deg_cost_zero` | Unconstrained Ageing-Blind | 48h | 25°C | $0.00/MWh | NMC |
-|  | `deg_cost_low_5` | Low Opportunity Hurdle | 48h | 25°C | $5.00/MWh | NMC |
-|  | `deg_cost_nominal_10` | Baseline Wear Hurdle | 48h | 25°C | $10.00/MWh | NMC |
-|  | `deg_cost_high_20` | Conservative Cell Protection | 48h | 25°C | $20.00/MWh | NMC |
-|  | `deg_cost_ultra_35` | Ultra-Preservation Mode | 48h | 25°C | $35.00/MWh | NMC |
-| **Sizing** | `size_25mw_100mwh` | 4-Hour Long Duration (C/4) | 48h | 25°C | $10.00/MWh | NMC |
-|  | `size_50mw_100mwh` | 2-Hour Standard Peaker (C/2) | 48h | 25°C | $10.00/MWh | NMC |
-|  | `size_100mw_100mwh` | 1-Hour Fast Response (1C) | 48h | 25°C | $10.00/MWh | NMC |
-| **Efficiency** | `eff_low_85` | Legacy Sub-Optimal Plant | 48h | 25°C | $10.00/MWh | NMC |
-|  | `eff_base_90` | Nominal Modern System | 48h | 25°C | $10.00/MWh | NMC |
-|  | `eff_high_95` | Advanced SiC Power Train | 48h | 25°C | $10.00/MWh | NMC |
-| **Model** | `fc_persistence` | Naive Persistence Baseline | 48h | 25°C | $10.00/MWh | NMC |
-|  | `fc_recursive_ml` | Dynamic Recursive XGBoost | 48h | 25°C | $10.00/MWh | NMC |
-|  | `fc_perfect_foresight` | Theoretical Perfect Upper Bound | 48h | 25°C | $10.00/MWh | NMC |
-| **Degradation** | `aging_none` | Infinite-Life Model | 48h | 25°C | $0.00/MWh | NMC |
-|  | `aging_calendar_only` | Passive Calendar Aging Only | 48h | 25°C | $0.00/MWh | NMC |
+| KPI | Description |
+|-----|-------------|
+| State of Charge (SOC) | Battery operating charge level throughout the simulation. |
+| State of Energy (SOE) | Available stored energy after charging/discharging losses. |
+| State of Health (SOH) | Remaining usable battery capacity over time. |
+| Equivalent Full Cycles (EFC) | Lifetime throughput normalized into full battery cycles. |
+| Battery Wear Cost | Estimated degradation cost accumulated through operation. |
 
 ---
 
-## Baseline Techno-Economic Audit (8,400 Operating Hours)
+### Forecast Performance
 
-Performance metrics for the reference configuration (**50 MW / 100 MWh NMC, 48h Horizon, 24h Step, $10/MWh Wear Hurdle, 25°C**):
-
-```
-========================================================================================
-SYSTEM OPERATIONAL & FINANCIAL AUDIT REPORT
-========================================================================================
-Metric Item                              Result Value   Benchmark Baseline / Reference
-----------------------------------------------------------------------------------------
-Operating Horizon Duration               8,400 Hours    50 Full Calendar Weeks (350 Days)
-Gross Wholesale Arbitrage Revenue        $4,982,570     +$632,364 (+14.5% vs Persistence)
-Electrochemical Battery Wear Cost        -$253,757      5.09% of Gross Arbitrage
-Fixed Operations & Maintenance           -$359,589      $7,191.78 / MW-yr Installed
-Variable Operations & Maintenance        -$19,018       $0.50 / MWh Throughput Cycled
-Net Operating Profit (EBITDA)            $4,350,206     87.31% Net EBITDA Margin
-Final Battery State of Health (SOH)      98.20%         1.80% Cumulative Capacity Fade
-Equivalent Full Cycles (EFC)             190.18 EFC     0.543 EFC / Day Utilization
-Recursive Forecast Error (MAE)           $2.04 / MWh    Compounding Multi-Step Error
-Value Capture Ratio (VCR)                85.5%          Relative to Perfect Foresight
-Annualized Asset Sharpe Ratio            3.652          Risk-Free Return rf = 4.0%
-95% Daily Parametric VaR                 -$1,482/day    Parametric Tail Probability
-95% Daily Conditional VaR (CVaR)         -$2,104/day    Expected Shortfall in Tail
-========================================================================================
-
-```
+| KPI | Description |
+|-----|-------------|
+| Mean Absolute Error (MAE) | Average forecasting error. |
+| Root Mean Square Error (RMSE) | Penalizes larger forecasting errors. |
+| Directional Accuracy | Percentage of correctly predicted price movements. |
+| Forecast Horizon Comparison | Performance across multiple prediction windows. |
+| Value Capture Ratio | Realized arbitrage value relative to perfect foresight. |
 
 ---
 
-## Interactive Streamlit Web Portal
+### Financial Performance
 
-The framework features a dedicated, multipage interactive dashboard accessible both locally and through the cloud deployment:
-
-* 🌐 **Live Cloud Portal:** [utility-scale-bess-arbitrage.streamlit.app](https://utility-scale-bess-arbitrage.streamlit.app/)
-* 💻 **Local Execution:**
-```powershell
-streamlit run app.py
-
-```
-
-
-
-```
-========================================================================================
-STREAMLIT RESEARCH CHAPTERS
-========================================================================================
-01. Executive Overview          Summary findings, 8 research KPIs, economic waterfall
-02. Market Explorer             Time-series pricing, hourly heatmaps, and price spreads
-03. Feature Engineering         Autoregressive features, moving averages, cyclical signals
-04. Price Forecasting           Multi-step recursive ML vs actuals, error diagnostics
-05. Dispatch Optimization       Pyomo dispatch schedules, SOC boundaries, and power flows
-06. Battery Ageing              ASTM E1049 Rainflow cycle distributions and SOH fade
-07. Rolling Backtesting         Chronological simulation timeline and profit trajectories
-08. Techno-Economic Metrics     Unit revenue ($/kW-yr, $/MWh), EFC costs, and margins
-09. Risk Analytics              Parametric VaR, Conditional CVaR, and rolling Sharpe
-10. Scenario Comparison         28-scenario Pareto frontier, sensitivity tornado plots
-11. Publication Figures         High-resolution vector/PNG viewer and figure exporter
-12. Experiment Suite Runner     Live interactive batch execution console
-========================================================================================
-
-```
+| KPI | Description |
+|-----|-------------|
+| Gross Arbitrage Revenue | Revenue generated before operating costs. |
+| Fixed O&M | Annual operating expenditure independent of throughput. |
+| Variable O&M | Throughput-dependent operating cost. |
+| Battery Wear Cost | Cost attributed to degradation. |
+| Net Operating Profit | Profit after all operating costs. |
+| EBITDA Margin | Operating profitability percentage. |
+| Revenue per Installed MW | Revenue normalized by installed power capacity. |
+| Revenue per Cycled MWh | Revenue normalized by battery throughput. |
 
 ---
 
-## Directory Structure
+### Risk Performance
+
+| KPI | Description |
+|-----|-------------|
+| Historical VaR | Historical downside daily loss estimate. |
+| Parametric VaR | Statistical downside loss estimate. |
+| Conditional VaR | Expected loss beyond VaR threshold. |
+| Maximum Drawdown | Largest cumulative loss from peak. |
+| Rolling Sharpe Ratio | Risk-adjusted profitability through time. |
+
+---
+
+## Scenario Library
+
+The platform includes **28 predefined operating scenarios** for sensitivity analysis and operational benchmarking.
+
+Scenarios are grouped into seven categories.
+
+---
+
+## Scenario Categories Overview
+
+| Category | Number of Scenarios |
+|-----------|--------------------|
+| Battery Chemistry | 3 |
+| Forecast Horizon | 5 |
+| Operating Temperature | 4 |
+| Wear Penalty | 5 |
+| Battery Size | 3 |
+| Round Trip Efficiency | 3 |
+| Forecasting & Degradation Models | 5 |
+| **Total** | **28** |
+
+---
+
+## Battery Chemistry Scenarios
+
+Compare different battery technologies under identical market conditions.
+
+| Scenario | Description |
+|----------|-------------|
+| `chem_nmc_baseline` | Standard NMC battery configuration. |
+| `chem_lfp_stationary` | LFP battery optimized for stationary storage applications. |
+| `chem_lto_high_cycle` | High-cycle-life LTO battery configuration. |
+
+**Comparison Objectives**
+
+- Cycle life
+- Revenue
+- SOH preservation
+- Throughput capability
+- Wear cost
+
+---
+
+## Forecast Horizon Scenarios
+
+Evaluate the effect of forecast horizon length on dispatch quality.
+
+| Scenario | Forecast Window |
+|----------|----------------|
+| `horizon_12h` | 12 Hours |
+| `horizon_24h` | 24 Hours |
+| `horizon_36h` | 36 Hours |
+| `horizon_48h` | 48 Hours |
+| `horizon_72h` | 72 Hours |
+
+**Evaluation Metrics**
+
+- Forecast error
+- Revenue
+- Value Capture Ratio
+- Dispatch quality
+- Computational cost
+
+---
+
+## Thermal Scenarios
+
+Evaluate degradation under different operating temperatures.
+
+| Scenario | Temperature |
+|----------|-------------|
+| `thermal_mild_15c` | 15°C |
+| `thermal_reference_25c` | 25°C |
+| `thermal_elevated_35c` | 35°C |
+| `thermal_extreme_45c` | 45°C |
+
+Outputs include:
+
+- Calendar degradation.
+- Total degradation.
+- SOH trajectory.
+- Revenue impact.
+
+---
+
+## Wear Penalty Scenarios
+
+Analyze the economic trade-off between revenue maximization and battery preservation.
+
+| Scenario | Wear Penalty |
+|----------|--------------|
+| `deg_cost_zero` | $0/MWh |
+| `deg_cost_low_5` | $5/MWh |
+| `deg_cost_nominal_10` | $10/MWh |
+| `deg_cost_high_20` | $20/MWh |
+| `deg_cost_ultra_35` | $35/MWh |
+
+---
+
+## Battery Size Scenarios
+
+Evaluate different battery power-to-energy ratios.
+
+| Scenario | Configuration |
+|----------|---------------|
+| `size_25mw_100mwh` | 25 MW / 100 MWh |
+| `size_50mw_100mwh` | 50 MW / 100 MWh |
+| `size_100mw_100mwh` | 100 MW / 100 MWh |
+
+Comparison metrics:
+
+- Revenue.
+- Battery utilization.
+- Throughput.
+- EFC.
+- Degradation.
+
+---
+
+## Efficiency Scenarios
+
+| Scenario | Round Trip Efficiency |
+|----------|-----------------------|
+| `eff_low_85` | 85% |
+| `eff_base_90` | 90% |
+| `eff_high_95` | 95% |
+
+Outputs:
+
+- Lost energy.
+- Revenue difference.
+- Battery cycling efficiency.
+
+---
+
+## Forecast Model Scenarios
+
+| Scenario | Model |
+|----------|-------|
+| `fc_persistence` | Naive persistence baseline. |
+| `fc_recursive_ml` | Recursive machine learning forecasting. |
+| `fc_perfect_foresight` | Upper-bound benchmark using actual prices. |
+
+Purpose:
+
+- Compare achievable vs theoretical dispatch value.
+- Measure Value Capture Ratio.
+
+---
+
+## Degradation Model Scenarios
+
+| Scenario | Description |
+|----------|-------------|
+| `aging_none` | No degradation applied. |
+| `aging_calendar_only` | Calendar aging only. |
+| `aging_cycle_only` | Cycling degradation only. |
+| `aging_combined` | Calendar + cycle degradation. |
+| `aging_dynamic_feedback` | Closed-loop SOH feedback. |
+
+---
+
+## Scenario Outputs
+
+Every experiment produces standardized outputs.
+
+| Output | Format |
+|--------|--------|
+| KPI Summary | JSON |
+| Financial Summary | CSV |
+| SOH Timeline | CSV |
+| Forecast Diagnostics | CSV |
+| Dispatch Schedule | CSV |
+| Interactive Charts | Plotly |
+| Figures | PNG / PDF |
+| Scenario Summary | Excel |
+
+---
+
+# Results Directory
+
+Simulation outputs are automatically organized into structured folders.
 
 ```text
-├── app.py                            # Streamlit Multipage Web Application
-├── main.py                           # CLI Pipeline Orchestrator (Stages 1–12)
-├── pyproject.toml                    # Environment specifications & pytest configuration
-├── requirements.txt                  # Production dependencies
-├── packages.txt                      # OS-level packages (GLPK solver, OpenGL runtime)
-├── streamlit_utils/                  # Shared Streamlit UI components
-│   ├── charts.py                     # Plotly chart builders (Pareto, SOH gauge, Waterfall)
-│   ├── downloads.py                  # In-memory artifact exporters (Excel/ZIP)
-│   ├── loaders.py                    # Caching data readers for pipeline outputs
-│   ├── session.py                    # Session state and configuration managers
-│   └── theme.py                      # CSS styling and KPI cards
-├── pages/                            # Multipage analytical chapters
-│   ├── 01_Home.py                    # Executive overview dashboard
-│   ├── 02_Data_Explorer.py           # Wholesale price series and distribution analysis
-│   ├── 03_Feature_Engineering.py      # Autoregressive lags, rolling statistics, cyclical signals
-│   ├── 04_Price_Forecasting.py       # Multi-step recursive ML forecasting (MAE/RMSE/VCR)
-│   ├── 05_Dispatch_Optimization.py   # Pyomo rolling dispatch and SOC trajectories
-│   ├── 06_Battery_Ageing.py          # ASTM E1049-85 Rainflow & Arrhenius degradation
-│   ├── 07_Rolling_Backtesting.py     # Chronological closed-loop execution timeline
-│   ├── 08_Backtest_Metrics.py        # Financial, asset health, and operational indices
-│   ├── 09_Risk_Analytics.py          # Downside risk, VaR, CVaR, and rolling Sharpe
-│   ├── 10_Scenario_Comparison.py     # 28-Scenario Pareto analysis and sensitivity tornado
-│   ├── 11_Publication_Figures.py     # Publication graphics browser (44 figures)
-│   └── 12_Experiment_Runner.py       # Batch experiment execution console
-├── forecasting/                      # Feature extraction and multi-step ML models
-├── optimization/                     # Pyomo MILP/LP formulations and solver interfaces
-├── battery/                          # Rainflow counting, degradation models, chemistry specs
-├── backtesting/                      # Rolling simulation loops, comparison engine, and telemetry
-│   ├── comparison.py                 # Pareto frontier extraction and scenario ranking
-│   └── dashboard_data.py             # Frontend JSON/CSV telemetry serialization
-├── analytics/                        # Financial waterfall, risk calculations, and KPIs
-├── visualization/                    # Publication figure generator (44 figures)
-├── experiments/                      # Scenario definitions and sweep runners
-├── tests/                            # Automated test suite (Pytest)
-│   └── backtesting/                  # Unit and integration test coverage
-└── results/                          # Output directory for logs, figures, and data feeds
-    ├── dashboard/                    # Live telemetry feeds for Streamlit (kpis.json, etc.)
-    ├── experiments/                  # Experimental sweep results and scenario matrices
-    ├── figures/                      # High-resolution PNG and vector exports
-    └── sensitivity_analysis.xlsx     # Cross-category sensitivity workbook
-
+results/
+│
+├── dashboard/
+│   ├── kpis.json
+│   ├── revenue.json
+│   ├── soh.json
+│   └── experiments.json
+│
+├── experiments/
+│   ├── scenario_matrix.csv
+│   ├── comparison_results.csv
+│   ├── pareto_frontier.csv
+│   └── sensitivity_analysis.xlsx
+│
+├── forecasts/
+│   ├── predictions.csv
+│   ├── forecast_metrics.csv
+│   └── horizon_comparison.csv
+│
+├── optimization/
+│   ├── dispatch_schedule.csv
+│   ├── soc_timeline.csv
+│   └── soe_timeline.csv
+│
+├── degradation/
+│   ├── rainflow_cycles.csv
+│   ├── calendar_degradation.csv
+│   ├── cycle_degradation.csv
+│   └── soh_history.csv
+│
+├── figures/
+│   ├── market_analysis/
+│   ├── forecasting/
+│   ├── optimization/
+│   ├── degradation/
+│   ├── finance/
+│   └── risk/
+│
+└── reports/
+    ├── summary_report.md
+    ├── metrics_report.csv
+    └── dashboard_export.xlsx
 ```
 
 ---
 
-## Installation & Setup
+## Repository Structure
 
-### Prerequisites
+The repository is organized into modular components for forecasting, optimization, degradation analysis, financial evaluation, visualization, and experimentation.
 
-* **Python 3.11, 3.12, or 3.13**
-* **Git**
-* **Linear/MILP Solver:** [GLPK](https://www.google.com/search?q=https://www.gnu.org/software/glpk/) (recommended default), [HiGHS](https://highs.dev/), or CBC.
-
-### 1. Clone the Repository
-
-```powershell
-git clone https://github.com/your-username/bess-arbitrage-platform.git
-cd bess-arbitrage-platform
-
+```text
+utility-scale-bess-arbitrage/
+│
+├── app.py                          # Streamlit Dashboard
+├── main.py                         # Pipeline Runner
+│
+├── forecasting/
+│   ├── features.py
+│   ├── xgboost_model.py
+│   ├── lightgbm_model.py
+│   ├── recursive_forecast.py
+│   └── evaluation.py
+│
+├── optimization/
+│   ├── dispatch_model.py
+│   ├── rolling_optimizer.py
+│   ├── constraints.py
+│   └── solver.py
+│
+├── battery/
+│   ├── rainflow.py
+│   ├── degradation.py
+│   ├── arrhenius.py
+│   ├── chemistry.py
+│   └── soh_tracker.py
+│
+├── backtesting/
+│   ├── simulator.py
+│   ├── comparison.py
+│   ├── dashboard_data.py
+│   └── telemetry.py
+│
+├── analytics/
+│   ├── finance.py
+│   ├── risk.py
+│   ├── waterfall.py
+│   ├── kpis.py
+│   └── metrics.py
+│
+├── visualization/
+│   ├── figures.py
+│   ├── plotly_charts.py
+│   ├── reports.py
+│   └── exports.py
+│
+├── experiments/
+│   ├── scenarios.py
+│   ├── runner.py
+│   ├── registry.py
+│   └── sensitivity.py
+│
+├── pages/
+│   ├── 01_Home.py
+│   ├── 02_Market_Explorer.py
+│   ├── 03_Feature_Engineering.py
+│   ├── 04_Price_Forecasting.py
+│   ├── 05_Dispatch_Optimization.py
+│   ├── 06_Battery_Aging.py
+│   ├── 07_Rolling_Backtesting.py
+│   ├── 08_Financial_Analytics.py
+│   ├── 09_Risk_Analytics.py
+│   ├── 10_Scenario_Comparison.py
+│   ├── 11_Publication_Figures.py
+│   └── 12_Experiment_Runner.py
+│
+├── streamlit_utils/
+│   ├── charts.py
+│   ├── downloads.py
+│   ├── loaders.py
+│   ├── session.py
+│   └── theme.py
+│
+├── tests/
+│   ├── forecasting/
+│   ├── optimization/
+│   ├── battery/
+│   ├── analytics/
+│   └── backtesting/
+│
+├── results/
+│
+├── requirements.txt
+├── pyproject.toml
+├── packages.txt
+└── README.md
 ```
 
-### 2. Environment Setup
+---
 
-#### Windows (PowerShell)
+# Technology Stack
+
+The platform is built entirely with Python and open-source scientific computing libraries.
+
+## Core Libraries
+
+| Category | Technologies |
+|----------|--------------|
+| Programming Language | Python 3.11+ |
+| Optimization | Pyomo |
+| Machine Learning | XGBoost, LightGBM, Scikit-learn |
+| Data Processing | Pandas, NumPy |
+| Visualization | Plotly, Matplotlib |
+| Dashboard | Streamlit |
+| Statistics | SciPy |
+| Testing | PyTest |
+| Solver | GLPK / HiGHS / CBC |
+
+---
+
+## Machine Learning
+
+- Recursive forecasting
+- Feature engineering
+- Lag features
+- Rolling statistics
+- Cyclical encoding
+- Error evaluation
+
+---
+
+## Optimization
+
+- Linear Programming
+- Mixed Integer Programming
+- Rolling Horizon Dispatch
+- SOC Constraints
+- SOE Dynamics
+
+---
+
+## Battery Analytics
+
+- Rainflow Counting
+- Arrhenius Calendar Aging
+- State of Health
+- Equivalent Full Cycles
+- Degradation Cost
+
+---
+
+## Financial Analytics
+
+- Revenue Waterfall
+- EBITDA
+- Operating Costs
+- Unit Economics
+- Risk Metrics
+
+---
+
+## Installation Guide
+
+The platform supports Windows, Linux, and macOS.
+
+---
+
+## Prerequisites
+
+Before installing, ensure the following software is available.
+
+| Requirement | Version |
+|-------------|---------|
+| Python | 3.11 or newer |
+| Git | Latest stable version |
+| Pip | Latest stable version |
+| Virtual Environment | `venv` |
+| Solver | GLPK (recommended) |
+
+---
+
+## Clone the Repository
+
+```bash
+git clone https://github.com/<your-github-username>/utility-scale-bess-arbitrage.git
+
+cd utility-scale-bess-arbitrage
+```
+
+Replace `<your-github-username>` with your GitHub username.
+
+---
+
+## Environment Setup
+
+## Windows
+
+### Create Virtual Environment
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-
 ```
 
-#### Linux / macOS
+### Activate Environment
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+### Upgrade Pip
+
+```powershell
+python -m pip install --upgrade pip
+```
+
+### Install Dependencies
+
+```powershell
+pip install -r requirements.txt
+```
+
+---
+
+## Linux / macOS
+
+### Create Environment
 
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
-
 ```
 
-### 3. Solver Installation
-
-#### Windows
-
-Install WinGLPK via Winget:
-
-```powershell
-winget install -e --id GLPK.GLPK
-
-```
-
-Alternatively, download from [SourceForge](https://sourceforge.net/projects/winglpk/) and add `C:\glpk\glpk-X.XX\w64` to your Windows System `PATH`.
-
-#### Linux (Debian / Ubuntu)
+### Activate Environment
 
 ```bash
-sudo apt-get update
-sudo apt-get install -y glpk-utils libgl1-mesa-glx
-
+source .venv/bin/activate
 ```
 
-Verify solver availability:
+### Upgrade Pip
+
+```bash
+python -m pip install --upgrade pip
+```
+
+### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Solver Installation
+
+Pyomo requires an optimization solver.
+
+## Windows (GLPK)
+
+Install GLPK using Winget.
+
+```powershell
+winget install GLPK.GLPK
+```
+
+Verify installation.
+
+```powershell
+glpsol --version
+```
+
+---
+
+## Ubuntu / Debian
+
+```bash
+sudo apt update
+
+sudo apt install -y glpk-utils libgl1-mesa-glx
+```
+
+---
+
+## macOS
+
+Using Homebrew:
+
+```bash
+brew install glpk
+```
+
+Verify installation.
 
 ```bash
 glpsol --version
-
 ```
 
 ---
 
-## Execution Modes & CLI Reference
+## Verify Installation
 
-Execute the pipeline via `main.py`:
+Run the following command after installation.
 
-```powershell
-# 1. Full Academic Pipeline (8,400 hours / 350 days, ~25m)
-python main.py --run
-
-# 2. Fast Interactive Mode (7-day test window for quick verification, ~20s)
+```bash
 python main.py --fast
-
-# 3. Batch Scenario Matrix Sweep (Executes all 28 predefined research scenarios)
-python main.py --experiments
-
-# 4. Generate Master Publication Figures (Renders 44 high-DPI figures to disk)
-python main.py --figures
-
-# 5. Evaluate Multi-Scenario Rankings & Extract Pareto Frontier
-python main.py --compare --registry-file results/experiments/scenario_matrix.csv --output-dir results/comparison
-
 ```
+
+Expected behavior:
+
+- Dependencies load successfully.
+- Sample simulation executes.
+- Output folders are generated inside `results/`.
 
 ---
 
-## Automated Test Suite
+## Quick Start
 
-The test suite validates data ingestion, recursive feature engineering, Pyomo model generation, Rainflow cycle counting, and scenario comparison routines.
+Run a complete simulation in four steps.
 
-Run the test suite with `pytest`:
+### Step 1 — Clone Repository
 
-```powershell
-# Run the complete test suite
-pytest -v
-
-# Run the experimental framework and comparison engine tests
-pytest tests/backtesting/test_experiment_framework.py -v
-
+```bash
+git clone https://github.com/MohdNematullah/utility-scale-bess-arbitrage.git
+cd utility-scale-bess-arbitrage
 ```
+
+### Step 2 — Create Environment
+
+```bash
+python -m venv .venv
+```
+
+### Step 3 — Install Packages
+
+```bash
+pip install -r requirements.txt
+```
+
+### Step 4 — Launch Dashboard
+
+```bash
+streamlit run app.py
+```
+
+Open your browser at:
 
 ```text
-tests/backtesting/test_experiment_framework.py::TestScenariosLibrary::test_total_predefined_scenarios_count PASSED [  4%]
-tests/backtesting/test_experiment_framework.py::TestScenariosLibrary::test_all_seven_categories_represented PASSED [  8%]
-tests/backtesting/test_experiment_framework.py::TestScenariosLibrary::test_lfp_chemistry_modifiers PASSED        [ 25%]
-tests/backtesting/test_experiment_framework.py::TestComparisonEngine::test_pareto_frontier_math PASSED           [ 54%]
-tests/backtesting/test_experiment_framework.py::TestComparisonEngine::test_full_evaluation_and_file_exports PASSED [ 62%]
-tests/backtesting/test_experiment_framework.py::TestDashboardDataBuilder::test_kpi_payload_structure PASSED      [ 66%]
-tests/backtesting/test_experiment_framework.py::TestCLIParser::test_cli_compare_command PASSED                    [100%]
-
-======================================== 24 passed in 8.42s ========================================
-
-```
-
-
+http://localhost:8501
 ```
 
 ---
 
-## License
+## Running the Platform
 
-This project is licensed under the MIT License - see the [LICENSE](https://www.google.com/search?q=LICENSE) file for complete details. Free for academic, scientific, and commercial use with appropriate attribution.
+The repository provides several execution modes depending on the desired workflow.
+
+## Full Pipeline
+
+Runs the complete workflow across the full simulation period.
+
+```bash
+python main.py --run
+```
+
+Pipeline stages include:
+
+- Forecasting
+- Optimization
+- Battery aging
+- Financial analytics
+- Risk analytics
+- Figure generation
+
+---
+
+## Fast Mode
+
+Runs a shortened simulation useful for verifying installation.
+
+```bash
+python main.py --fast
+```
+
+---
+
+## Forecasting Only
+
+```bash
+python main.py --forecast
+```
+
+Outputs:
+
+- Forecast CSV.
+- Error metrics.
+- Prediction charts.
+
+---
+
+## Optimization Only
+
+```bash
+python main.py --optimize
+```
+
+Outputs:
+
+- Dispatch schedule.
+- SOC trajectory.
+- SOE timeline.
+
+---
+
+## Battery Aging Only
+
+```bash
+python main.py --aging
+```
+
+Outputs:
+
+- SOH timeline.
+- EFC.
+- Rainflow cycles.
+- Calendar degradation.
+
+---
+
+## Financial Analytics Only
+
+```bash
+python main.py --finance
+```
+
+Outputs:
+
+- Revenue summary.
+- EBITDA.
+- Cost waterfall.
+- Unit economics.
+
+---
+
+## Risk Analytics Only
+
+```bash
+python main.py --risk
+```
+
+Outputs:
+
+- VaR.
+- CVaR.
+- Sharpe Ratio.
+- Drawdown.
+
+---
+
+## Generate Dashboard Data
+
+```bash
+python main.py --dashboard
+```
+
+Creates JSON files consumed by Streamlit.
+
+---
+
+## Run All Scenarios
+
+Execute all predefined experiment scenarios.
+
+```bash
+python main.py --experiments
+```
+
+Outputs:
+
+- Scenario matrix.
+- Comparison metrics.
+- Pareto frontier.
+- Sensitivity workbook.
+
+---
+
+## Generate Figures
+
+Generate all visualization assets.
+
+```bash
+python main.py --figures
+```
+
+Exports figures into:
+
+```text
+results/figures/
+```
+
+---
+
+## Compare Scenarios
+
+```bash
+python main.py --compare \
+    --registry-file results/experiments/scenario_matrix.csv \
+    --output-dir results/comparison
+```
+
+Outputs:
+
+- Comparison tables.
+- Pareto frontier.
+- Rankings.
+- Tornado plots.
+
+---
+
+## Streamlit Dashboard
+
+Launch the interactive dashboard locally.
+
+```bash
+streamlit run app.py
+```
+
+The dashboard automatically reads generated outputs from the `results/dashboard/` directory and provides interactive analytics across forecasting, optimization, battery health, finance, risk, and scenario comparison modules.
+
+---
+
+# Command Line Reference
+
+| Command | Description |
+|---------|-------------|
+| `python main.py --run` | Complete simulation pipeline. |
+| `python main.py --fast` | Short verification run. |
+| `python main.py --forecast` | Forecast electricity prices only. |
+| `python main.py --optimize` | Battery dispatch optimization only. |
+| `python main.py --aging` | Battery degradation analysis only. |
+| `python main.py --finance` | Financial KPI calculation only. |
+| `python main.py --risk` | Risk analytics only. |
+| `python main.py --dashboard` | Generate Streamlit dashboard data. |
+| `python main.py --experiments` | Execute all predefined scenarios. |
+| `python main.py --figures` | Generate figures and visualizations. |
+| `python main.py --compare` | Compare experiment scenarios. |
+
+---
+
+## Output Summary
+
+After a successful run, the pipeline generates:
+
+| Output Type | Location |
+|-------------|----------|
+| Dashboard Data | `results/dashboard/` |
+| Forecast Outputs | `results/forecasts/` |
+| Dispatch Outputs | `results/optimization/` |
+| Battery Health | `results/degradation/` |
+| Financial Metrics | `results/reports/` |
+| Experiment Results | `results/experiments/` |
+| Figures | `results/figures/` |
+
+---
+---
+
+## Configuration
+
+The platform is designed to be configurable without modifying the core source code. Simulation settings, battery parameters, optimization horizons, forecasting models, and experiment scenarios can be changed from configuration files or command-line arguments.
+
+## Default Simulation Configuration
+
+| Parameter | Default Value |
+|-----------|---------------|
+| Simulation Hours | `8400` |
+| Forecast Horizon | `48` hours |
+| Execution Step | `24` hours |
+| Battery Power | `50 MW` |
+| Battery Energy | `100 MWh` |
+| Round Trip Efficiency | `90%` |
+| Minimum SOC | `10%` |
+| Maximum SOC | `90%` |
+| Initial SOC | `50%` |
+| Target End SOC | `50%` |
+| Battery Chemistry | `NMC` |
+| Operating Temperature | `25°C` |
+| Wear Penalty | `$10/MWh` |
+| Solver | `GLPK` |
+
+---
+
+## Battery Configuration
+
+Battery behavior is fully parameterized.
+
+```yaml
+battery:
+  chemistry: NMC
+  power_mw: 50
+  energy_mwh: 100
+  round_trip_efficiency: 0.90
+  soc_min: 0.10
+  soc_max: 0.90
+  soc_initial: 0.50
+  soc_target: 0.50
+```
+
+Supported chemistries:
+
+- NMC
+- LFP
+- LTO
+
+Each chemistry contains independent degradation parameters and operating assumptions.
+
+---
+
+## Forecast Configuration
+
+```yaml
+forecast:
+  model: xgboost
+  horizon_hours: 48
+  recursive: true
+  lag_hours:
+    - 1
+    - 2
+    - 24
+    - 48
+    - 168
+```
+
+Supported models:
+
+- XGBoost
+- LightGBM
+- Persistence Baseline
+
+---
+
+## Optimization Configuration
+
+```yaml
+optimization:
+  horizon_hours: 48
+  execution_step_hours: 24
+  solver: glpk
+  variable_om_cost: 0.5
+  degradation_cost: 10
+```
+
+---
+
+## Temperature Configuration
+
+```yaml
+temperature:
+  operating_temperature_c: 25
+  calendar_ageing: true
+```
+
+Temperature scenarios:
+
+- 15°C
+- 25°C
+- 35°C
+- 45°C
+
+---
+
+## Experiment Configuration
+
+Example experiment definition:
+
+```yaml
+scenario:
+  name: horizon_48h
+  chemistry: NMC
+  forecast_model: XGBoost
+  temperature: 25
+  wear_penalty: 10
+  horizon: 48
+```
+
+---
+
+## Mathematical Framework
+
+The platform combines electricity price forecasting, rolling-horizon optimization, battery degradation modelling, and financial risk analytics into a unified Battery Energy Storage System (BESS) arbitrage workflow.
+
+## 1. Rolling-Horizon Dispatch Optimization
+
+At each rolling decision step, the optimizer maximizes the **net operating profit** over the forecast horizon while considering electricity prices, battery degradation cost, and variable operating costs.
+
+### Objective Function
+
+$$\max \sum_{t=1}^{H} \left[ \hat{\lambda}_t (P_t^{dis} - P_t^{chg}) - c_{deg} P_t^{dis} - c_{vOM}(P_t^{chg} + P_t^{dis}) \right]\Delta t$$
+
+### Variable Definitions
+
+| **Symbol** | **Description** | **Unit** |
+| --- | --- | --- |
+| $\hat{\lambda}_t$\vert{} Forecast electricity price at time *t* \vert{}$/MWh |  |  |
+| $P_t^{chg}$ | Battery charging power | MW |
+| $P_t^{dis}$ | Battery discharging power | MW |
+| $c_{deg}$\vert{} Battery degradation cost (wear penalty) \vert{}$/MWh |  |  |
+| $c_{vOM}$\vert{} Variable operation and maintenance cost \vert{}$/MWh |  |  |
+| $\Delta t$ | Dispatch time interval | Hour |
+| $H$ | Optimization horizon | Hours |
+
+---
+
+## 2. Battery Energy Dynamics
+
+The battery **State of Energy (SOE)** evolves over time based on charging and discharging power while accounting for one-way charging and discharging efficiencies.
+
+### State of Energy (SOE)
+
+$$E_t = E_{t-1} + \left( \eta_{chg} P_t^{chg} - \frac{P_t^{dis}}{\eta_{dis}} \right)\Delta t$$
+
+### State of Charge (SOC)
+
+$$SOC_t = \frac{E_t}{E_{nom} \times SOH_t}$$
+
+### Operating Constraints
+
+$$SOC_{min} \le SOC_t \le SOC_{max}$$
+
+Where:
+
+| **Symbol** | **Description** |
+| --- | --- |
+| $E_t$ | Battery energy at time *t* |
+| $E_{nom}$ | Nominal battery energy capacity |
+| $SOC_t$ | Battery State of Charge |
+| $SOH_t$ | Battery State of Health |
+| $\eta_{chg}$ | Charging efficiency |
+| $\eta_{dis}$ | Discharging efficiency |
+| $SOC_{min}$ | Minimum allowable SOC |
+| $SOC_{max}$ | Maximum allowable SOC |
+
+## 3. Battery State of Health (SOH)
+
+Battery health decreases due to cycling and calendar aging.
+
+$$
+SOH = 1-(D_{cycle}+D_{calendar})
+$$
+
+Where:
+
+- $D_{cycle}$ = cycle degradation.
+- $D_{calendar}$ = calendar degradation.
+
+---
+
+## 4. Cycle Degradation using Rainflow Counting
+
+Cycle degradation is estimated using ASTM E1049-85 Rainflow Counting and Miner's Rule.
+
+$$
+D_{cycle}
+=
+\sum_{i=1}^{N}
+\frac{n_i}{N_f(DoD_i)}
+$$
+
+Where:
+
+- $DoD_i$ = depth of discharge of cycle $i$.
+- $N_f$ = allowable cycles before failure.
+- $n_i$ = cycle count contribution.
+
+---
+
+## 5. Calendar Degradation using Arrhenius Model
+
+Calendar aging depends on temperature and average battery State of Charge.
+
+$$
+D_{calendar}
+=
+k
+\exp
+\left(
+-\frac{E_a}{RT}
+\right)
+\exp(k_{soc}\overline{SOC})
+t^z
+$$
+
+Where:
+
+- $E_a$ = activation energy.
+- $R$ = universal gas constant.
+- $T$ = cell temperature (Kelvin).
+- $\overline{SOC}$ = average State of Charge.
+
+---
+
+## 6. Equivalent Full Cycles (EFC)
+
+Battery utilization is measured using Equivalent Full Cycles.
+
+$$
+EFC
+=
+\frac
+{\sum(P_t^{chg}\eta_{chg}+P_t^{dis})\Delta t}
+{2E_{nom}}
+$$
+
+EFC provides a normalized measure of battery throughput independent of operating strategy.
+
+---
+
+## 7. Forecast Accuracy Metrics
+
+The forecasting module evaluates prediction quality using Mean Absolute Error (MAE) and Root Mean Square Error (RMSE).
+
+### Mean Absolute Error
+
+$$
+MAE=
+\frac1N
+\sum_{i=1}^{N}
+|\hat{\lambda_i}-\lambda_i|
+$$
+
+### Root Mean Square Error
+
+$$
+RMSE=
+\sqrt{
+\frac1N
+\sum_{i=1}^{N}
+(\hat{\lambda_i}-\lambda_i)^2
+}
+$$
+
+### Directional Accuracy
+
+$$
+DA=
+\frac{\text{Correct Direction Predictions}}
+{\text{Total Predictions}}
+\times100
+$$
+
+---
+
+## 8. Value Capture Ratio (VCR)
+
+Value Capture Ratio compares the realized arbitrage profit against the theoretical perfect-foresight benchmark.
+
+$$
+VCR=
+\frac{\Pi_{forecast}}
+{\Pi_{perfect}}
+\times100
+$$
+
+A higher Value Capture Ratio indicates that the forecasting and optimization pipeline captures a larger share of the theoretical arbitrage opportunity.
+
+## Optimization Objective
+
+For every rolling optimization window, the optimizer maximizes operating profit over the forecast horizon.
+
+### Objective Components
+
+The optimization considers:
+
+- Electricity revenue from discharging.
+- Electricity purchase cost while charging.
+- Variable operating costs.
+- Battery degradation cost.
+
+The resulting dispatch schedule determines charging and discharging power for every time interval.
+
+---
+
+## Battery State Dynamics
+
+The optimizer tracks battery energy continuously throughout the simulation.
+
+### State Variables
+
+| Variable | Description |
+|----------|-------------|
+| SOC | State of Charge |
+| SOE | State of Energy |
+| SOH | State of Health |
+| EFC | Equivalent Full Cycles |
+
+SOC remains within minimum and maximum operating limits during optimization.
+
+---
+
+## Operational Constraints
+
+The optimizer enforces:
+
+### Charging Constraints
+
+- Charging power cannot exceed inverter capacity.
+- Charging respects efficiency losses.
+
+### Discharging Constraints
+
+- Discharging power cannot exceed inverter capacity.
+- Energy availability limits discharge.
+
+### Battery Constraints
+
+- Minimum SOC.
+- Maximum SOC.
+- Target terminal SOC.
+- Round-trip efficiency.
+
+### Dispatch Constraints
+
+- No simultaneous charging and discharging.
+- Rolling execution windows.
+- Horizon boundary conditions.
+
+---
+
+## Rolling Horizon Strategy
+
+The optimizer follows a rolling decision process instead of optimizing the entire year at once.
+
+```mermaid
+flowchart LR
+    A[Current Time]
+    B[Forecast Next 48 Hours]
+    C[Optimize Dispatch]
+    D[Execute First 24 Hours]
+    E[Update Battery SOH]
+    F[Move Window Forward]
+
+    A --> B --> C --> D --> E --> F --> B
+```
+
+### Benefits
+
+- Uses updated forecasts.
+- Accounts for battery aging.
+- Mimics operational decision making.
+- Prevents end-of-horizon depletion.
+
+---
+
+## Forecasting Pipeline
+
+The forecasting module predicts future wholesale electricity prices before optimization.
+
+---
+
+## Forecast Workflow
+
+```mermaid
+flowchart TD
+    A[Historical Market Prices]
+
+    B[Data Cleaning]
+
+    C[Feature Engineering]
+
+    D[XGBoost / LightGBM]
+
+    E[Recursive Forecast]
+
+    F[Forecast Evaluation]
+
+    A --> B --> C --> D --> E --> F
+```
+
+---
+
+## Feature Engineering
+
+The forecasting model generates multiple feature categories.
+
+### Lag Features
+
+- Previous hour.
+- Previous two hours.
+- Previous day.
+- Previous two days.
+- Previous week.
+
+### Rolling Features
+
+Rolling statistics over configurable windows.
+
+Generated statistics include:
+
+- Mean
+- Standard deviation
+- Minimum
+- Maximum
+
+### Calendar Features
+
+Calendar-aware variables improve seasonality learning.
+
+Features include:
+
+- Hour of day.
+- Day of week.
+- Month.
+- Weekend indicator.
+
+### Cyclical Features
+
+Calendar values are encoded using sine/cosine transformations.
+
+Examples:
+
+- Daily cycle.
+- Weekly cycle.
+- Annual cycle.
+
+---
+
+## Forecast Models
+
+### XGBoost
+
+Primary forecasting model.
+
+Capabilities:
+
+- Nonlinear regression.
+- Recursive forecasting.
+- Feature importance.
+- Missing value handling.
+
+---
+
+### LightGBM
+
+Alternative forecasting model.
+
+Capabilities:
+
+- Fast training.
+- Efficient tree boosting.
+- Horizon comparison.
+
+---
+
+### Persistence Baseline
+
+Simple benchmark model.
+
+Prediction:
+
+- Future price equals previous observed price.
+
+Used for comparison against machine learning forecasts.
+
+---
+
+## Forecast Evaluation Metrics
+
+The platform evaluates every forecast using multiple metrics.
+
+| Metric | Purpose |
+|--------|---------|
+| MAE | Average forecasting error. |
+| RMSE | Penalizes larger errors. |
+| MAPE | Percentage forecasting error. |
+| Directional Accuracy | Correct price movement prediction. |
+| Horizon Comparison | Compare forecast windows. |
+
+---
+
+## Forecast Outputs
+
+Generated outputs include:
+
+```text
+results/forecasts/
+
+├── predictions.csv
+├── forecast_metrics.csv
+├── horizon_comparison.csv
+├── residuals.csv
+└── feature_importance.csv
+```
+
+---
+
+## Optimization Pipeline
+
+The optimization module converts forecasted prices into battery dispatch schedules.
+
+---
+
+## Dispatch Workflow
+
+```mermaid
+flowchart TD
+
+A[Forecast Prices]
+
+B[Battery Constraints]
+
+C[Pyomo Optimization Model]
+
+D[Solver]
+
+E[Dispatch Schedule]
+
+F[SOC Timeline]
+
+A --> C
+B --> C
+C --> D
+D --> E
+E --> F
+```
+
+---
+
+## Inputs
+
+The optimizer receives:
+
+| Input | Source |
+|-------|--------|
+| Forecast Prices | Forecast Module |
+| Battery Parameters | Configuration |
+| SOC Initial State | Previous Simulation Step |
+| SOH | Battery Aging Module |
+| Wear Penalty | Scenario Configuration |
+
+---
+
+## Outputs
+
+The optimizer produces:
+
+| Output | Description |
+|--------|-------------|
+| Charging Schedule | Battery charging power. |
+| Discharging Schedule | Battery discharging power. |
+| SOC Timeline | Battery charge trajectory. |
+| SOE Timeline | Battery energy trajectory. |
+| Throughput | Energy cycled through battery. |
+
+---
+
+## Solver Support
+
+Supported optimization solvers.
+
+| Solver | Supported |
+|--------|-----------|
+| GLPK | ✅ |
+| HiGHS | ✅ |
+| CBC | ✅ |
+
+GLPK is used as the default solver.
+
+---
+
+## Dispatch Timeline
+
+Each optimization window produces hourly battery actions.
+
+```text
+Hour     Price     Action
+
+01       Low       Charge
+
+02       Low       Charge
+
+03       Medium    Idle
+
+04       High      Discharge
+
+05       Peak      Discharge
+```
+
+---
+
+# Battery Aging Engine
+
+Battery degradation is modeled continuously throughout simulation.
+
+---
+
+## Battery Health Workflow
+
+```mermaid
+flowchart TD
+
+A[Dispatch Schedule]
+
+B[State of Charge History]
+
+C[Rainflow Cycle Counting]
+
+D[Cycle Degradation]
+
+E[Calendar Degradation]
+
+F[Total Capacity Fade]
+
+G[Updated SOH]
+
+A --> B
+B --> C
+C --> D
+B --> E
+D --> F
+E --> F
+F --> G
+```
+
+---
+
+## State of Health (SOH)
+
+SOH represents remaining usable battery capacity.
+
+The simulation updates SOH after every execution window.
+
+Outputs include:
+
+- SOH timeline.
+- Remaining capacity.
+- Capacity fade percentage.
+
+---
+
+## Cycle Degradation
+
+Cycle degradation depends on charging/discharging behavior.
+
+### Rainflow Counting
+
+The platform extracts charge-discharge cycles from SOC history using ASTM Rainflow Counting.
+
+Outputs include:
+
+- Cycle depth.
+- Cycle count.
+- Cycle histogram.
+- Stress distribution.
+
+---
+
+## Equivalent Full Cycles
+
+EFC converts partial cycles into normalized full battery cycles.
+
+Example outputs:
+
+| Metric | Description |
+|--------|-------------|
+| Daily EFC | Average cycles per day. |
+| Total EFC | Cumulative battery throughput. |
+| Remaining Cycle Budget | Estimated remaining useful life. |
+
+---
+
+## Calendar Degradation
+
+Calendar aging occurs even when the battery is idle.
+
+Inputs include:
+
+- Operating temperature.
+- Average SOC.
+- Time duration.
+
+Outputs include:
+
+- Calendar degradation percentage.
+- Temperature sensitivity.
+
+---
+
+## Combined Degradation
+
+The platform combines:
+
+- Cycle degradation.
+- Calendar degradation.
+
+Outputs:
+
+| Output | Description |
+|--------|-------------|
+| Cycle Fade | Capacity loss from cycling. |
+| Calendar Fade | Capacity loss from storage time. |
+| Total Fade | Combined degradation. |
+| Wear Cost | Economic value of degradation. |
+
+---
+
+## Battery Outputs
+
+Generated files:
+
+```text
+results/degradation/
+
+├── soh_history.csv
+├── rainflow_cycles.csv
+├── cycle_degradation.csv
+├── calendar_degradation.csv
+├── efc_history.csv
+└── degradation_summary.csv
+```
+
+---
+
+## Closed-Loop Backtesting
+
+Backtesting evaluates battery performance chronologically over the complete simulation period.
+
+---
+
+## Backtesting Workflow
+
+```mermaid
+flowchart LR
+
+A[Historical Prices]
+
+B[Forecast]
+
+C[Optimize]
+
+D[Execute]
+
+E[Update SOH]
+
+F[Next Window]
+
+A --> B --> C --> D --> E --> F --> B
+```
+
+---
+
+## Backtesting Outputs
+
+| Output | Description |
+|--------|-------------|
+| Hourly Dispatch | Executed battery schedule. |
+| SOC Timeline | Battery charge level. |
+| Revenue Timeline | Revenue accumulation. |
+| SOH Timeline | Battery health evolution. |
+| Rolling KPIs | Financial metrics through time. |
+
+---
+
+## Financial Analytics Pipeline
+
+Financial analytics convert operational outputs into business metrics.
+
+---
+
+## Financial Workflow
+
+```mermaid
+flowchart TD
+
+A[Dispatch Results]
+
+B[Revenue]
+
+C[Operating Costs]
+
+D[Battery Wear Cost]
+
+E[EBITDA]
+
+F[Financial KPIs]
+
+A --> B
+A --> C
+A --> D
+B --> E
+C --> E
+D --> E
+E --> F
+```
+
+---
+
+## Revenue Components
+
+Revenue calculation includes:
+
+- Arbitrage revenue.
+- Charging cost.
+- Discharging revenue.
+- Operating expenses.
+- Battery degradation cost.
+
+---
+
+## Operating Cost Components
+
+| Cost | Description |
+|------|-------------|
+| Fixed O&M | Annual operating expenditure. |
+| Variable O&M | Throughput-dependent cost. |
+| Wear Cost | Battery degradation cost. |
+
+---
+
+## Financial Outputs
+
+Generated outputs:
+
+```text
+results/reports/
+
+├── revenue_summary.csv
+├── ebitda_report.csv
+├── waterfall.csv
+├── operating_costs.csv
+└── unit_economics.csv
+```
+
+---
+
+## Risk Analytics Pipeline
+
+Risk metrics evaluate downside financial exposure.
+
+---
+
+## Risk Workflow
+
+```mermaid
+flowchart TD
+
+A[Daily Profit]
+
+B[Distribution Analysis]
+
+C[Historical VaR]
+
+D[Parametric VaR]
+
+E[CVaR]
+
+F[Sharpe Ratio]
+
+A --> B
+B --> C
+B --> D
+C --> E
+D --> E
+E --> F
+```
+
+---
+
+## Risk Metrics
+
+| Metric | Description |
+|--------|-------------|
+| Historical VaR | Historical downside loss estimate. |
+| Parametric VaR | Statistical downside estimate. |
+| Conditional VaR | Expected loss beyond VaR. |
+| Maximum Drawdown | Largest cumulative decline. |
+| Rolling Sharpe Ratio | Risk-adjusted profitability. |
+
+---
+
+## Risk Outputs
+
+```text
+results/risk/
+
+├── daily_profit.csv
+├── var_history.csv
+├── cvar_history.csv
+├── sharpe_history.csv
+└── drawdown_history.csv
+```
+
+---
+
+## Experiment Pipeline
+
+The experiment engine automates scenario execution.
+
+---
+
+## Experiment Workflow
+
+```mermaid
+flowchart TD
+
+A[Scenario Library]
+
+B[Configuration]
+
+C[Forecast]
+
+D[Optimization]
+
+E[Battery Aging]
+
+F[Financial Analytics]
+
+G[Risk Analytics]
+
+H[Scenario Summary]
+
+A --> B --> C --> D --> E --> F --> G --> H
+```
+
+---
+
+## Batch Experiment Runner
+
+Execute multiple scenarios automatically.
+
+Example:
+
+```bash
+python main.py --experiments
+```
+
+The runner executes every scenario sequentially and exports standardized results.
+
+---
+
+## Scenario Comparison Outputs
+
+Generated outputs:
+
+```text
+results/experiments/
+
+├── scenario_matrix.csv
+├── comparison_results.csv
+├── pareto_frontier.csv
+├── sensitivity_analysis.xlsx
+└── experiment_summary.json
+```
+
+---
+
+## Data Pipeline Outputs
+
+The pipeline exports structured outputs after every simulation stage.
+
+---
+
+## Dashboard Outputs
+
+```text
+results/dashboard/
+
+├── kpis.json
+├── battery_health.json
+├── revenue.json
+├── risk.json
+├── scenarios.json
+└── dashboard_summary.json
+```
+
+---
+
+## Figure Outputs
+
+```text
+results/figures/
+
+├── forecasting/
+├── optimization/
+├── degradation/
+├── finance/
+├── risk/
+├── scenarios/
+└── dashboard/
+```
+
+Supported export formats:
+
+- PNG
+- PDF
+- SVG (optional)
+
+---
+
+## Export Formats
+
+| Format | Usage |
+|--------|-------|
+| CSV | Raw numerical outputs. |
+| JSON | Dashboard telemetry. |
+| Excel | Scenario summaries. |
+| PNG | Figures and charts. |
+| PDF | Reports and figures. |
+| Markdown | Simulation summaries. |
+
+---
+
+## Testing & Validation
+
+The repository includes automated tests for forecasting, optimization, degradation, analytics, and experiment execution.
+
+---
+
+## Running All Tests
+
+```bash
+pytest -v
+```
+
+---
+
+## Run Individual Test Suites
+
+### Forecasting
+
+```bash
+pytest tests/forecasting -v
+```
+
+### Optimization
+
+```bash
+pytest tests/optimization -v
+```
+
+### Battery Aging
+
+```bash
+pytest tests/battery -v
+```
+
+### Financial Analytics
+
+```bash
+pytest tests/analytics -v
+```
+
+### Backtesting
+
+```bash
+pytest tests/backtesting -v
+```
+
+---
+
+## Test Coverage
+
+| Module | Validation |
+|--------|------------|
+| Data Processing | Dataset validation and preprocessing. |
+| Feature Engineering | Feature generation consistency. |
+| Forecasting | Forecast output validation. |
+| Optimization | Dispatch constraint validation. |
+| Battery Aging | SOH and Rainflow validation. |
+| Financial Analytics | Revenue and EBITDA calculations. |
+| Scenario Engine | Scenario generation and comparison. |
+| Dashboard | KPI JSON generation. |
+
+---
+
+## Validation Checklist
+
+- Dataset integrity.
+- Forecast reproducibility.
+- Dispatch feasibility.
+- SOC boundary validation.
+- SOH consistency.
+- Revenue consistency.
+- Risk metric consistency.
+- Dashboard data generation.
+
+---
+
+## Performance Benchmarks
+
+The project supports two execution modes depending on the workload.
+
+| Mode | Purpose |
+|------|---------|
+| **Fast Mode** | Short verification run for installation and debugging. |
+| **Full Pipeline** | Complete simulation, analytics, figures, dashboard outputs, and experiment summaries. |
+
+---
+
+## Logging
+
+Simulation logs are stored for debugging and reproducibility.
+
+```text
+results/logs/
+
+├── simulation.log
+├── optimization.log
+├── forecasting.log
+├── degradation.log
+└── experiments.log
+```
+
+Logs include timestamps, solver status, experiment progress, and pipeline execution summaries.
+
+---
+---
+
+## Future Plans
+
+The platform will continue evolving with additional forecasting, optimization, and energy management capabilities.
+
+- Improve electricity price forecasting models with additional benchmark comparisons.
+- Enhance battery degradation and lifetime cost analytics.
+- Add multi-market battery dispatch and revenue stacking capabilities.
+- Support renewable energy integration and demand response simulations.
+- Expand digital twin energy management and Virtual Power Plant (VPP) capabilities.
+- Introduce grid flexibility and advanced energy management modules.
+---
+
+## Use Cases
+
+This platform can be used for a wide range of Battery Energy Storage System studies and operational analysis.
+
+### Electricity Market Analysis
+
+- Energy arbitrage simulation.
+- Market price analysis.
+- Peak and off-peak spread analysis.
+- Price volatility analysis.
+
+### Battery Performance Analysis
+
+- Battery dispatch optimization.
+- State of Charge tracking.
+- State of Health monitoring.
+- Battery utilization analysis.
+
+### Financial Analysis
+
+- Revenue estimation.
+- Operating cost analysis.
+- Battery degradation cost estimation.
+- Profitability evaluation.
+
+### Risk Analysis
+
+- Downside risk estimation.
+- Daily profit distribution.
+- Value-at-Risk analysis.
+- Portfolio performance comparison.
+
+### Scenario Evaluation
+
+- Compare battery chemistries.
+- Compare forecast horizons.
+- Compare operating temperatures.
+- Compare battery sizing strategies.
+- Compare degradation assumptions.
+
+---
+
+## Project Outputs
+
+The platform generates structured outputs after every simulation.
+
+## Generated Reports
+
+| Output | Description |
+|--------|-------------|
+| KPI Summary | Operational and financial KPIs. |
+| Financial Summary | Revenue, costs, EBITDA, and operating metrics. |
+| Forecast Report | Forecast accuracy and comparison metrics. |
+| Battery Health Report | SOH, EFC, degradation breakdown, and wear cost. |
+| Risk Report | VaR, CVaR, Sharpe Ratio, and drawdown metrics. |
+| Scenario Summary | Performance comparison across all experiments. |
+
+---
+
+## Generated Visualizations
+
+The simulation automatically generates visualization assets including:
+
+- Electricity price trends.
+- Forecast vs actual prices.
+- Forecast error comparison.
+- Battery dispatch timeline.
+- State of Charge trajectory.
+- State of Health timeline.
+- Revenue waterfall.
+- Daily profit distribution.
+- Risk analytics charts.
+- Scenario comparison charts.
+- Sensitivity analysis charts.
+- Pareto comparison plots.
+
+---
+
+## Export Formats
+
+All generated outputs can be exported in commonly used formats.
+
+| Format | Purpose |
+|--------|---------|
+| CSV | Numerical simulation outputs. |
+| JSON | Dashboard telemetry and KPIs. |
+| Excel | Scenario comparison and summaries. |
+| PNG | Charts and visualizations. |
+| PDF | Reports and exported figures. |
+| Markdown | Simulation summaries. |
+
+---
+
+## Performance Summary
+
+The complete workflow produces outputs from a single simulation run.
+
+| Category | Outputs |
+|----------|---------|
+| Forecasting | Predictions, metrics, residuals, comparison tables. |
+| Optimization | Dispatch schedule, SOC, SOE, throughput timeline. |
+| Battery Aging | SOH history, EFC history, degradation summary. |
+| Financial Analytics | Revenue summary, EBITDA, operating costs. |
+| Risk Analytics | VaR, CVaR, Sharpe Ratio, drawdown metrics. |
+| Experiments | Scenario comparison matrix and sensitivity analysis. |
+| Dashboard | Interactive JSON datasets for Streamlit pages. |
+
+---
+
+## Reproducibility
+
+To reproduce a simulation:
+
+1. Clone the repository.
+2. Create a Python virtual environment.
+3. Install project dependencies.
+4. Install a supported optimization solver.
+5. Run the simulation pipeline.
+6. Launch the Streamlit dashboard to explore generated results.
+
+A complete simulation automatically creates all required output folders inside the `results/` directory.
+
+---
+
+## Contributing
+
+Contributions are welcome to improve forecasting models, optimization strategies, analytics modules, documentation, and visualization components.
+
+## Development Workflow
+
+1. Fork the repository.
+2. Create a new feature branch.
+
+```bash
+git checkout -b feature/your-feature-name
+```
+
+3. Make your changes.
+4. Run formatting and tests.
+5. Commit your changes.
+
+```bash
+git commit -m "Add feature: short description"
+```
+
+6. Push your branch.
+
+```bash
+git push origin feature/your-feature-name
+```
+
+7. Open a Pull Request.
+
+---
+
+## Contribution Areas
+
+Contributions are especially welcome for:
+
+- Electricity forecasting models.
+- Battery degradation models.
+- Optimization improvements.
+- Dashboard enhancements.
+- Documentation improvements.
+- New experiment scenarios.
+- Performance optimization.
+- Unit tests and validation.
+
+---
+
+## Development Checklist
+
+Before submitting a contribution, ensure that:
+
+- [ ] Code runs successfully.
+- [ ] Tests pass successfully.
+- [ ] Documentation is updated if necessary.
+- [ ] New outputs follow the existing directory structure.
+- [ ] Code follows the existing project organization.
+
+---
+
+## Project Guidelines
+
+## Coding Style
+
+- Follow standard Python formatting conventions.
+- Write modular and reusable code.
+- Use descriptive variable and function names.
+- Keep modules independent where possible.
+
+---
+
+## Documentation
+
+Please update documentation whenever:
+
+- A new module is added.
+- A new CLI command is introduced.
+- A new experiment scenario is created.
+- Dashboard functionality changes.
+
+---
+
+## Reporting Issues
+
+If you discover a bug or unexpected behavior, please include:
+
+- Operating System.
+- Python version.
+- Solver used.
+- Error message.
+- Steps to reproduce.
+- Relevant logs or screenshots.
+
+This helps reproduce and resolve issues more efficiently.
+
+---
+
+## Project License
+
+This project is licensed under the **MIT License**.
+
+You are free to:
+
+- Use the project.
+- Modify the source code.
+- Distribute copies.
+- Use it for commercial or non-commercial purposes.
+
+Please include the original license file when redistributing the project.
+
+See the `LICENSE` file for complete license terms.
+
+---
+
+## Acknowledgements
+
+This project builds upon the Python open-source scientific ecosystem.
+
+Core libraries used include:
+
+- Python
+- Pyomo
+- Pandas
+- NumPy
+- Scikit-learn
+- XGBoost
+- LightGBM
+- Plotly
+- Streamlit
+- Matplotlib
+- SciPy
+
+Special thanks to the maintainers and contributors of these open-source projects.
+
+---
+
+## Project Status
+
+Current implementation includes:
+
+| Module | Status |
+|--------|--------|
+| Data Pipeline | ✅ Complete |
+| Feature Engineering | ✅ Complete |
+| Price Forecasting | ✅ Complete |
+| Dispatch Optimization | ✅ Complete |
+| Battery Aging | ✅ Complete |
+| Rolling Backtesting | ✅ Complete |
+| Financial Analytics | ✅ Complete |
+| Risk Analytics | ✅ Complete |
+| Scenario Engine | ✅ Complete |
+| Streamlit Dashboard | ✅ Complete |
+| Figure Generation | ✅ Complete |
+| Testing Framework | ✅ Complete |
+
+---
+
+## Repository Statistics
+
+### Project Components
+
+| Component | Count |
+|-----------|------:|
+| Dashboard Pages | **12** |
+| Simulation Stages | **12** |
+| Scenario Configurations | **28** |
+| Battery Chemistries | **3** |
+| Forecast Horizons | **5** |
+| Risk Metrics | **5+** |
+| Output Categories | **7** |
+
+---
+
+### Getting Help
+
+If you have questions about using the platform:
+
+- Open a GitHub Issue.
+- Start a GitHub Discussion (if enabled).
+- Review the project documentation and examples included in the repository.
+
+---
+
+## Author
+
+### Mohd Nematullah
+
+**Mechanical Engineer | Data Science & AI | Battery Energy Storage Systems | Electricity Market Analytics**
+
+### Areas of Interest
+
+- Battery Energy Storage Systems (BESS)
+- Electricity Market Analytics
+- Machine Learning
+- Optimization
+- Renewable Energy
+- Energy Forecasting
+- Energy Management Systems
+- Digital Twin Analytics
+
+### Connect
+
+- GitHub: `https://github.com/MohdNematullah`
+- LinkedIn: `https://www.linkedin.com/in/mohammed-nematullah-573a18249/`
+
+---
+
+### Citation
+
+If you use this repository in your work, please cite it using the repository information.
+
+```bibtex
+  title   = {Utility-Scale Battery Energy Storage System (BESS) Arbitrage and Electrochemical Degradation Analytics Platform},
+  year    = {2026},
+  license = {MIT},
+```
+
+---
+
+### Star the Repository
+
+If you find this project useful, consider giving it a ⭐ on GitHub.
+
+It helps others discover the project and supports future improvements.
+
+---
+
+<div align="center">
+
+### ⚡ Utility-Scale Battery Energy Storage System (BESS) Arbitrage & Electrochemical Degradation Analytics Platform
+
+End-to-end battery arbitrage simulation, forecasting, optimization, degradation analytics, financial evaluation, and interactive visualization.
+
+**Built with Python • Pyomo • XGBoost • LightGBM • Streamlit • Plotly**
+
+</div>

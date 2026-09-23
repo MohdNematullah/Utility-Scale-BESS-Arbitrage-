@@ -1,8 +1,8 @@
-"""
+﻿"""
 backtesting/metrics.py
 ======================
 
-Research-grade Backtest Metrics & Evaluation Module.
+Backtest Metrics & Evaluation Module.
 
 
 
@@ -14,7 +14,7 @@ Computes:
 - Battery Utilization & Efficiency (Throughput, EFC, RTE %, Daily Cycles, Utilization)
 - Battery Health Metrics (Initial/Final SOH, Fade, Calendar/Cycle Split)
 - Operational Metrics (Charging, Discharging, Idle Hours, SOC Stats)
-- Forecast Error Metrics (MAE, RMSE, WAPE/MAPE, Bias, R²)
+- Forecast Error Metrics (MAE, RMSE, WAPE/MAPE, Bias, RÂ²)
 """
 
 from __future__ import annotations

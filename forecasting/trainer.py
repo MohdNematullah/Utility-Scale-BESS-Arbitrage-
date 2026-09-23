@@ -1,8 +1,8 @@
-"""
+﻿"""
 trainer.py
 ==========
 
-Research-grade forecasting trainer for .
+forecasting trainer for .
 
 Implements
 ----------
@@ -12,8 +12,7 @@ Implements
 4. Model persistence.
 5. Fold summary generation.
 
-Author:  Thesis
-"""
+Author:  """
 
 from dataclasses import dataclass, field
 from pathlib import Path

@@ -1,18 +1,18 @@
-"""
+﻿"""
 backtesting/report_generator.py
 ===============================
 
-Master Thesis Report & Publication Synthesis Engine (Part 9.6)
+Master Report & Publication Synthesis Engine (Part 9.6)
 
 
 
 Capabilities:
 1. LaTeX Booktabs Table Generation:
    - Forecast accuracy, arbitrage KPIs, risk metrics, statistical tests, and tornado rankings.
-2. Comprehensive Markdown Thesis Chapter:
+2. Comprehensive Markdown Chapter:
    - Streamlined Chapter 5 synthesis with clean dictionary bindings.
 3. Master Multi-Tab Excel Workbook:
-   - Institutional 5-tab workbook (master_thesis_evaluation.xlsx).
+   - Institutional 5-tab workbook (master__evaluation.xlsx).
 """
 
 from __future__ import annotations
@@ -37,10 +37,10 @@ class ThesisReportArtifacts:
 class ThesisReportGenerator:
     """
     Synthesizes backtesting and evaluation outputs into publication tables,
-    LaTeX components, and a structured thesis results chapter.
+    LaTeX components, and a structured results chapter.
     """
 
-    def __init__(self, output_directory: Path | str = "backtesting/results/thesis_report"):
+    def __init__(self, output_directory: Path | str = "backtesting/results/_report"):
         self.output_dir = Path(output_directory)
         self.latex_dir = self.output_dir / "latex_tables"
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -261,17 +261,17 @@ Asymmetry Profile & P\&L Skewness / Excess Kurtosis & {skewness:.2f} / {excess_k
         return out_path
 
     # ------------------------------------------------------------------------
-    # Markdown Thesis Chapter Generator
+    # Markdown Chapter Generator
     # ------------------------------------------------------------------------
 
-    def build_thesis_markdown_chapter(
+    def build__markdown_chapter(
         self,
         f_dict: dict[str, Any],
         a_dict: dict[str, Any],
         r_dict: dict[str, Any],
         s_dict: dict[str, Any],
     ) -> Path:
-        out_path = self.output_dir / "THESIS_RESULTS_CHAPTER.md"
+        out_path = self.output_dir / "_RESULTS_CHAPTER.md"
 
         gross = float(a_dict.get('gross_revenue_usd', 0.0))
         deg = float(a_dict.get('degradation_cost_usd', 0.0))
@@ -345,9 +345,9 @@ Refer to LaTeX Table: table_sensitivity_tornado.tex
         self.build_latex_statistical_table(t_dict.get("effect_sizes", []))
         self.build_latex_tornado_table(s_dict.get("tornado_spectrum", []))
 
-        md_file = self.build_thesis_markdown_chapter(f_dict, a_dict, r_dict, s_dict)
+        md_file = self.build__markdown_chapter(f_dict, a_dict, r_dict, s_dict)
 
-        master_excel = self.output_dir / "master_thesis_evaluation.xlsx"
+        master_excel = self.output_dir / "master__evaluation.xlsx"
         with pd.ExcelWriter(master_excel, engine="openpyxl") as writer:
             pd.DataFrame([f_dict]).T.reset_index().to_excel(writer, sheet_name="Forecast_Realism", index=False)
             pd.DataFrame([a_dict]).T.reset_index().to_excel(writer, sheet_name="Arbitrage_Economics", index=False)
@@ -355,7 +355,7 @@ Refer to LaTeX Table: table_sensitivity_tornado.tex
             pd.DataFrame(s_dict.get("tornado_spectrum", [])).to_excel(writer, sheet_name="Tornado_Sensitivity", index=False)
             pd.DataFrame(t_dict.get("effect_sizes", [])).to_excel(writer, sheet_name="Statistical_Significance", index=False)
 
-        manifest_json = self.output_dir / "thesis_report_manifest.json"
+        manifest_json = self.output_dir / "_report_manifest.json"
         manifest_data = {
             "markdown_chapter": str(md_file.name),
             "master_excel_workbook": str(master_excel.name),

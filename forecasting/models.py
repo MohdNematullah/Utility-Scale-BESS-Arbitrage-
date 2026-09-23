@@ -1,8 +1,8 @@
-"""
+﻿"""
 models.py
 =========
 
-Research-grade forecasting models for .
+forecasting models for .
 
 Features
 --------
@@ -127,7 +127,7 @@ class BaseMLForecaster:
 
         payload = joblib.load(path)
 
-        # New research-grade format
+        # New format
         if isinstance(payload, dict):
             self.model = payload["model"]
             self.features = payload["features"]

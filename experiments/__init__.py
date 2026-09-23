@@ -1,8 +1,8 @@
-"""
+﻿"""
 experiments
 ===========
 
- Part 12: Final Research Validation, Reproducibility & Thesis Experiment Suite.
+ Part 12: Final Research Validation, Reproducibility & Experiment Suite.
 
 Modules:
 - experiment_suite: 28-scenario experimental research matrix
@@ -11,7 +11,7 @@ Modules:
 - artifact_manifest: complete SHA256 cryptographic indexing of generated outputs
 - environment_snapshot: OS, Python, git, package versions, and hardware configuration
 - integration_tests: automated programmatic end-to-end pipeline validation
-- final_research_report: thesis summary, master workbook, and LaTeX deliverables
+- final_research_report: summary, master workbook, and LaTeX deliverables
 """
 
 from experiments.artifact_manifest import ArtifactManifestGenerator

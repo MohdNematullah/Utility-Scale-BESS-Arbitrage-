@@ -1,22 +1,22 @@
-"""
+﻿"""
 backtesting/sensitivity_analysis.py
 ==================================
 
-Research-Grade Sensitivity Analysis & Parametric Elasticity Engine (Part 9.4)
+Sensitivity Analysis & Parametric Elasticity Engine (Part 9.4)
 
 
 
 Capabilities:
 1. Multi-Dimensional Sensitivity Evaluation:
    - Forecast Horizon Look-Ahead Elasticity (12h -> 72h)
-   - Thermal Degradation Arrhenius Sensitivity (15°C -> 45°C)
+   - Thermal Degradation Arrhenius Sensitivity (15Â°C -> 45Â°C)
    - Round-Trip Efficiency (RTE) Elasticity (85% -> 95%)
    - Battery Chemistry Architecture Trade-Offs (NMC vs. LFP vs. LTO)
    - Power & Energy Duration Sizing (25MW/50MWh -> 100MW/200MWh)
    - Wear Hurdle Cost Disincentive Sensitivity ($0 -> $25/MWh)
 2. Quantitative Elasticity Analytics:
    - Point & Arc Elasticity (% Delta Net Revenue / % Delta Parameter)
-   - Marginal Value per Unit Variation ($/Hour look-ahead, $/°C, $/1% RTE)
+   - Marginal Value per Unit Variation ($/Hour look-ahead, $/Â°C, $/1% RTE)
 3. Tornado Impact Spectrum:
    - High-to-low parametric rank swing relative to baseline net revenue
 4. Multi-Criteria Radar / Spider Formulation:
@@ -217,7 +217,7 @@ class SensitivityAnalysisEngine:
                     marginal = (y1 - y0) / (t1 - t0)
                     records.append(ElasticityRecord(
                         parameter_dimension="Thermal_Sensitivity",
-                        parameter_variation=f"{t1:.0f}°C vs {t0:.0f}°C",
+                        parameter_variation=f"{t1:.0f}Â°C vs {t0:.0f}Â°C",
                         base_param=t0,
                         varied_param=t1,
                         pct_delta_param=round(pct_t, 2),
@@ -510,7 +510,7 @@ class SensitivityAnalysisEngine:
         line1 = ax1.plot(t, deg_cost, color="#d62728", marker="s", linewidth=2.0, label="Degradation Cost ($k)")
         line2 = ax2.plot(t, fade_pct, color="#e1974c", marker="^", linestyle="--", linewidth=2.0, label="Capacity Fade (% Loss)")
 
-        ax1.set_xlabel("Ambient Operating Cell Temperature (°C)", fontsize=10)
+        ax1.set_xlabel("Ambient Operating Cell Temperature (Â°C)", fontsize=10)
         ax1.set_ylabel("Degradation Wear Cost ($k USD)", color="#d62728", fontsize=10)
         ax2.set_ylabel("Annual Capacity Fade (%)", color="#e1974c", fontsize=10)
         ax1.set_xticks(t)

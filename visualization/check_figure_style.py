@@ -1,4 +1,4 @@
-"""
+﻿"""
 visualization/check_figure_style.py
 ===================================
 
@@ -28,7 +28,7 @@ set_ieee_style()
 print("IEEE/Nature rcParams successfully applied to Matplotlib engine.")
 
 # 2. Build multi-panel demonstration figure showcasing all semantic roles
-dims = get_figure_dimensions("thesis_full_tall")
+dims = get_figure_dimensions("_full_tall")
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=dims, gridspec_kw={"height_ratios": [1.5, 1.0]})
 
 # Generate smooth synthetic test data
@@ -40,7 +40,7 @@ perfect_price = actual_price + 1.5
 ax1.plot(x, actual_price, color=COLOR_PALETTE.actual, label="Actual Price", linewidth=2.0)
 ax1.plot(x, forecast_price, color=COLOR_PALETTE.forecast, linestyle="--", label="Forecast (ML)")
 ax1.plot(x, perfect_price, color=COLOR_PALETTE.perfect_foresight, linestyle=":", label="Clairvoyant Upper Bound")
-ax1.fill_between(x, forecast_price - 5.0, forecast_price + 5.0, color=COLOR_PALETTE.forecast, alpha=0.15, label="±1 MAE Band")
+ax1.fill_between(x, forecast_price - 5.0, forecast_price + 5.0, color=COLOR_PALETTE.forecast, alpha=0.15, label="Â±1 MAE Band")
 
 format_axes(ax1, title="Dispatch Price Trajectory & Forecast Confidence", ylabel="Price ($/MWh)")
 ax1.legend(loc="upper left")
@@ -71,5 +71,5 @@ assert len(saved) == 4, "Expected exactly 4 formats (PNG, PDF, SVG, TIFF)."
 assert all(p.exists() and p.stat().st_size > 1000 for p in saved.values()), "All export files must be non-empty."
 
 print(LINE)
-print("Figure style & multi-format export verified successfully ✓")
+print("Figure style & multi-format export verified successfully âœ“")
 print(LINE)

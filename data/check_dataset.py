@@ -1,4 +1,4 @@
-"""
+﻿"""
 check_dataset.py
 
 Dataset diagnostics for .
@@ -72,7 +72,7 @@ monthly = (
 print("\nMonthly Price Statistics")
 print(monthly.round(2))
 
-# Save monthly summary for thesis tables
+# Save monthly summary for tables
 monthly.to_csv("data/raw/monthly_price_statistics.csv")
 
 print("\nSaved monthly statistics:")

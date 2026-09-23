@@ -1,4 +1,4 @@
-"""
+﻿"""
 tests/experiments/test_experiments.py
 =====================================
 
@@ -50,7 +50,7 @@ class TestExperimentsSuite:
         runner = ExperimentSuiteRunner(output_dir=tmp_path / "exp")
         df = runner.run_all_scenarios()
         builder = FinalResearchReportBuilder(output_dir=tmp_path / "report")
-        j_p, c_p, x_p, m_p = builder.build_complete_thesis_package(
+        j_p, c_p, x_p, m_p = builder.build_complete__package(
             df, {"gross_revenue_usd": 4982570.0, "net_operating_profit_usd": 4350206.0}
         )
         assert j_p.exists()

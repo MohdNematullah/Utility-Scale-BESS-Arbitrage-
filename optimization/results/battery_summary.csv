@@ -1,2 +1,2 @@
 experiment_name,market,horizon_hours,total_revenue,total_charge_energy,total_discharge_energy,round_trip_efficiency,soc_min,soc_max,soc_initial,soc_terminal,average_price,maximum_price,minimum_price
-Rolling_Horizon_Battery_Arbitrage,ERCOT_DAM,24,3739.4715999999994,134.2105,171.125,0.9025,10.0,90.0,50.0,50.0,39.71618333333333,58.6087,25.9886
+Rolling_Horizon_Battery_Arbitrage,ERCOT_DAM,24,1741.3035999999993,176.3158,159.125,0.9025,10.0,90.0,50.0,50.0,39.71618333333333,58.6087,25.9886

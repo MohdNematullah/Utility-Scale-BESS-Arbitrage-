@@ -1,4 +1,4 @@
-"""
+﻿"""
 visualization/financial_figures.py
 ==================================
 
@@ -7,12 +7,12 @@ Publication-Grade Financial Performance & Arbitrage Visualizations (Part 10.5)
 
 
 Generates the 6 core techno-economic figures for Chapter 7:
-1. Figure 10.5.1 — Cumulative Revenue Trajectory (Gross vs. Net Arbitrage Revenue vs. Cumulative OPEX)
-2. Figure 10.5.2 — Daily Arbitrage Cash Flow & Moving Trend (Daily net yield with 14-day rolling mean)
-3. Figure 10.5.3 — Financial Value Waterfall (Gross revenue down to net EBITDA)
-4. Figure 10.5.4 — Daily Net Profit Distribution (Empirical histogram, kernel density, VaR 95% threshold)
-5. Figure 10.5.5 — Monthly Arbitrage Yield & Realized Spread (Monthly revenue bars vs. $/MWh spread line)
-6. Figure 10.5.6 — Multi-Year Lifetime Asset Valuation (10-year projected yield, OPEX, degradation, terminal value)
+1. Figure 10.5.1 â€” Cumulative Revenue Trajectory (Gross vs. Net Arbitrage Revenue vs. Cumulative OPEX)
+2. Figure 10.5.2 â€” Daily Arbitrage Cash Flow & Moving Trend (Daily net yield with 14-day rolling mean)
+3. Figure 10.5.3 â€” Financial Value Waterfall (Gross revenue down to net EBITDA)
+4. Figure 10.5.4 â€” Daily Net Profit Distribution (Empirical histogram, kernel density, VaR 95% threshold)
+5. Figure 10.5.5 â€” Monthly Arbitrage Yield & Realized Spread (Monthly revenue bars vs. $/MWh spread line)
+6. Figure 10.5.6 â€” Multi-Year Lifetime Asset Valuation (10-year projected yield, OPEX, degradation, terminal value)
 """
 
 from __future__ import annotations
@@ -66,7 +66,7 @@ class FinancialFigureGenerator:
         set_ieee_style()
 
     # ------------------------------------------------------------------------
-    # Figure 10.5.1 — Cumulative Revenue Trajectory
+    # Figure 10.5.1 â€” Cumulative Revenue Trajectory
     # ------------------------------------------------------------------------
     def plot_cumulative_revenue(
         self,
@@ -74,7 +74,7 @@ class FinancialFigureGenerator:
         degradation_df: pd.DataFrame | None = None,
         filename_stem: str = "Figure_10_5_1_Cumulative_Revenue",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("thesis_full")
+        dims = get_figure_dimensions("_full")
         fig, ax = plt.subplots(figsize=dims)
 
         rev_col = next((c for c in ["net_revenue_usd", "net_revenue_$", "gross_revenue_usd"] if c in dispatch_df.columns), dispatch_df.columns[0])
@@ -124,7 +124,7 @@ class FinancialFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.5.2 — Daily Revenue Dynamics
+    # Figure 10.5.2 â€” Daily Revenue Dynamics
     # ------------------------------------------------------------------------
     def plot_daily_revenue(
         self,
@@ -132,7 +132,7 @@ class FinancialFigureGenerator:
         degradation_df: pd.DataFrame | None = None,
         filename_stem: str = "Figure_10_5_2_Daily_Revenue",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("thesis_full")
+        dims = get_figure_dimensions("_full")
         fig, ax = plt.subplots(figsize=dims)
 
         rev_col = next((c for c in ["net_revenue_usd", "net_revenue_$", "gross_revenue_usd"] if c in dispatch_df.columns), dispatch_df.columns[0])
@@ -164,14 +164,14 @@ class FinancialFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.5.3 — Financial Value Waterfall
+    # Figure 10.5.3 â€” Financial Value Waterfall
     # ------------------------------------------------------------------------
     def plot_revenue_waterfall(
         self,
         summary_dict: dict[str, Any] | None = None,
         filename_stem: str = "Figure_10_5_3_Revenue_Waterfall",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("thesis_full")
+        dims = get_figure_dimensions("_full")
         fig, ax = plt.subplots(figsize=dims)
 
         d = summary_dict or {}
@@ -217,7 +217,7 @@ class FinancialFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.5.4 — Revenue Distribution
+    # Figure 10.5.4 â€” Revenue Distribution
     # ------------------------------------------------------------------------
     def plot_revenue_distribution(
         self,
@@ -225,7 +225,7 @@ class FinancialFigureGenerator:
         degradation_df: pd.DataFrame | None = None,
         filename_stem: str = "Figure_10_5_4_Revenue_Distribution",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("thesis_full")
+        dims = get_figure_dimensions("_full")
         fig, ax = plt.subplots(figsize=dims)
 
         rev_col = next((c for c in ["net_revenue_usd", "net_revenue_$", "gross_revenue_usd"] if c in dispatch_df.columns), dispatch_df.columns[0])
@@ -257,14 +257,14 @@ class FinancialFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.5.5 — Monthly Revenue & Spread Dynamics
+    # Figure 10.5.5 â€” Monthly Revenue & Spread Dynamics
     # ------------------------------------------------------------------------
     def plot_monthly_revenue(
         self,
         dispatch_df: pd.DataFrame,
         filename_stem: str = "Figure_10_5_5_Monthly_Revenue",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("thesis_full")
+        dims = get_figure_dimensions("_full")
         fig, ax1 = plt.subplots(figsize=dims)
         ax2 = ax1.twinx()
 
@@ -318,7 +318,7 @@ class FinancialFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.5.6 — Multi-Year Lifetime Asset Valuation Breakdown
+    # Figure 10.5.6 â€” Multi-Year Lifetime Asset Valuation Breakdown
     # ------------------------------------------------------------------------
     def plot_lifetime_value_breakdown(
         self,
@@ -329,7 +329,7 @@ class FinancialFigureGenerator:
         project_years: int = 10,
         filename_stem: str = "Figure_10_5_6_Lifetime_Value_Breakdown",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("thesis_full")
+        dims = get_figure_dimensions("_full")
         fig, ax = plt.subplots(figsize=dims)
 
         years = np.arange(1, project_years + 1)

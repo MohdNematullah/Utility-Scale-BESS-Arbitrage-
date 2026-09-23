@@ -1,8 +1,8 @@
-"""
+﻿"""
 backtesting/statistical_tests.py
 ================================
 
-Research-Grade Statistical Significance & Hypothesis Testing Engine (Part 9.5)
+Statistical Significance & Hypothesis Testing Engine (Part 9.5)
 
 
 
@@ -484,7 +484,7 @@ class StatisticalTestEngine:
                 matrix_annot[j, i] = f"{-res.hln_statistic:.2f}\n{sig_mark}"
 
         for k in range(n):
-            matrix_annot[k, k] = "—"
+            matrix_annot[k, k] = "â€”"
 
         v_max = max(float(np.max(np.abs(matrix_stat))), 2.0)
         im = ax.imshow(matrix_stat, cmap="coolwarm", vmin=-v_max, vmax=v_max)
@@ -519,7 +519,7 @@ class StatisticalTestEngine:
         cum_d = np.cumsum(d_t)
         x = np.arange(len(d_t))
 
-        ax1.plot(x, cum_d, color="#1f77b4", linewidth=1.8, label=f"Cumulative Differential (L_{model_a_name} − L_{model_b_name})")
+        ax1.plot(x, cum_d, color="#1f77b4", linewidth=1.8, label=f"Cumulative Differential (L_{model_a_name} âˆ’ L_{model_b_name})")
         ax1.axhline(0, color="black", linestyle="--", linewidth=0.8)
         ax1.fill_between(x, cum_d, 0, where=(cum_d < 0), color="#2ca02c", alpha=0.2, label=f"{model_a_name} Superiority Regime")
         ax1.fill_between(x, cum_d, 0, where=(cum_d > 0), color="#d62728", alpha=0.2, label=f"{model_b_name} Superiority Regime")
@@ -563,7 +563,7 @@ class StatisticalTestEngine:
         ax.axvline(mu, color="blue", linestyle=":", linewidth=1.5, label=rf"Observed Mean ($\mu={mu:.2f}$)")
 
         ax.set_title(f"Paired Difference Distribution: {comparison_name}", fontsize=11, fontweight="bold")
-        ax.set_xlabel("Paired Difference [Series A − Series B]", fontsize=10)
+        ax.set_xlabel("Paired Difference [Series A âˆ’ Series B]", fontsize=10)
         ax.set_ylabel("Probability Density", fontsize=10)
         ax.grid(True, linestyle="--", alpha=0.5)
 

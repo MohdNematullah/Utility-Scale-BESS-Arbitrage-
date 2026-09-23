@@ -1,19 +1,19 @@
-
+﻿
 """
 recursive_engine.py
 ===================
 
-Research-grade Recursive Multi-Step Forecasting Engine
+Recursive Multi-Step Forecasting Engine
 for .
 
 Implements recursive 24h / 48h forecasting without
 future-data leakage.
 
 Compatible with:
-    • features/engineering.py
-    • forecasting/models.py
-    • forecasting/trainer.py
-    • backtesting/rolling_runner.py
+    â€¢ features/engineering.py
+    â€¢ forecasting/models.py
+    â€¢ forecasting/trainer.py
+    â€¢ backtesting/rolling_runner.py
 """
 
 from dataclasses import dataclass

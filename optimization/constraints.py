@@ -1,18 +1,16 @@
-
-"""
+﻿"""
 constraints.py
 ==============
 
-Research-grade battery operational constraints for .
+battery operational constraints.
 
 Implements:
-
-• SOC dynamics
-• Charge/discharge limits
-• SOC operating limits
-• Initial SOC
-• Terminal SOC
-• LP-compatible no simultaneous charge/discharge constraint
+• End-of-interval SOC dynamics
+• Charge/discharge power limits
+• SOC operating boundaries
+• Initial SOC continuity
+• Terminal SOC targets
+• LP-compatible non-simultaneous charge/discharge constraints
 """
 
 from pyomo.environ import Constraint
@@ -23,14 +21,17 @@ from pyomo.environ import Constraint
 # ============================================================
 
 def initial_soc_constraint(model):
-    """
-    First timestep SOC.
-    """
-
+    """Stored energy at the end of the first hour."""
     first = model.T.first()
-
     return Constraint(
-        expr=model.soc[first] == model.initial_soc
+        expr=model.soc[first]
+        == model.initial_soc
+        + (
+            model.charge_efficiency
+            * model.charge_power[first]
+            - model.discharge_power[first]
+            / model.discharge_efficiency
+        ) * model.delta_t
     )
 
 
@@ -39,31 +40,21 @@ def initial_soc_constraint(model):
 # ============================================================
 
 def soc_dynamics_constraint(model):
-    """
-    SOC(t) = SOC(t-1)
-           + η_charge * charge
-           - discharge / η_discharge
-    """
-
+    """Stored energy at the end of each later hour."""
     first = model.T.first()
 
     def rule(m, t):
-
         if t == first:
             return Constraint.Skip
 
         previous = t - 1
-
         return (
             m.soc[t]
             == m.soc[previous]
             + (
-                m.charge_efficiency
-                * m.charge_power[previous]
-                - m.discharge_power[previous]
-                / m.discharge_efficiency
-            )
-            * m.delta_t
+                m.charge_efficiency * m.charge_power[t]
+                - m.discharge_power[t] / m.discharge_efficiency
+            ) * m.delta_t
         )
 
     return Constraint(model.T, rule=rule)
@@ -74,7 +65,6 @@ def soc_dynamics_constraint(model):
 # ============================================================
 
 def soc_min_constraint(model):
-
     return Constraint(
         model.T,
         rule=lambda m, t: m.soc[t] >= m.soc_min,
@@ -86,7 +76,6 @@ def soc_min_constraint(model):
 # ============================================================
 
 def soc_max_constraint(model):
-
     return Constraint(
         model.T,
         rule=lambda m, t: m.soc[t] <= m.soc_max,
@@ -98,7 +87,6 @@ def soc_max_constraint(model):
 # ============================================================
 
 def charge_power_limit(model):
-
     return Constraint(
         model.T,
         rule=lambda m, t: (
@@ -114,7 +102,6 @@ def charge_power_limit(model):
 # ============================================================
 
 def discharge_power_limit(model):
-
     return Constraint(
         model.T,
         rule=lambda m, t: (
@@ -131,14 +118,11 @@ def discharge_power_limit(model):
 
 def terminal_soc_constraint(model):
     """
-    End horizon with desired SOC.
+    End horizon with desired SOC evaluated after the final action.
     """
-
     last = model.T.last()
-
     return Constraint(
-        expr=model.soc[last]
-        == model.terminal_soc
+        expr=model.soc[last] == model.terminal_soc
     )
 
 
@@ -148,22 +132,16 @@ def terminal_soc_constraint(model):
 
 def relaxed_operation_constraint(model):
     """
-    LP relaxation.
-
-    charge + discharge ≤ max_power
+    LP relaxation: charge + discharge <= max_power.
     """
-
     limit = max(
         float(model.max_charge_power.value),
         float(model.max_discharge_power.value),
     )
-
     return Constraint(
         model.T,
         rule=lambda m, t: (
-            m.charge_power[t]
-            + m.discharge_power[t]
-            <= limit
+            m.charge_power[t] + m.discharge_power[t] <= limit
         ),
     )
 
@@ -174,39 +152,15 @@ def relaxed_operation_constraint(model):
 
 def attach_constraints(model):
     """
-    Attach every battery constraint.
+    Attach every battery constraint to the Pyomo model instance.
     """
-
-    model.initial_soc_constraint = (
-        initial_soc_constraint(model)
-    )
-
-    model.soc_dynamics_constraint = (
-        soc_dynamics_constraint(model)
-    )
-
-    model.soc_min_constraint = (
-        soc_min_constraint(model)
-    )
-
-    model.soc_max_constraint = (
-        soc_max_constraint(model)
-    )
-
-    model.charge_limit_constraint = (
-        charge_power_limit(model)
-    )
-
-    model.discharge_limit_constraint = (
-        discharge_power_limit(model)
-    )
-
-    model.terminal_soc_constraint = (
-        terminal_soc_constraint(model)
-    )
-
-    model.operation_constraint = (
-        relaxed_operation_constraint(model)
-    )
+    model.initial_soc_constraint = initial_soc_constraint(model)
+    model.soc_dynamics_constraint = soc_dynamics_constraint(model)
+    model.soc_min_constraint = soc_min_constraint(model)
+    model.soc_max_constraint = soc_max_constraint(model)
+    model.charge_limit_constraint = charge_power_limit(model)
+    model.discharge_limit_constraint = discharge_power_limit(model)
+    model.terminal_soc_constraint = terminal_soc_constraint(model)
+    model.operation_constraint = relaxed_operation_constraint(model)
 
     return model

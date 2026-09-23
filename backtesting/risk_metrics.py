@@ -1,8 +1,8 @@
-"""
+﻿"""
 backtesting/risk_metrics.py
 ===========================
 
-Research-Grade Financial Risk & Downside Volatility Engine (Part 9.3)
+Financial Risk & Downside Volatility Engine (Part 9.3)
 
 
 
