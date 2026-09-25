@@ -6,7 +6,7 @@ Verification and sanity-check script for Report Generator Module (Part 9.6).
 """
 
 from pathlib import Path
-from backtesting.report_generator import ThesisReportGenerator
+from backtesting.report_generator import ReportGenerator
 
 LINE = "=" * 75
 
@@ -14,8 +14,8 @@ print(LINE)
 print(" REPORT & PUBLICATION SYNTHESIZER CHECK (PART 9.6)")
 print(LINE)
 
-generator = ThesisReportGenerator(output_directory="backtesting/results/_report")
-artifacts = generator.generate_all_reports()
+generator = ReportGenerator(output_directory="backtesting/results/_report")
+artifacts = generator.generate__all__reports()
 
 print("-" * 75)
 print("GENERATED PUBLICATION ARTIFACTS")

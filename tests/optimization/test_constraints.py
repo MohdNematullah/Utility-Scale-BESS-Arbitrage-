@@ -1,4 +1,4 @@
-
+﻿
 from pyomo.environ import (
     ConcreteModel,
     RangeSet,
@@ -7,7 +7,7 @@ from pyomo.environ import (
     NonNegativeReals,
 )
 
-from optimization.constraints import attach_constraints
+from optimization.constraints import attach__constraints
 
 
 def build_model():
@@ -51,7 +51,7 @@ def build_model():
         domain=NonNegativeReals,
     )
 
-    return attach_constraints(model)
+    return attach__constraints(model)
 
 
 def test_constraints_created():

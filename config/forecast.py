@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+﻿from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class ForecastConfig:
@@ -6,16 +6,16 @@ class ForecastConfig:
     Forecasting configuration.
     """
 
-    target_column: str = "price"
+    target__column: str = "price"
 
-    forecast_horizon: int = 48
-    execution_horizon: int = 24
+    forecast__horizon: int = 48
+    execution__horizon: int = 24
 
-    train_fraction: float = 0.70
-    validation_fraction: float = 0.15
-    test_fraction: float = 0.15
+    train__fraction: float = 0.70
+    validation__fraction: float = 0.15
+    test__fraction: float = 0.15
 
-    random_state: int = 42
+    random__state: int = 42
 
-    lag_hours = (1, 2, 3, 6, 12, 24, 48, 72, 168)
-    rolling_windows = (6, 12, 24, 48, 168)
+    lag__hours = (1, 2, 3, 6, 12, 24, 48, 72, 168)
+    rolling__windows = (6, 12, 24, 48, 168)

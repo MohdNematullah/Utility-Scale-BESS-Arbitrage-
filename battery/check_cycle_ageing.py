@@ -1,7 +1,7 @@
-"""
+﻿"""
 check_cycle_ageing.py
 
-Verification script for Part 7.3 — Cycle Ageing Model.
+Verification script for Part 7.3 â€” Cycle Ageing Model.
 """
 
 from battery.cycle_ageing import CycleAgeingModel
@@ -27,7 +27,7 @@ print(f"EFC                     : {result.equivalent_full_cycles:.4f}")
 print(f"Energy Throughput       : {throughput:.2f} MWh")
 print(f"Average DoD             : {result.average_dod:.2%}")
 print(f"Average C-rate          : {result.average_c_rate:.2f}")
-print(f"Temperature             : {result.temperature_c:.1f} °C")
+print(f"Temperature             : {result.temperature_c:.1f} Â°C")
 
 print()
 print(f"Capacity Loss           : {result.capacity_loss_fraction:.6f}")
@@ -40,5 +40,5 @@ print(f"C-rate Factor (1C)      : {model.c_rate_factor(1.0):.4f}")
 print(f"Temperature Factor (25C): {model.temperature_factor(25.0):.4f}")
 
 print("=" * 70)
-print("Cycle ageing verified successfully ✓")
+print("Cycle ageing verified successfully âœ“")
 print("=" * 70)

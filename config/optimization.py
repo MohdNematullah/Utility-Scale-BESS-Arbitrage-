@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+﻿from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class OptimizationConfig:
@@ -6,14 +6,14 @@ class OptimizationConfig:
     Rolling horizon optimization settings.
     """
 
-    solver_name: str = "gurobi"
+    solver__name: str = "gurobi"
 
-    optimization_window_hours: int = 48
-    execution_window_hours: int = 24
+    optimization__window__hours: int = 48
+    execution__window__hours: int = 24
 
-    terminal_soc_mode: str = "hard"
+    terminal__soc__mode: str = "hard"
 
-    include_degradation_cost: bool = True
+    include__degradation__cost: bool = True
 
-    mip_gap: float = 1e-4
-    time_limit_seconds: int = 300
+    mip__gap: float = 1e-4
+    time__limit__seconds: int = 300

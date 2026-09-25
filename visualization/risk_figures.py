@@ -7,11 +7,11 @@ Publication-Grade Risk & Downside Volatility Visualizations (Part 10.6)
 
 
 Generates the 5 core financial risk figures for Chapter 8:
-1. Figure 10.6.1 â€” Daily Net Profit Distribution (Empirical histogram, normal density fit, win rate %)
-2. Figure 10.6.2 â€” Drawdown & High-Water Mark Trajectory (Cumulative equity curve vs. underwater depth)
-3. Figure 10.6.3 â€” Extreme Tail Risk & Value at Risk (Loss distribution with 95%/99% VaR and CVaR cutoffs)
-4. Figure 10.6.4 â€” Rolling Risk Dynamics (30-day rolling annualized volatility vs. rolling Sharpe ratio)
-5. Figure 10.6.5 â€” Return Distribution Moments (Kurtosis, skewness, Gaussian reference parity)
+1. Figure 10.6.1 - Daily Net Profit Distribution (Empirical histogram, normal density fit, win rate %)
+2. Figure 10.6.2 - Drawdown & High-Water Mark Trajectory (Cumulative equity curve vs. underwater depth)
+3. Figure 10.6.3 - Extreme Tail Risk & Value at Risk (Loss distribution with 95%/99% VaR and CVaR cutoffs)
+4. Figure 10.6.4 - Rolling Risk Dynamics (30-day rolling annualized volatility vs. rolling Sharpe ratio)
+5. Figure 10.6.5 - Return Distribution Moments (Kurtosis, skewness, Gaussian reference parity)
 """
 
 from __future__ import annotations
@@ -31,7 +31,7 @@ from visualization.figure_style import (
     format_axes,
     get_figure_dimensions,
     save_publication_figure,
-    set_ieee_style,
+    set_style,
 )
 
 
@@ -61,7 +61,7 @@ class RiskFigureGenerator:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.formats = tuple(formats)
         self.dpi = dpi
-        set_ieee_style()
+        set_style()
 
     # ------------------------------------------------------------------------
     # Helper: Resolve Daily P&L Array
@@ -92,14 +92,14 @@ class RiskFigureGenerator:
         return np.asarray(daily_net, dtype=float)
 
     # ------------------------------------------------------------------------
-    # Figure 10.6.1 â€” Daily Profit Distribution & Win Rate
+    # Figure 10.6.1 - Daily Profit Distribution & Win Rate
     # ------------------------------------------------------------------------
     def plot_daily_profit_distribution(
         self,
         daily_pnl: np.ndarray,
         filename_stem: str = "Figure_10_6_1_Daily_Profit_Distribution",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         pnl = np.asarray(daily_pnl, dtype=float)
@@ -148,14 +148,14 @@ class RiskFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.6.2 â€” Drawdown & High-Water Mark Curve
+    # Figure 10.6.2 - Drawdown & High-Water Mark Curve
     # ------------------------------------------------------------------------
     def plot_drawdown_curve(
         self,
         daily_pnl: np.ndarray,
         filename_stem: str = "Figure_10_6_2_Drawdown_Curve",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full_tall")
+        dims = get_figure_dimensions("full_tall")
         fig, (ax1, ax2) = plt.subplots(
             2, 1, figsize=dims, sharex=True, gridspec_kw={"height_ratios": [1.8, 1.0]}
         )
@@ -205,14 +205,14 @@ class RiskFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.6.3 â€” VaR / CVaR Extreme Tail Risk
+    # Figure 10.6.3 - VaR / CVaR Extreme Tail Risk
     # ------------------------------------------------------------------------
     def plot_var_cvar_tail(
         self,
         daily_pnl: np.ndarray,
         filename_stem: str = "Figure_10_6_3_VaR_CVaR_Tail",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         pnl = np.asarray(daily_pnl, dtype=float)
@@ -257,7 +257,7 @@ class RiskFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.6.4 â€” Rolling Volatility & Sharpe Profile
+    # Figure 10.6.4 - Rolling Volatility & Sharpe Profile
     # ------------------------------------------------------------------------
     def plot_rolling_volatility(
         self,
@@ -267,7 +267,7 @@ class RiskFigureGenerator:
         capex_usd: float = 35000000.0,
         filename_stem: str = "Figure_10_6_4_Rolling_Volatility",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax1 = plt.subplots(figsize=dims)
         ax2 = ax1.twinx()
 
@@ -310,14 +310,14 @@ class RiskFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.6.5 â€” Return Distribution Moments (Skewness & Kurtosis)
+    # Figure 10.6.5 - Return Distribution Moments (Skewness & Kurtosis)
     # ------------------------------------------------------------------------
     def plot_return_distribution(
         self,
         daily_pnl: np.ndarray,
         filename_stem: str = "Figure_10_6_5_Return_Distribution",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         pnl = np.asarray(daily_pnl, dtype=float)

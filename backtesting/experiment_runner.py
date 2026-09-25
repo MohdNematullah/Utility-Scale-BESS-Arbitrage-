@@ -1,10 +1,8 @@
-"""
+﻿"""
 backtesting/experiment_runner.py
 ================================
 
 Master Experiment Orchestrator & Batch Execution Engine
-
-
 
 Responsibilities:
 1. Orchestrate single, periodic, and batch scenario experiments.
@@ -24,15 +22,15 @@ import json
 import logging
 import os
 import platform
+import random
 import subprocess
 import sys
 import time
-import random
-import numpy as np
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Sequence
+from typing import Any, Sequence
 
+import numpy as np
 import pandas as pd
 
 from backtesting.config import BacktestConfig, DEFAULT_BACKTEST_CONFIG
@@ -61,6 +59,7 @@ def set_deterministic_seed(seed: int = 42) -> None:
                 torch.cuda.manual_seed_all(seed)
         except ImportError:
             pass
+
 
 def get_git_commit_hash() -> str:
     """Extracts short Git commit hash of current repository."""
@@ -168,7 +167,7 @@ class MasterExperimentResult:
 
 class ExperimentRunner:
     """
-    Production-grade Experiment Orchestration Engine for .
+    Production-grade Experiment Orchestration Engine for BTA-V5.0.
     """
 
     def __init__(
@@ -192,7 +191,6 @@ class ExperimentRunner:
     def _update_registry(self, record: MasterRegistryRecord) -> None:
         df = pd.read_csv(self.registry_path)
         record_dict = asdict(record)
-        # Update if ID exists, else append
         if record.experiment_id in df["experiment_id"].values:
             idx = df.index[df["experiment_id"] == record.experiment_id].tolist()[0]
             for col, val in record_dict.items():
@@ -212,7 +210,6 @@ class ExperimentRunner:
         fh.setFormatter(formatter)
         exp_logger.addHandler(fh)
 
-        # Stream to stdout
         sh = logging.StreamHandler(sys.stdout)
         sh.setFormatter(formatter)
         exp_logger.addHandler(sh)
@@ -226,7 +223,7 @@ class ExperimentRunner:
         battery_config: BatteryDegradationConfig = DEFAULT_BATTERY_CONFIG,
     ) -> MasterExperimentResult:
         """
-        Executes a single end-to-end scenario experiment with full audit logging,
+        Executes a single end-to-end scenario experiment with audit logging,
         checkpointing, metrics calculation, and artifact export.
         """
         exp_dir = config.experiment_directory
@@ -249,12 +246,10 @@ class ExperimentRunner:
                 ckpt_data = json.load(f)
             if ckpt_data.get("status") == "Completed":
                 exp_logger.info("Scenario was already completed. Skipping simulation.")
-                # Load existing summary and return
                 summary_df = pd.read_csv(exp_dir / "metrics_summary.csv")
                 metrics_summary = dict(zip(summary_df["metric"], summary_df["value"]))
                 file_handler.close()
                 exp_logger.removeHandler(file_handler)
-                # Reconstruct result wrapper
                 return self._build_completed_result(config, exp_dir, metrics_summary)
 
         # Configure Backtest Engine
@@ -268,9 +263,14 @@ class ExperimentRunner:
         # Slice features if dates provided
         exec_features = features.copy()
         if config.start_date is not None or config.end_date is not None:
-            tz = exec_features.index.tz
-            start_ts = pd.to_datetime(config.start_date).tz_localize(tz) if config.start_date else exec_features.index[0]
-            end_ts = pd.to_datetime(config.end_date).tz_localize(tz) if config.end_date else exec_features.index[-1]
+            if hasattr(exec_features.index, "tz") and exec_features.index.tz is not None:
+                tz = exec_features.index.tz
+                start_ts = pd.to_datetime(config.start_date).tz_localize(tz) if config.start_date else exec_features.index[0]
+                end_ts = pd.to_datetime(config.end_date).tz_localize(tz) if config.end_date else exec_features.index[-1]
+            else:
+                start_ts = pd.to_datetime(config.start_date) if config.start_date else exec_features.index[0]
+                end_ts = pd.to_datetime(config.end_date) if config.end_date else exec_features.index[-1]
+
             exec_features = exec_features.loc[(exec_features.index >= start_ts) & (exec_features.index <= end_ts)]
             exp_logger.info("Filtered execution window: %s to %s (%d rows)", start_ts, end_ts, len(exec_features))
 
@@ -280,7 +280,8 @@ class ExperimentRunner:
             feature_dataframe=exec_features,
             config=backtest_cfg,
         )
-        engine.ageing.config = battery_config
+        if hasattr(engine, "ageing"):
+            engine.ageing.config = battery_config
 
         exp_logger.info("Executing rolling-horizon backtest loop...")
         backtest_start = time.perf_counter()
@@ -292,15 +293,15 @@ class ExperimentRunner:
         exp_logger.info("Backtest loop completed in %.2f s (avg %.4f s/window)",
                         timing.total_runtime_seconds, timing.avg_window_runtime_seconds)
 
-        # Evaluate Research Metrics
+        # Evaluate Metrics
         exp_logger.info("Computing financial, battery health, and operational KPIs...")
         metrics_engine = BacktestMetrics()
         metrics_res = metrics_engine.evaluate(result.dispatch_history, result.degradation_history)
 
-        # Export All Reports & Figures (Part 8.4)
+        # Export All Reports & Figures
         exported_paths = {}
         if config.auto_export_reports:
-            exp_logger.info("Generating CSVs, Excel report, JSON summary, and 9 research figures...")
+            exp_logger.info("Generating CSVs, Excel report, JSON summary, and figures...")
             export_start = time.perf_counter()
             exporter = BacktestExportEngine(output_directory=str(exp_dir))
             exp_artifacts = exporter.export(result)
@@ -342,9 +343,9 @@ class ExperimentRunner:
                 "forecast_horizon_hours": config.forecast_horizon_hours,
                 "implementation_horizon_hours": config.implementation_horizon_hours,
                 "rolling_step_hours": config.rolling_step_hours,
-                "battery_chemistry": battery_config.chemistry.chemistry,
-                "battery_capacity_mwh": battery_config.chemistry.nominal_capacity_mwh,
-                "battery_max_power_mw": battery_config.chemistry.max_charge_power_mw,
+                "battery_chemistry": getattr(getattr(battery_config, "chemistry", None), "chemistry", "NMC"),
+                "battery_capacity_mwh": getattr(getattr(battery_config, "chemistry", None), "nominal_capacity_mwh", 100.0),
+                "battery_max_power_mw": getattr(getattr(battery_config, "chemistry", None), "max_charge_power_mw", 50.0),
                 "notes": config.notes,
             },
             status="Completed",
@@ -354,7 +355,7 @@ class ExperimentRunner:
             json.dump(asdict(metadata), f, indent=4)
 
         # Sync Master Registry
-        summary = metrics_res.summary
+        summary = metrics_res.summary if hasattr(metrics_res, "summary") else {}
         reg_record = MasterRegistryRecord(
             experiment_id=config.experiment_id,
             experiment_name=config.experiment_name,
@@ -364,9 +365,9 @@ class ExperimentRunner:
             gross_revenue_usd=summary.get("gross_revenue_usd", 0.0),
             degradation_cost_usd=summary.get("degradation_cost_usd", 0.0),
             net_revenue_usd=summary.get("net_revenue_usd", 0.0),
-            net_profit_usd=summary.get("net_operating_profit_usd", 0.0),
+            net_profit_usd=summary.get("net_operating_profit_usd", summary.get("net_profit_usd", 0.0)),
             final_soh=summary.get("final_soh", 1.0),
-            cumulative_efc=summary.get("equivalent_full_cycles", 0.0),
+            cumulative_efc=summary.get("equivalent_full_cycles", summary.get("cumulative_efc", 0.0)),
             profit_factor=summary.get("profit_factor", 0.0),
             sharpe_ratio=summary.get("sharpe_ratio", 0.0),
             status="Completed",
@@ -420,7 +421,10 @@ class ExperimentRunner:
             degradation_history=pd.read_csv(exp_dir / "degradation_history.csv") if (exp_dir / "degradation_history.csv").exists() else pd.DataFrame(),
             summary=summary,
         )
-        dummy_metrics = BacktestMetricsResult(summary=summary, dataframe=pd.DataFrame(list(summary.items()), columns=["metric", "value"]))
+        dummy_metrics = BacktestMetricsResult(
+            summary=summary,
+            dataframe=pd.DataFrame(list(summary.items()), columns=["metric", "value"]),
+        )
 
         return MasterExperimentResult(
             config=config,
@@ -458,14 +462,14 @@ class ExperimentRunner:
         max_workers: int = 2,
     ) -> list[dict[str, Any]]:
         """
-        Executes scenarios across a multiprocessing pool for substantial speedups.
+        Executes scenarios across a multiprocessing pool for speedup.
         Workers load models independently to comply with Windows process spawning.
         """
         tasks = []
         for cfg, bat_cfg in scenarios:
             tasks.append({
                 "config": asdict(cfg),
-                "battery_config": asdict(bat_cfg),
+                "battery_config": asdict(bat_cfg) if hasattr(bat_cfg, "__dataclass_fields__") else bat_cfg,
                 "forecaster_path": str(forecaster_path),
                 "features_path": str(features_path),
                 "registry_path": str(self.registry_path),
@@ -474,7 +478,10 @@ class ExperimentRunner:
         print(f"Launching parallel execution of {len(tasks)} scenarios across {max_workers} worker processes...")
         results = []
         with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
-            future_to_exp = {executor.submit(_parallel_worker_task, task): task["config"]["experiment_id"] for task in tasks}
+            future_to_exp = {
+                executor.submit(_parallel_worker_task, task): task["config"]["experiment_id"]
+                for task in tasks
+            }
             for future in concurrent.futures.as_completed(future_to_exp):
                 exp_id = future_to_exp[future]
                 try:
@@ -492,7 +499,6 @@ def _parallel_worker_task(task_params: dict[str, Any]) -> dict[str, Any]:
     cfg_dict["output_base_directory"] = Path(cfg_dict["output_base_directory"])
     cfg = ExperimentConfig(**cfg_dict)
 
-    # Load resources in subprocess
     features = pd.read_csv(task_params["features_path"])
     if "timestamp" in features.columns:
         features["timestamp"] = pd.to_datetime(features["timestamp"], utc=True)
@@ -502,16 +508,16 @@ def _parallel_worker_task(task_params: dict[str, Any]) -> dict[str, Any]:
     forecaster.load(Path(task_params["forecaster_path"]))
 
     bat_dict = task_params["battery_config"]
-    bat_cfg = DEFAULT_BATTERY_CONFIG
-    # Apply chemistry parameters
-    if "chemistry" in bat_dict:
-        for k, v in bat_dict["chemistry"].items():
-            if hasattr(bat_cfg.chemistry, k):
-                setattr(bat_cfg.chemistry, k, v)
-    if "ageing" in bat_dict:
-        for k, v in bat_dict["ageing"].items():
-            if hasattr(bat_cfg.ageing, k):
-                setattr(bat_cfg.ageing, k, v)
+    bat_cfg = copy.deepcopy(DEFAULT_BATTERY_CONFIG)
+    if isinstance(bat_dict, dict):
+        if "chemistry" in bat_dict and isinstance(bat_dict["chemistry"], dict):
+            for k, v in bat_dict["chemistry"].items():
+                if hasattr(bat_cfg.chemistry, k):
+                    setattr(bat_cfg.chemistry, k, v)
+        if "ageing" in bat_dict and isinstance(bat_dict["ageing"], dict):
+            for k, v in bat_dict["ageing"].items():
+                if hasattr(bat_cfg.ageing, k):
+                    setattr(bat_cfg.ageing, k, v)
 
     runner = ExperimentRunner(registry_path=Path(task_params["registry_path"]))
     res = runner.run_experiment(cfg, forecaster, features, bat_cfg)

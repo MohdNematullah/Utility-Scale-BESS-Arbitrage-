@@ -2,21 +2,21 @@
     {
         "step": "Gross Revenue",
         "name": "Gross Revenue",
-        "delta": 2658457.05,
-        "delta_usd": 2658457.05,
-        "running_total": 2658457.05,
-        "running_total_usd": 2658457.05,
-        "value": 2658457.05,
+        "delta": 2713544.75,
+        "delta_usd": 2713544.75,
+        "running_total": 2713544.75,
+        "running_total_usd": 2713544.75,
+        "value": 2713544.75,
         "type": "positive"
     },
     {
         "step": "Degradation Cost",
         "name": "Degradation Cost",
-        "delta": -253757.0,
-        "delta_usd": -253757.0,
-        "running_total": 2404700.05,
-        "running_total_usd": 2404700.05,
-        "value": -253757.0,
+        "delta": -259557.16,
+        "delta_usd": -259557.16,
+        "running_total": 2453987.59,
+        "running_total_usd": 2453987.59,
+        "value": -259557.16,
         "type": "negative"
     },
     {
@@ -24,8 +24,8 @@
         "name": "Fixed O&M",
         "delta": -359589.04,
         "delta_usd": -359589.04,
-        "running_total": 2045111.0099999998,
-        "running_total_usd": 2045111.0099999998,
+        "running_total": 2094398.5499999998,
+        "running_total_usd": 2094398.5499999998,
         "value": -359589.04,
         "type": "negative"
     },
@@ -34,19 +34,19 @@
         "name": "Variable O&M",
         "delta": -19017.97,
         "delta_usd": -19017.97,
-        "running_total": 2026093.0399999998,
-        "running_total_usd": 2026093.0399999998,
+        "running_total": 2075380.5799999998,
+        "running_total_usd": 2075380.5799999998,
         "value": -19017.97,
         "type": "negative"
     },
     {
         "step": "Net Profit (EBITDA)",
         "name": "Net Profit (EBITDA)",
-        "delta": 2026093.0399999998,
-        "delta_usd": 2026093.0399999998,
-        "running_total": 2026093.0399999998,
-        "running_total_usd": 2026093.0399999998,
-        "value": 2026093.0399999998,
+        "delta": 2075380.5799999998,
+        "delta_usd": 2075380.5799999998,
+        "running_total": 2075380.5799999998,
+        "running_total_usd": 2075380.5799999998,
+        "value": 2075380.5799999998,
         "type": "total"
     }
 ]

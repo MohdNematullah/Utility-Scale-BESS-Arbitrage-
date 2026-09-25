@@ -1,15 +1,15 @@
 {
-    "mae": 2.067,
-    "rmse": 2.625,
-    "mape_pct": 5.78,
-    "smape_pct": 7.18,
-    "r2_score": 0.9739,
-    "bias": 0.5146,
-    "residual_std": 2.5742,
-    "residual_skewness": 0.184,
-    "residual_kurtosis": 3.929,
-    "directional_accuracy_pct": 84.07,
+    "mae": 2.041,
+    "rmse": 2.5966,
+    "mape_pct": 5.71,
+    "smape_pct": 7.1,
+    "r2_score": 0.9744,
+    "bias": 0.5109,
+    "residual_std": 2.546,
+    "residual_skewness": 0.176,
+    "residual_kurtosis": 3.963,
+    "directional_accuracy_pct": 83.48,
     "value_capture_ratio_pct": 66.67,
-    "perfect_foresight_gap_usd": 1329228.52,
-    "sample_count": 8400
+    "perfect_foresight_gap_usd": 1356772.38,
+    "sample_count": 8592
 }

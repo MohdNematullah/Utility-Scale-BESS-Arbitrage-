@@ -1,4 +1,4 @@
-"""
+﻿"""
 tests/backtesting/test_arbitrage_metrics.py
 ==========================================
 

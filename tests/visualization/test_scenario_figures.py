@@ -1,4 +1,4 @@
-"""
+﻿"""
 tests/visualization/test_scenario_figures.py
 ============================================
 

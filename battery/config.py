@@ -1,4 +1,4 @@
-"""
+﻿"""
 battery/config.py
 =================
 
@@ -10,7 +10,7 @@ parameters calibrated for utility-scale BESS rolling-horizon arbitrage studies.
 References:
 - NREL Battery Lifetime Models (NMC/LFP)
 - NREL Annual Technology Baseline (ATB) for BESS O&M Benchmarks
-- IEEE 1188 Recommended Practice
+- 1188 Recommended Practice
 - Xu et al. (2021) Li-ion Degradation Modeling
 - Standard Stationary BESS 80% Operational / 70% Terminal EOL Framework
 """

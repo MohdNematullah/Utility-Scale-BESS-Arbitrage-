@@ -1,8 +1,8 @@
-"""
+﻿"""
 experiments/utils.py
 ====================
 
-Shared utilities for Part 12 Research & Reproducibility Suite.
+Shared utilities for Part 12 & Reproducibility Suite.
 """
 
 from __future__ import annotations

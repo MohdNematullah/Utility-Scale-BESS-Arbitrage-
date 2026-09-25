@@ -1,4 +1,4 @@
-"""
+﻿"""
 Unit tests for Rolling Horizon Backtesting Engine.
 Validates realized settlement accounting, rolling continuity, and degradation tracking.
 """
@@ -72,7 +72,7 @@ def test_net_revenue(backtest_setup):
 
 def test_realized_price_settlement_regression(backtest_setup):
     """
-    Mentor Review #1 Regression Test:
+    Regression Test:
     Ensures revenue is calculated from actual settlement prices rather than forecast prices.
     """
     result, _ = backtest_setup

@@ -1,4 +1,4 @@
-"""
+﻿"""
 battery/check_config.py
 
 Verification script for Part 7.1 battery configuration.
@@ -41,5 +41,5 @@ print("-" * 70)
 print(cfg.results_directory)
 
 print("=" * 70)
-print("Battery configuration verified successfully ✓")
+print("Battery configuration verified successfully âœ“")
 print("=" * 70)

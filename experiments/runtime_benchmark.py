@@ -1,10 +1,8 @@
-"""
+﻿"""
 experiments/runtime_benchmark.py
 ================================
 
 High-Precision Computational & Hardware Benchmarking Engine (Part 12.3)
-
-
 
 Measures execution duration, optimization solver speed, memory footprint,
 and renders the publication-ready runtime profile figure.
@@ -25,7 +23,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from visualization.figure_style import COLOR_PALETTE, format_axes, set_ieee_style
+from visualization.figure_style import COLOR_PALETTE, format_axes, set_style
 
 
 @dataclass(slots=True)
@@ -43,7 +41,7 @@ class RuntimeBenchmarker:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.records: list[BenchmarkRecord] = []
-        set_ieee_style()
+        set_style()
 
     def profile_stage(self, stage_name: str) -> Generator[None, None, None]:
         tracemalloc.start()
@@ -96,7 +94,7 @@ class RuntimeBenchmarker:
         for bar, val in zip(bars, runtimes):
             ax.text(bar.get_width() + 1.2, bar.get_y() + bar.get_height() / 2.0, f"{val:.2f}s", va="center", fontsize=8.5)
 
-        format_axes(ax, title="Computational Runtime Profile by Research Pipeline Subsystem", xlabel="Execution Time (Seconds)")
+        format_axes(ax, title="Computational Runtime Profile by Pipeline Subsystem", xlabel="Execution Time (Seconds)")
         ax.set_yticks(y_pos)
         ax.set_yticklabels(stages)
         ax.set_xlim(0, max(runtimes) * 1.18)

@@ -1,4 +1,4 @@
-"""
+﻿"""
 battery/lifetime_simulator.py
 =============================
 

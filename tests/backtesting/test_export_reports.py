@@ -1,4 +1,4 @@
-"""
+﻿"""
 tests/backtesting/test_export_reports.py
 ========================================
 
@@ -137,7 +137,7 @@ def test_json_keys(export_artifacts):
     assert report["battery"]["final_soh"] > 0.80
 
 
-def test_all_9_figures_created(export_artifacts):
+def test__all__9_figures_created(export_artifacts):
     figure_dir = export_artifacts.figure_directory
     expected = {
         "cumulative_revenue.png",

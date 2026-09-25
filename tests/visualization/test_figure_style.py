@@ -1,10 +1,12 @@
 ﻿"""
 tests/visualization/test_figure_style.py
 ========================================
-
-Unit Test Suite for Figure Style & Visualization Engine (Part 10.1).
+Unit tests for figure styling, color palette, dimensions, and exports.
 """
 
+from __future__ import annotations
+
+import dataclasses
 from pathlib import Path
 import matplotlib.pyplot as plt
 import pytest
@@ -15,13 +17,13 @@ from visualization.figure_style import (
     format_axes,
     get_figure_dimensions,
     save_publication_figure,
-    set_ieee_style,
+    set_style,
 )
 
 
 class TestFigureStyleEngine:
-    def test_ieee_style_application(self):
-        set_ieee_style(font_scale=1.2)
+    def test_style_application(self):
+        set_style(font_scale=1.2)
         assert plt.rcParams["mathtext.fontset"] == "stix"
         assert plt.rcParams["text.usetex"] is False
         assert plt.rcParams["figure.dpi"] == 300
@@ -29,28 +31,32 @@ class TestFigureStyleEngine:
         assert "DejaVu Sans" in plt.rcParams["font.sans-serif"]
 
     def test_palette_definitions(self):
-        for field_name in COLOR_PALETTE.__dataclass_fields__:
-            color_val = getattr(COLOR_PALETTE, field_name)
+        fields = dataclasses.fields(COLOR_PALETTE)
+        assert len(fields) >= 10
+        for f in fields:
+            color_val = getattr(COLOR_PALETTE, f.name)
             assert isinstance(color_val, str)
             assert color_val.startswith("#")
             assert len(color_val) == 7
 
     def test_dimensions_lookup(self):
-        w, h = get_figure_dimensions("ieee_single")
+        assert "single" in FIGURE_DIMENSIONS
+        assert "full" in FIGURE_DIMENSIONS
+
+        w, h = get_figure_dimensions("single")
         assert w == 3.5
         assert h == 2.16
 
-        w_full, h_full = get_figure_dimensions("_full")
+        w_full, h_full = get_figure_dimensions("full")
         assert w_full == 6.5
         assert h_full == 4.0
 
-        # Fallback handling
         w_def, h_def = get_figure_dimensions("non_existent_layout")
         assert w_def == 6.5
         assert h_def == 4.0
 
     def test_format_axes_helper(self):
-        set_ieee_style()
+        set_style()
         fig, ax = plt.subplots()
         format_axes(ax, title="Test Plot", xlabel="Time (h)", ylabel="Value ($)")
 
@@ -61,8 +67,8 @@ class TestFigureStyleEngine:
         assert not ax.spines["right"].get_visible()
         plt.close(fig)
 
-    def test_multi_format_saving(self, tmp_path):
-        set_ieee_style()
+    def test_multi_format_saving(self, tmp_path: Path):
+        set_style()
         fig, ax = plt.subplots(figsize=(4, 3))
         ax.plot([0, 1, 2], [10, 20, 30], color=COLOR_PALETTE.revenue, label="Trajectory")
         ax.legend()

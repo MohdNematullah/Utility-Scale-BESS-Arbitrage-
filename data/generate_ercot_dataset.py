@@ -1,4 +1,4 @@
-"""
+﻿"""
 generate_ercot_dataset.py
 =========================
 

@@ -1,4 +1,4 @@
-"""
+﻿"""
 tests/backtesting/test_forecast_realism.py
 =========================================
 

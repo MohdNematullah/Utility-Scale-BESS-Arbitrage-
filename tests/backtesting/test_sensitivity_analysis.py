@@ -1,4 +1,4 @@
-"""
+﻿"""
 tests/backtesting/test_sensitivity_analysis.py
 =============================================
 

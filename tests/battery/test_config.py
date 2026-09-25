@@ -1,4 +1,4 @@
-from battery.config import DEFAULT_BATTERY_CONFIG
+﻿from battery.config import DEFAULT_BATTERY_CONFIG
 
 
 def test_capacity():

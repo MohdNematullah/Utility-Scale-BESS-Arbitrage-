@@ -1,18 +1,8 @@
-"""
+﻿"""
 tests/backtesting/test_experiment_framework.py
 =============================================
 
-Master Unit Test Suite for  Research Experiment Framework:
-- Part 8.5.1: Master Orchestration Utilities & Provenance Metadata
-- Part 8.5.2: Predefined 28 Research Scenarios Library
-- Part 8.5.3: Comparison Engine, Composite Ranking & Pareto Frontier
-- Part 8.5.4: Dashboard Data Aggregator & Financial Waterfall Payloads
-- Part 8.5.5: Unified CLI Parser & Command Dispatching
-
-Compatible with:
-- Python 3.14+
-- pytest 9.1+
-"""
+Unit and integration tests for the backtesting experiment framework."""
 
 from __future__ import annotations
 
@@ -23,8 +13,8 @@ from unittest.mock import patch
 
 import matplotlib
 matplotlib.use("Agg")
-import openpyxl
 import numpy as np
+import openpyxl
 import pandas as pd
 import pytest
 
@@ -47,10 +37,6 @@ from backtesting.scenarios import (
     list_scenarios,
 )
 
-
-# ============================================================================
-# Shared Fixtures
-# ============================================================================
 
 @pytest.fixture
 def synthetic_registry_df() -> pd.DataFrame:
@@ -174,10 +160,6 @@ def synthetic_backtest_telemetry() -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     return dispatch_df, degradation_df, summary_dict
 
 
-# ============================================================================
-# 1. Scenarios Library Tests (Part 8.5.2)
-# ============================================================================
-
 class TestScenariosLibrary:
     def test_total_predefined_scenarios_count(self):
         scenarios = list_scenarios()
@@ -255,10 +237,6 @@ class TestScenariosLibrary:
             assert bat_cfg.chemistry.nominal_capacity_mwh > 0.0
 
 
-# ============================================================================
-# 2. Comparison & Pareto Engine Tests (Part 8.5.3)
-# ============================================================================
-
 class TestComparisonEngine:
     def test_composite_ranking_weights(self, synthetic_registry_df, tmp_path):
         engine = ScenarioComparisonEngine(output_directory=tmp_path)
@@ -276,7 +254,6 @@ class TestComparisonEngine:
         pareto_df = engine.compute_pareto_frontier(synthetic_registry_df)
 
         optimal_ids = set(pareto_df[pareto_df["is_pareto_optimal"]]["experiment_id"])
-
         assert optimal_ids == {"EXP_PARETO_PROFIT", "EXP_PARETO_HEALTH"}
 
         dom_a = pareto_df.loc[pareto_df["experiment_id"] == "EXP_DOMINATED_A", "is_pareto_optimal"].iloc[0]
@@ -325,10 +302,6 @@ class TestComparisonEngine:
             "sensitivity_panels.png",
         }
 
-
-# ============================================================================
-# 3. Dashboard Data Builder Tests (Part 8.5.4)
-# ============================================================================
 
 class TestDashboardDataBuilder:
     def test_kpi_payload_structure(self, synthetic_backtest_telemetry, tmp_path):
@@ -402,10 +375,6 @@ class TestDashboardDataBuilder:
         assert datasets.scenario_matrix.exists()
 
 
-# ============================================================================
-# 4. Orchestration & Provenance Tests (Part 8.5.1)
-# ============================================================================
-
 class TestExperimentRunnerUtilities:
     def test_deterministic_seed_consistency(self):
         set_deterministic_seed(1234)
@@ -457,10 +426,6 @@ class TestExperimentRunnerUtilities:
         assert len(df_reupdated) == 1
         assert df_reupdated.iloc[0]["net_revenue_usd"] == 850.0
 
-
-# ============================================================================
-# 5. Command-Line Interface Tests (Part 8.5.5)
-# ============================================================================
 
 class TestCLIParser:
     def test_cli_list_command(self, capsys):

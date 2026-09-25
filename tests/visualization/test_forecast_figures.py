@@ -1,4 +1,4 @@
-"""
+﻿"""
 tests/visualization/test_forecast_figures.py
 ============================================
 

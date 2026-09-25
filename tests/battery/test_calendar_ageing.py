@@ -1,4 +1,4 @@
-import pytest
+﻿import pytest
 
 from battery.calendar_ageing import CalendarAgeingModel
 

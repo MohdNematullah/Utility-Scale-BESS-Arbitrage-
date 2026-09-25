@@ -1,4 +1,4 @@
-"""
+﻿"""
 backtesting/comparison.py
 =========================
 
@@ -74,8 +74,8 @@ class ComparisonResult(tuple):
     3-tuple (ranked_df, pareto_df, artifacts) that forwards attribute
     access to ComparisonArtifacts for unified API compatibility.
     """
-    def __new__(cls, ranked_df: pd.DataFrame, pareto_df: pd.DataFrame, artifacts: ComparisonArtifacts):
-        return super().__new__(cls, (ranked_df, pareto_df, artifacts))
+    def _new_(cls, ranked_df: pd.DataFrame, pareto_df: pd.DataFrame, artifacts: ComparisonArtifacts):
+        return super()._new_(cls, (ranked_df, pareto_df, artifacts))
 
     def __init__(self, ranked_df: pd.DataFrame, pareto_df: pd.DataFrame, artifacts: ComparisonArtifacts):
         self._ranked_df = ranked_df
@@ -94,7 +94,7 @@ class ComparisonResult(tuple):
     def artifacts(self) -> ComparisonArtifacts:
         return self._artifacts
 
-    def __getattr__(self, name: str) -> Any:
+    def _getattr_(self, name: str) -> Any:
         return getattr(self._artifacts, name)
 
 

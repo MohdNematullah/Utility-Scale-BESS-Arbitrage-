@@ -1,4 +1,4 @@
-"""
+﻿"""
 visualization/check_dispatch_figures.py
 =======================================
 
@@ -69,12 +69,12 @@ for name, paths in figure_groups:
     for fmt, p in paths.items():
         assert p.exists() and p.stat().st_size > 0, f"Missing file: {p}"
         total_files += 1
-        print(f"  • {fmt.upper():<4}: {p.name} ({p.stat().st_size:>8,} bytes)")
+        print(f"  * {fmt.upper():<4}: {p.name} ({p.stat().st_size:>8,} bytes)")
 
 print("\n" + "-" * 75)
 print(f"Total Vector & Raster Artifacts Verified: {total_files} files")
 assert total_files == 21, f"Expected 21 files (7 figures x 3 formats), found {total_files}."
 
 print(LINE)
-print("Dispatch visualization package verified successfully ✓")
+print("Dispatch visualization package verified successfully [OK]")
 print(LINE)

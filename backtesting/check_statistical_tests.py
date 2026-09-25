@@ -1,4 +1,4 @@
-"""
+﻿"""
 backtesting/check_statistical_tests.py
 ======================================
 
@@ -103,10 +103,10 @@ print(f"Summary JSON      : {artifacts.summary_json.exists()} ({artifacts.summar
 figures = list(artifacts.figures_directory.glob("*.png"))
 print(f"\nGenerated Publication Diagnostic Visualizations ({len(figures)} total):")
 for fig in sorted(figures):
-    print(f"  • {fig.name}")
+    print(f"  â€¢ {fig.name}")
 
 assert len(figures) == 5, f"Expected 5 figures, found {len(figures)}."
 
 print(LINE)
-print("Statistical significance evaluation verified successfully ✓")
+print("Statistical significance evaluation verified successfully âœ“")
 print(LINE)

@@ -4,16 +4,14 @@ visualization/dispatch_figures.py
 
 Publication-Grade Rolling Dispatch & Operating Trajectory Visualizations (Part 10.3)
 
-
-
 Generates the 7 core dispatch behaviour figures for Chapter 5:
-1. Figure 10.3.1 â€” Price & Dispatch Power Co-Optimization (Price vs. Net Dispatch Power)
-2. Figure 10.3.2 â€” State of Charge (SOC) Trajectory (Cycling bounds, safe operating envelope)
-3. Figure 10.3.3 â€” Diurnal Dispatch Heatmap (Days vs. Hours: Charging/Discharging/Idle matrix)
-4. Figure 10.3.4 â€” Daily Energy Throughput (Charged vs. Discharged energy with rolling throughput)
-5. Figure 10.3.5 â€” Rolling Optimization Implementation Horizon (Receding look-ahead vs. committed steps)
-6. Figure 10.3.6 â€” State of Charge (SOC) Density Distribution (Operating dwell times and resting states)
-7. Figure 10.3.7 â€” Arbitrage Price Spread Capture (Volume-weighted execution vs. settlement price distribution)
+1. Figure 10.3.1 - Price & Dispatch Power Co-Optimization (Price vs. Net Dispatch Power)
+2. Figure 10.3.2 - State of Charge (SOC) Trajectory (Cycling bounds, safe operating envelope)
+3. Figure 10.3.3 - Diurnal Dispatch Heatmap (Days vs. Hours: Charging/Discharging/Idle matrix)
+4. Figure 10.3.4 - Daily Energy Throughput (Charged vs. Discharged energy with rolling throughput)
+5. Figure 10.3.5 - Rolling Optimization Implementation Horizon (Receding look-ahead vs. committed steps)
+6. Figure 10.3.6 - State of Charge (SOC) Density Distribution (Operating dwell times and resting states)
+7. Figure 10.3.7 - Arbitrage Price Spread Capture (Volume-weighted execution vs. settlement price distribution)
 """
 
 from __future__ import annotations
@@ -33,7 +31,7 @@ from visualization.figure_style import (
     format_axes,
     get_figure_dimensions,
     save_publication_figure,
-    set_ieee_style,
+    set_style,
 )
 
 
@@ -65,10 +63,10 @@ class DispatchFigureGenerator:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.formats = tuple(formats)
         self.dpi = dpi
-        set_ieee_style()
+        set_style()
 
     # ------------------------------------------------------------------------
-    # Figure 10.3.1 â€” Price & Net Dispatch Power
+    # Figure 10.3.1 - Price & Net Dispatch Power
     # ------------------------------------------------------------------------
     def plot_price_power_dispatch(
         self,
@@ -76,7 +74,7 @@ class DispatchFigureGenerator:
         sample_hours: int = 168,
         filename_stem: str = "Figure_10_3_1_Price_Power_Dispatch",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full_tall")
+        dims = get_figure_dimensions("full_tall")
         fig, (ax1, ax2) = plt.subplots(
             2, 1, figsize=dims, sharex=True, gridspec_kw={"height_ratios": [1.5, 1.2]}
         )
@@ -119,7 +117,7 @@ class DispatchFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.3.2 â€” State of Charge (SOC) Trajectory
+    # Figure 10.3.2 - State of Charge (SOC) Trajectory
     # ------------------------------------------------------------------------
     def plot_state_of_charge(
         self,
@@ -129,7 +127,7 @@ class DispatchFigureGenerator:
         soc_max: float = 0.95,
         filename_stem: str = "Figure_10_3_2_State_Of_Charge",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         n = min(len(dispatch_df), sample_hours)
@@ -160,7 +158,7 @@ class DispatchFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.3.3 â€” Diurnal Dispatch Heatmap
+    # Figure 10.3.3 - Diurnal Dispatch Heatmap
     # ------------------------------------------------------------------------
     def plot_dispatch_heatmap(
         self,
@@ -168,7 +166,7 @@ class DispatchFigureGenerator:
         max_days: int = 60,
         filename_stem: str = "Figure_10_3_3_Dispatch_Heatmap",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         chg = dispatch_df["charge_power_mw"].to_numpy(dtype=float) if "charge_power_mw" in dispatch_df.columns else np.zeros(len(dispatch_df))
@@ -202,14 +200,14 @@ class DispatchFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.3.4 â€” Daily Energy Throughput
+    # Figure 10.3.4 - Daily Energy Throughput
     # ------------------------------------------------------------------------
     def plot_daily_throughput(
         self,
         dispatch_df: pd.DataFrame,
         filename_stem: str = "Figure_10_3_4_Daily_Energy_Throughput",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         chg = dispatch_df["charge_power_mw"].to_numpy(dtype=float) if "charge_power_mw" in dispatch_df.columns else np.zeros(len(dispatch_df))
@@ -239,7 +237,7 @@ class DispatchFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.3.5 â€” Rolling Window Dispatch Timeline
+    # Figure 10.3.5 - Rolling Window Dispatch Timeline
     # ------------------------------------------------------------------------
     def plot_rolling_window_timeline(
         self,
@@ -248,7 +246,7 @@ class DispatchFigureGenerator:
         step_h: int = 24,
         filename_stem: str = "Figure_10_3_5_Rolling_Window_Dispatch_Timeline",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         for w in range(n_windows):
@@ -297,14 +295,14 @@ class DispatchFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.3.6 â€” State of Charge (SOC) Density Distribution
+    # Figure 10.3.6 - State of Charge (SOC) Density Distribution
     # ------------------------------------------------------------------------
     def plot_soc_density(
         self,
         dispatch_df: pd.DataFrame,
         filename_stem: str = "Figure_10_3_6_SOC_Density_Plot",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         if "soc" in dispatch_df.columns:
@@ -334,14 +332,14 @@ class DispatchFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.3.7 â€” Price Spread Capture Profile
+    # Figure 10.3.7 - Price Spread Capture Profile
     # ------------------------------------------------------------------------
     def plot_price_spread_capture(
         self,
         dispatch_df: pd.DataFrame,
         filename_stem: str = "Figure_10_3_7_Price_Spread_Capture",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         price_col = next((c for c in ["actual_price", "price", "settlement_price"] if c in dispatch_df.columns), dispatch_df.columns[0])

@@ -1,4 +1,4 @@
-"""
+﻿"""
 backtesting/check_risk_metrics.py
 =================================
 
@@ -59,8 +59,8 @@ print("-" * 75)
 print("INSTITUTIONAL RISK-ADJUSTED PERFORMANCE METRICS")
 print("-" * 75)
 print(f"Annualized Return          : ${summary.annualized_return_usd:,.2f}")
-print(f"Daily P&L Volatility (σ)   : ${summary.daily_volatility_usd:,.2f}/day")
-print(f"Annualized Volatility (σ)  : ${summary.annualized_volatility_usd:,.2f}/year")
+print(f"Daily P&L Volatility (Ïƒ)   : ${summary.daily_volatility_usd:,.2f}/day")
+print(f"Annualized Volatility (Ïƒ)  : ${summary.annualized_volatility_usd:,.2f}/year")
 print(f"Downside Deviation         : ${summary.downside_deviation_usd:,.2f}/day")
 print(f"Annualized Sharpe Ratio    : {summary.sharpe_ratio:.3f}")
 print(f"Annualized Sortino Ratio   : {summary.sortino_ratio:.3f}")
@@ -101,10 +101,10 @@ print(f"Summary JSON  : {artifacts.summary_json.exists()} ({artifacts.summary_js
 figures = list(artifacts.figures_directory.glob("*.png"))
 print(f"\nGenerated Diagnostic Visualizations ({len(figures)} total):")
 for fig in sorted(figures):
-    print(f"  • {fig.name}")
+    print(f"  â€¢ {fig.name}")
 
 assert len(figures) == 5, f"Expected 5 figures, found {len(figures)}."
 
 print(LINE)
-print("Risk metrics evaluation verified successfully ✓")
+print("Risk metrics evaluation verified successfully âœ“")
 print(LINE)

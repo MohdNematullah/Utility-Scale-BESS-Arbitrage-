@@ -1,4 +1,4 @@
-"""
+﻿"""
 backtesting/check_dashboard_data.py
 ===================================
 
@@ -60,5 +60,5 @@ for step in wf:
     print(f"  {step['label']:<32} : {step['delta']:>12,.2f} USD ({step['type']})")
 
 print("\n" + LINE)
-print("Dashboard dataset builder verified successfully ✓")
+print("Dashboard dataset builder verified successfully âœ“")
 print(LINE)

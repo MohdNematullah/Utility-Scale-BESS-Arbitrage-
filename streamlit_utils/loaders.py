@@ -1,7 +1,7 @@
-"""
+﻿"""
 streamlit_utils/loaders.py
 ==========================
-Dynamic data loaders reading live artifacts from  pipeline runs.
+Dynamic data loaders reading live artifacts from pipeline runs.
 """
 
 from __future__ import annotations
@@ -20,24 +20,19 @@ def load_metrics_summary() -> dict[str, Any]:
     Returns metrics by checking in-memory session state first,
     then picking the newest modified file on disk.
     """
-    # 1. Direct memory precedence (updated immediately after pipeline run or preset select)
     if "active_metrics" in st.session_state and st.session_state["active_metrics"]:
         return dict(st.session_state["active_metrics"])
 
-    # 2. Gather candidate files that actually exist
     candidate_paths = [
         Path("results/dashboard/kpis.json"),
         Path("backtesting/results/dashboard/kpis.json"),
         Path("results/kpis.json"),
         Path("backtesting/results/kpis.json"),
-        Path("results/kpi_summary.json"),
         Path("results/metrics_summary.csv"),
         Path("backtesting/results/metrics_summary.csv"),
         Path("results/summary.json"),
     ]
     existing_files = [p for p in candidate_paths if p.exists() and p.stat().st_size > 0]
-
-    # 3. Sort by modification time: NEWEST file first
     existing_files.sort(key=lambda p: p.stat().st_mtime, reverse=True)
 
     for p in existing_files:
@@ -51,7 +46,7 @@ def load_metrics_summary() -> dict[str, Any]:
                         flat.update(v)
                     else:
                         flat[k] = v
-                if "gross_revenue_usd" in flat:
+                if "gross_revenue_usd" in flat or "gross__revenue__usd" in flat:
                     return flat
             elif p.suffix == ".csv":
                 df = pd.read_csv(p)
@@ -60,13 +55,12 @@ def load_metrics_summary() -> dict[str, Any]:
         except Exception:
             continue
 
-    # 4. Clean fallback baseline if no output exists yet
     return {
-        "gross_revenue_usd": 4982570.0,
-        "degradation_cost_usd": 253757.0,
-        "fixed_om_cost_usd": 359589.04,
-        "variable_om_cost_usd": 19017.97,
-        "net_operating_profit_usd": 4350206.0,
+        "gross_revenue_usd": 4_982_570.0,
+        "degradation_cost_usd": 253_757.0,
+        "fixed_om_cost_usd": 359_589.04,
+        "variable_om_cost_usd": 19_017.97,
+        "net_operating_profit_usd": 4_350_206.0,
         "final_soh": 0.9820,
         "cumulative_efc": 190.18,
         "equivalent_full_cycles": 190.18,
@@ -171,7 +165,7 @@ def load_scenario_matrix() -> pd.DataFrame:
         if cand.exists():
             try:
                 df = pd.read_csv(cand)
-                if "final_soh" in df.columns and "net_ebitda_usd" in df.columns:
+                if any(c in df.columns for c in ["final_soh", "final__soh"]):
                     return df
             except Exception:
                 pass

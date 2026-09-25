@@ -1,4 +1,4 @@
-"""
+﻿"""
 Unit tests for Battery Optimization Results Processor.
 Validates result extraction, initial SOC semantics, and realized settlement export.
 """
@@ -74,7 +74,7 @@ def test_revenue_breakdown(optimization_setup):
 
 def test_summary(optimization_setup):
     """
-    Mentor Review #2 Regression Test:
+    Regression Test:
     Ensures soc_initial records the pre-dispatch baseline state from model.initial_soc.
     """
     model, processor = optimization_setup

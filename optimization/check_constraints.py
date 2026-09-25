@@ -68,9 +68,9 @@ for label, attr_name in expected_constraints.items():
         print(f"{label:<32} âœ— (MISSING OR INACTIVE)")
         all_passed = False
 
-# ----------------------------------------------------------
-# Verify Mentor's End-of-Hour Dynamics Formulation
-# ----------------------------------------------------------
+# ----------------------------------------------------
+# Verify End-of-Hour Dynamics Formulation
+# ----------------------------------------------------
 print("-" * 65)
 print("MATHEMATICAL FORMULATION AUDIT")
 print("-" * 65)

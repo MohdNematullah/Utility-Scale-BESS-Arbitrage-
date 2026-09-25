@@ -1,7 +1,7 @@
-"""
+﻿"""
 app.py
 ======
-Utility-Scale BESS Arbitrage Research Platform
+Utility-Scale BESS Arbitrage Platform
 Master Entrypoint & Multi-Page Analytical Orchestrator.
 """
 
@@ -16,7 +16,7 @@ import plotly.express as px
 import streamlit as st
 
 st.set_page_config(
-    page_title=" Research Platform",
+    page_title="BTA-V5.0 Platform",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -37,9 +37,15 @@ apply_theme()
 
 
 # =====================================================================
-# Predefined Research Scenario Presets (With Verified Empirical Telemetry)
+# Predefined Scenario Presets (With Verified Empirical Telemetry)
 # =====================================================================
 SCENARIO_PRESETS: dict[str, dict[str, Any]] = {
+    "chem_nmc_baseline": {
+        "name": "NMC 48h Baseline ($2.04 MAE, 85.5% VCR - Benchmark)",
+        "chem": "NMC", "p": 50.0, "c": 100.0, "h": 48, "s": 24, "t": 25.0, "w": 10.0, "rte": 90.25,
+        "gross": 4982570.0, "deg": 253757.0, "fixed_om": 359589.04, "var_om": 19017.97,
+        "ebitda": 4350206.0, "vcr": 85.5, "soh": 0.9820, "efc": 190.18, "mae": 2.04, "sharpe": 3.65, "hours": 8400.0,
+    },
     "horizon_12h": {
         "name": "12h Look-Ahead Horizon ($2.05 MAE, 66.7% VCR)",
         "chem": "NMC", "p": 50.0, "c": 100.0, "h": 12, "s": 6, "t": 25.0, "w": 10.0, "rte": 90.25,
@@ -53,7 +59,7 @@ SCENARIO_PRESETS: dict[str, dict[str, Any]] = {
         "ebitda": 2949036.0, "vcr": 78.4, "soh": 0.9820, "efc": 190.2, "mae": 1.85, "sharpe": 3.95, "hours": 8400.0,
     },
     "horizon_48h": {
-        "name": "48h Look-Ahead Horizon ($2.04 MAE, 85.5% VCR - Baseline)",
+        "name": "48h Look-Ahead Horizon ($2.04 MAE, 85.5% VCR - Standard)",
         "chem": "NMC", "p": 50.0, "c": 100.0, "h": 48, "s": 24, "t": 25.0, "w": 10.0, "rte": 90.25,
         "gross": 4982570.0, "deg": 253757.0, "fixed_om": 359589.04, "var_om": 19017.97,
         "ebitda": 4350206.0, "vcr": 85.5, "soh": 0.9820, "efc": 190.18, "mae": 2.04, "sharpe": 3.65, "hours": 8400.0,
@@ -94,7 +100,7 @@ SCENARIO_PRESETS: dict[str, dict[str, Any]] = {
 def sync_metrics_from_preset(preset_id: str) -> dict[str, Any]:
     """Generates the metrics payload matching a selected scenario preset."""
     if preset_id not in SCENARIO_PRESETS:
-        preset_id = "horizon_48h"
+        preset_id = "chem_nmc_baseline"
     p = SCENARIO_PRESETS[preset_id]
     return {
         "gross_revenue_usd": p["gross"],
@@ -109,6 +115,17 @@ def sync_metrics_from_preset(preset_id: str) -> dict[str, Any]:
         "value_capture_ratio_pct": p["vcr"],
         "sharpe_ratio": p["sharpe"],
         "operating_hours": p["hours"],
+        # Legacy compatibility keys
+        "gross__revenue__usd": p["gross"],
+        "degradation__cost__usd": p["deg"],
+        "fixed__om__cost__usd": p["fixed_om"],
+        "variable__om__cost__usd": p["var_om"],
+        "net__operating__profit__usd": p["ebitda"],
+        "final__soh": p["soh"],
+        "cumulative__efc": p["efc"],
+        "forecast__mae": p["mae"],
+        "value__capture__ratio__pct": p["vcr"],
+        "sharpe__ratio": p["sharpe"],
     }
 
 
@@ -123,19 +140,16 @@ def compute_custom_metrics(
     wear_hurdle: float,
     is_fast: bool,
 ) -> dict[str, Any]:
-    """Computes research metrics calibrated to the user's custom settings."""
+    """Computes metrics calibrated to the user's custom settings."""
     hours = 168.0 if is_fast else 8400.0
     time_factor = hours / 8400.0
     power_scale = power_mw / 50.0
 
-    # Horizon-dependent capture & MAE
     horizon_vcr_map = {12: (66.7, 2.05), 24: (78.4, 1.85), 36: (82.1, 1.78), 48: (85.5, 2.04), 72: (84.1, 2.78)}
     vcr_base, mae_base = horizon_vcr_map.get(horizon_h, (85.5, 2.04))
 
-    # Base gross revenue scaling
     gross = (2660231.0 if horizon_h <= 12 else 4982570.0) * power_scale * (vcr_base / 85.5) * (rte_pct / 90.25) * time_factor
 
-    # Chemistry & wear hurdle effects on degradation
     chem_wear_mult = {"NMC": 1.0, "LFP": 0.64, "LTO": 0.25}.get(chem, 1.0)
     hurdle_suppress = max(0.4, 1.0 - (wear_hurdle - 10.0) * 0.03) if wear_hurdle >= 10.0 else (1.0 + (10.0 - wear_hurdle) * 0.17)
     temp_arrhenius = np.exp(0.04 * (temp_c - 25.0))
@@ -143,11 +157,9 @@ def compute_custom_metrics(
     deg = 253757.0 * power_scale * chem_wear_mult * hurdle_suppress * temp_arrhenius * time_factor
     efc = 190.2 * chem_wear_mult * hurdle_suppress * time_factor
 
-    # Final SOH
     annual_fade = (0.018 * chem_wear_mult * hurdle_suppress * temp_arrhenius)
     final_soh = max(0.70, 1.0 - annual_fade * (hours / 8400.0))
 
-    # OPEX
     fixed_om = (359589.04 * power_scale) * time_factor
     var_om = (19017.97 * power_scale) * time_factor
     ebitda = gross - deg - fixed_om - var_om
@@ -166,6 +178,16 @@ def compute_custom_metrics(
         "value_capture_ratio_pct": round(vcr_base, 1),
         "sharpe_ratio": round(sharpe, 2),
         "operating_hours": hours,
+        # Legacy compatibility keys
+        "gross__revenue__usd": round(gross, 2),
+        "degradation__cost__usd": round(deg, 2),
+        "fixed__om__cost__usd": round(fixed_om, 2),
+        "variable__om__cost__usd": round(var_om, 2),
+        "net__operating__profit__usd": round(ebitda, 2),
+        "final__soh": round(final_soh, 4),
+        "cumulative__efc": round(efc, 2),
+        "value__capture__ratio__pct": round(vcr_base, 1),
+        "sharpe__ratio": round(sharpe, 2),
     }
 
 
@@ -186,7 +208,6 @@ def on_preset_change() -> None:
         new_metrics = sync_metrics_from_preset(sel)
         st.session_state["active_metrics"] = new_metrics
 
-        # Write to disk so other tabs/loaders pick up the preset
         out_dir = Path("results/dashboard")
         out_dir.mkdir(parents=True, exist_ok=True)
         with open(out_dir / "kpis.json", "w", encoding="utf-8") as f:
@@ -204,7 +225,7 @@ with st.sidebar:
     st.caption("BESS Techno-Economic Framework")
     st.markdown("---")
 
-    st.subheader("Research Presets (Dropdown)")
+    st.subheader("Presets (Dropdown)")
     st.selectbox(
         "Select Scenario Preset",
         options=list(SCENARIO_PRESETS.keys()),
@@ -252,7 +273,6 @@ with st.sidebar:
             h_val = int(st.session_state.horizon_h)
             s_val = min(int(st.session_state.step_h), h_val)
 
-            # Compute custom metrics calibrated to current settings
             metrics_payload = compute_custom_metrics(
                 power_mw=float(st.session_state.power_mw),
                 capacity_mwh=float(st.session_state.capacity_mwh),
@@ -265,7 +285,6 @@ with st.sidebar:
                 is_fast=is_fast,
             )
 
-            # Attempt full BTAPipeline execution if available
             try:
                 from main import BTAPipeline, ExecutionMode, PipelineConfig
                 config = PipelineConfig(
@@ -286,13 +305,11 @@ with st.sidebar:
             except Exception:
                 pass
 
-            # Write fresh telemetry to disk
             out_dir = Path("results/dashboard")
             out_dir.mkdir(parents=True, exist_ok=True)
             with open(out_dir / "kpis.json", "w", encoding="utf-8") as f:
                 json.dump(metrics_payload, f, indent=4)
 
-            # Store in session state for instant UI reflection
             st.session_state["active_metrics"] = metrics_payload
             st.session_state["last_run_config"] = {
                 "power_mw": float(st.session_state.power_mw),
@@ -309,15 +326,14 @@ with st.sidebar:
 
 
 # =====================================================================
-# Main Executive Dashboard (100% Dynamic)
+# Main Executive Dashboard
 # =====================================================================
 def render_home_dashboard() -> None:
-    st.title("⚡ : Utility-Scale BESS Arbitrage Platform")
+    st.title("⚡ BTA-V5.0: Utility-Scale BESS Arbitrage Platform")
     st.markdown(
         "**Techno-Economic Valuation of Utility-Scale Battery Storage Under Multi-Step Recursive Price Forecasting and Dynamic Electrochemical Ageing**"
     )
 
-    # Telemetry Status Banner
     if st.session_state.get("last_run_config"):
         c = st.session_state.last_run_config
         st.success(
@@ -332,22 +348,21 @@ def render_home_dashboard() -> None:
             icon="ℹ️",
         )
 
-    # Load dynamic metrics
     summary = load_metrics_summary()
-    gross_val = float(summary.get("gross_revenue_usd", 4982570.0))
-    deg_val = float(summary.get("degradation_cost_usd", 253757.0))
-    ebitda_val = float(summary.get("net_operating_profit_usd", 4350206.0))
-    soh_val = float(summary.get("final_soh", 0.9820)) * 100.0
+    gross_val = float(summary.get("gross_revenue_usd", summary.get("gross__revenue__usd", 4982570.0)))
+    deg_val = float(summary.get("degradation_cost_usd", summary.get("degradation__cost__usd", 253757.0)))
+    ebitda_val = float(summary.get("net_operating_profit_usd", summary.get("net__operating__profit__usd", 4350206.0)))
+    soh_raw = float(summary.get("final_soh", summary.get("final__soh", 0.9820)))
+    soh_val = soh_raw * 100.0 if soh_raw <= 1.0 else soh_raw
     efc_val = float(summary.get("cumulative_efc", summary.get("equivalent_full_cycles", 190.2)))
     vcr_val = float(summary.get("value_capture_ratio_pct", summary.get("vcr", 85.5)))
     mae_val = float(summary.get("forecast_mae", summary.get("mae", 2.04)))
-    sharpe_val = float(summary.get("sharpe_ratio", 3.652))
+    sharpe_val = float(summary.get("sharpe_ratio", summary.get("sharpe__ratio", 3.652)))
     hours_val = float(summary.get("operating_hours", summary.get("total_hours", 8400.0)))
     deg_pct = (deg_val / max(gross_val, 1.0)) * 100.0
     efc_per_day = efc_val / max(hours_val / 24.0, 1.0)
 
-    # 8 Dynamic Research KPI Cards
-    st.markdown("### 📊 Research Performance Indices")
+    st.markdown("### 📊 Performance Indices")
     k1, k2, k3, k4 = st.columns(4)
     with k1:
         render_kpi("Gross Arbitrage Revenue", f"${gross_val:,.0f}", f"{hours_val:,.0f} Hours Operation", border_color="#16A34A")
@@ -370,7 +385,6 @@ def render_home_dashboard() -> None:
 
     st.markdown("---")
 
-    # Analytical Tabs
     tab_mech1, tab_mech2, tab_waterfall, tab_scenarios = st.tabs(
         [
             "🔮 1. Impact of Forecast Realism",
@@ -432,7 +446,7 @@ def render_home_dashboard() -> None:
         st.plotly_chart(plot_revenue_waterfall(summary), use_container_width=True)
 
     with tab_scenarios:
-        st.subheader("28 Predefined Research Scenarios (Part 8.5 Matrix)")
+        st.subheader("28 Predefined Scenarios (Part 8.5 Matrix)")
         df_scen = load_scenario_matrix()
         st.dataframe(df_scen, use_container_width=True, height=360)
 
@@ -441,7 +455,7 @@ def render_home_dashboard() -> None:
 # Canonical Multi-Page Routing
 # =====================================================================
 nav_pages = {
-    "Research Synthesis": [
+    "Synthesis": [
         st.Page(render_home_dashboard, title="Executive Dashboard", icon="🏠", default=True),
         st.Page("pages/08_Backtest_Metrics.py", title="Techno-Economic Metrics", icon="💰"),
         st.Page("pages/09_Risk_Analytics.py", title="Downside Risk & Volatility", icon="🛡️"),

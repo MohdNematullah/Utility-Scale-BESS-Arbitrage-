@@ -1,4 +1,4 @@
-"""
+﻿"""
 backtesting/check_cli.py
 ========================
 
@@ -29,8 +29,8 @@ for cmd in commands_to_test:
     if res.returncode != 0:
         print(f"Error executing command: {res.stderr}")
         sys.exit(1)
-    print("  • Command executed successfully ✓")
+    print("  â€¢ Command executed successfully âœ“")
 
 print(LINE)
-print("CLI parser, subcommands, and dispatching verified successfully ✓")
+print("CLI parser, subcommands, and dispatching verified successfully âœ“")
 print(LINE)

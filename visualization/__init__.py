@@ -2,10 +2,10 @@
 visualization
 =============
 
- Publication Visualization Package
+Publication Visualization Package
 
-Implements IEEE/Elsevier/Nature-compliant visual rendering, 600-DPI publication
-exports, multi-format vector graphics (PNG/PDF/SVG/TIFF), and figure themes.
+Implements compliant visual rendering, publication exports,
+multi-format vector graphics (PNG/PDF/SVG/TIFF), and figure themes.
 """
 
 from visualization.figure_style import (
@@ -15,7 +15,7 @@ from visualization.figure_style import (
     format_axes,
     get_figure_dimensions,
     save_publication_figure,
-    set_ieee_style,
+    set_style,
 )
 
 __all__ = [
@@ -25,5 +25,5 @@ __all__ = [
     "format_axes",
     "get_figure_dimensions",
     "save_publication_figure",
-    "set_ieee_style",
+    "set_style",
 ]

@@ -14,7 +14,7 @@ from visualization.figure_style import (
     format_axes,
     get_figure_dimensions,
     save_publication_figure,
-    set_ieee_style,
+    set_style,
 )
 
 LINE = "=" * 75
@@ -24,11 +24,11 @@ print(" FIGURE STYLE & THEME CHECK (PART 10.1)")
 print(LINE)
 
 # 1. Apply Style
-set_ieee_style()
-print("IEEE/Nature rcParams successfully applied to Matplotlib engine.")
+set_style()
+print("/Nature rcParams successfully applied to Matplotlib engine.")
 
 # 2. Build multi-panel demonstration figure showcasing all semantic roles
-dims = get_figure_dimensions("_full_tall")
+dims = get_figure_dimensions("full_tall")
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=dims, gridspec_kw={"height_ratios": [1.5, 1.0]})
 
 # Generate smooth synthetic test data
@@ -71,5 +71,5 @@ assert len(saved) == 4, "Expected exactly 4 formats (PNG, PDF, SVG, TIFF)."
 assert all(p.exists() and p.stat().st_size > 1000 for p in saved.values()), "All export files must be non-empty."
 
 print(LINE)
-print("Figure style & multi-format export verified successfully âœ“")
+print("Figure style & multi-format export verified successfully [OK]")
 print(LINE)

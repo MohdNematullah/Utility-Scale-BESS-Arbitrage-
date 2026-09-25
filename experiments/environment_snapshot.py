@@ -1,10 +1,8 @@
-"""
+﻿"""
 experiments/environment_snapshot.py
 ===================================
 
 Computational Environment & Reproducibility Snapshot Engine (Part 12.5)
-
-
 
 Captures operating system, Python build, CPU architecture, Git hash,
 and complete dependency versions for scientific replication.
@@ -42,7 +40,17 @@ class EnvironmentSnapshotter:
 
     @staticmethod
     def get_package_versions() -> dict[str, str]:
-        packages = ["numpy", "pandas", "matplotlib", "scipy", "openpyxl", "pytest", "pyomo", "xgboost", "lightgbm"]
+        packages = [
+            "numpy",
+            "pandas",
+            "matplotlib",
+            "scipy",
+            "openpyxl",
+            "pytest",
+            "pyomo",
+            "xgboost",
+            "lightgbm",
+        ]
         versions = {}
         for pkg in packages:
             try:
@@ -53,7 +61,7 @@ class EnvironmentSnapshotter:
 
     def capture_snapshot(self) -> tuple[Path, Path]:
         snapshot_data: dict[str, Any] = {
-            "project": "",
+            "project": "BTA-V5.0",
             "version": "5.0.0",
             "timestamp_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "python_version": platform.python_version(),
@@ -79,10 +87,10 @@ class EnvironmentSnapshotter:
             f"CPU Logical Cores     : {snapshot_data['cpu_count_logical']}",
             f"Git Revision Commit   : {snapshot_data['git_commit']}",
             "-" * 70,
-            "Core Research Dependencies:",
+            "Core Dependencies:",
         ]
         for pkg, ver in snapshot_data["package_dependencies"].items():
-            lines.append(f"  • {pkg:<18}: {ver}")
+            lines.append(f"  * {pkg:<18}: {ver}")
         lines.append("=" * 70)
 
         txt_path.write_text("\n".join(lines), encoding="utf-8")

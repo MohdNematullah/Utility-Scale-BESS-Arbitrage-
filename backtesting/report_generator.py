@@ -5,14 +5,13 @@ backtesting/report_generator.py
 Master Report & Publication Synthesis Engine (Part 9.6)
 
 
-
 Capabilities:
 1. LaTeX Booktabs Table Generation:
    - Forecast accuracy, arbitrage KPIs, risk metrics, statistical tests, and tornado rankings.
 2. Comprehensive Markdown Chapter:
    - Streamlined Chapter 5 synthesis with clean dictionary bindings.
 3. Master Multi-Tab Excel Workbook:
-   - Institutional 5-tab workbook (master__evaluation.xlsx).
+   - Institutional 5-tab workbook (master_evaluation.xlsx).
 """
 
 from __future__ import annotations
@@ -27,14 +26,14 @@ import pandas as pd
 
 
 @dataclass(slots=True)
-class ThesisReportArtifacts:
+class ReportArtifacts:
     report_markdown: Path
     master_excel: Path
     latex_tables_dir: Path
     manifest_json: Path
 
 
-class ThesisReportGenerator:
+class ReportGenerator:
     """
     Synthesizes backtesting and evaluation outputs into publication tables,
     LaTeX components, and a structured results chapter.
@@ -264,7 +263,7 @@ Asymmetry Profile & P\&L Skewness / Excess Kurtosis & {skewness:.2f} / {excess_k
     # Markdown Chapter Generator
     # ------------------------------------------------------------------------
 
-    def build__markdown_chapter(
+    def build_markdown_chapter(
         self,
         f_dict: dict[str, Any],
         a_dict: dict[str, Any],
@@ -325,14 +324,14 @@ Refer to LaTeX Table: table_sensitivity_tornado.tex
     # Master Report Pipeline Execution
     # ------------------------------------------------------------------------
 
-    def generate_all_reports(
+    def generate__all__reports(
         self,
         forecast_json_path: Path | str = "backtesting/results/forecast_realism/forecast_realism.json",
         arbitrage_json_path: Path | str = "backtesting/results/arbitrage_metrics/arbitrage_metrics.json",
         risk_json_path: Path | str = "backtesting/results/risk_metrics/risk_metrics.json",
         sensitivity_json_path: Path | str = "backtesting/results/sensitivity_analysis/sensitivity_summary.json",
         statistical_json_path: Path | str = "backtesting/results/statistical_tests/statistical_summary.json",
-    ) -> ThesisReportArtifacts:
+    ) -> ReportArtifacts:
         f_dict = self._load_json(forecast_json_path, {"mae": 7.93, "rmse": 14.32})
         a_dict = self._load_json(arbitrage_json_path, {"gross_revenue_usd": 1102091.72})
         r_dict = self._load_json(risk_json_path, {"sharpe_ratio": 77.326})
@@ -345,9 +344,9 @@ Refer to LaTeX Table: table_sensitivity_tornado.tex
         self.build_latex_statistical_table(t_dict.get("effect_sizes", []))
         self.build_latex_tornado_table(s_dict.get("tornado_spectrum", []))
 
-        md_file = self.build__markdown_chapter(f_dict, a_dict, r_dict, s_dict)
+        md_file = self.build_markdown_chapter(f_dict, a_dict, r_dict, s_dict)
 
-        master_excel = self.output_dir / "master__evaluation.xlsx"
+        master_excel = self.output_dir / "master_evaluation.xlsx"
         with pd.ExcelWriter(master_excel, engine="openpyxl") as writer:
             pd.DataFrame([f_dict]).T.reset_index().to_excel(writer, sheet_name="Forecast_Realism", index=False)
             pd.DataFrame([a_dict]).T.reset_index().to_excel(writer, sheet_name="Arbitrage_Economics", index=False)
@@ -363,7 +362,7 @@ Refer to LaTeX Table: table_sensitivity_tornado.tex
         }
         manifest_json.write_text(json.dumps(manifest_data, indent=4), encoding="utf-8")
 
-        return ThesisReportArtifacts(
+        return ReportArtifacts(
             report_markdown=md_file,
             master_excel=master_excel,
             latex_tables_dir=self.latex_dir,
@@ -380,5 +379,5 @@ Refer to LaTeX Table: table_sensitivity_tornado.tex
                 return fallback
         return fallback
 
-    def export(self, *args, **kwargs) -> ThesisReportArtifacts:
-        return self.generate_all_reports(*args, **kwargs)
+    def export(self, *args, **kwargs) -> ReportArtifacts:
+        return self.generate__all__reports(*args, **kwargs)

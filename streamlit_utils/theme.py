@@ -1,10 +1,11 @@
-"""
+﻿"""
 streamlit_utils/theme.py
 ========================
-Styling and layout utilities for  Streamlit Portal.
+Styling and layout utilities for Streamlit Portal.
 """
 
 from __future__ import annotations
+
 import streamlit as st
 
 PRIMARY_COLOR = "#16A34A"
@@ -59,7 +60,12 @@ def apply_theme() -> None:
     )
 
 
-def render_kpi(label: str, value: str, subtext: str = "", border_color: str = PRIMARY_COLOR) -> None:
+def render_kpi(
+    label: str,
+    value: str,
+    subtext: str = "",
+    border_color: str = PRIMARY_COLOR,
+) -> None:
     """Renders a formatted card component."""
     st.markdown(
         f"""

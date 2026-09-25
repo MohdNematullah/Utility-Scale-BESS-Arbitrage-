@@ -1,7 +1,0 @@
-model_a,model_b,loss_function,forecast_horizon_h,mean_loss_a,mean_loss_b,mean_differential,dm_statistic,hln_statistic,p_value,is_statistically_significant,superior_model
-XGBoost,Persistence,squared,24,205.12,390.3254,-185.2054,-12.2,-12.166,0.0,True,XGBoost
-XGBoost,Moving_Average,squared,24,205.12,245.32,-40.2,-6.091,-6.074,0.0,True,XGBoost
-XGBoost,Perfect_Foresight,squared,24,205.12,0.0,205.12,17.969,17.919,0.0,True,Perfect_Foresight
-Persistence,Moving_Average,squared,24,390.3254,245.32,145.0054,10.428,10.398,0.0,True,Moving_Average
-Persistence,Perfect_Foresight,squared,24,390.3254,0.0,390.3254,20.969,20.91,0.0,True,Perfect_Foresight
-Moving_Average,Perfect_Foresight,squared,24,245.32,0.0,245.32,18.761,18.708,0.0,True,Perfect_Foresight

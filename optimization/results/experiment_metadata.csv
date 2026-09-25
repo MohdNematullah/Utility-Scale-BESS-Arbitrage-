@@ -1,2 +1,0 @@
-forecast_start,forecast_end,rows,objective,battery_capacity_mwh,charge_efficiency,discharge_efficiency
-2026-01-01 00:00:00+00:00,2026-01-01 23:00:00+00:00,24,Energy Arbitrage,100.0,0.95,0.95

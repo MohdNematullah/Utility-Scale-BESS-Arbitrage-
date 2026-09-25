@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+﻿from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class ExperimentConfig:
@@ -6,14 +6,14 @@ class ExperimentConfig:
     Controls which experiment is executed.
     """
 
-    experiment_name: str = "forecast_aware_arbitrage"
+    experiment__name: str = "forecast__aware__arbitrage"
 
-    forecast_model: str = "xgboost"
+    forecast__model: str = "xgboost"
 
-    enable_dynamic_ageing: bool = True
+    enable__dynamic__ageing: bool = True
 
-    enable_forecast_realism: bool = True
+    enable__forecast__realism: bool = True
 
-    monte_carlo_runs: int = 1000
+    monte__carlo__runs: int = 1000
 
-    save_results: bool = True
+    save__results: bool = True

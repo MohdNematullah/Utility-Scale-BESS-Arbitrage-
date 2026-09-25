@@ -1,4 +1,4 @@
-"""
+﻿"""
 tests/visualization/test_dispatch_figures.py
 ============================================
 

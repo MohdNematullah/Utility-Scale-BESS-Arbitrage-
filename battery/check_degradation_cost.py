@@ -1,4 +1,4 @@
-"""
+﻿"""
 Verification script for degradation cost model.
 """
 
@@ -38,5 +38,5 @@ print("Marginal Cost ($/MWh)   :", round(result.marginal_cost_per_mwh,4))
 print("Replacement Required    :", result.replacement_required)
 
 print("=" * 70)
-print("Degradation cost model verified successfully ✓")
+print("Degradation cost model verified successfully âœ“")
 print("=" * 70)

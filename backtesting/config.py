@@ -7,7 +7,7 @@ class BacktestConfig:
     """
     Rolling Horizon Backtesting configuration.
 
-    configuration used by Part 8.
+    Configuration used by Part 8.
     """
 
     # ---------------------------------------------------------

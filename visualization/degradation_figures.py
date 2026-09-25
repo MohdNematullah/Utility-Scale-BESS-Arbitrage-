@@ -7,12 +7,12 @@ Publication-Grade Battery Ageing & Degradation Visualizations (Part 10.4)
 
 
 Generates the 6 core electrochemical ageing and fatigue figures for Chapter 6:
-1. Figure 10.4.1 â€” State of Health (SOH) Degradation Trajectory (Capacity retention vs. EOL warranty)
-2. Figure 10.4.2 â€” Usable Capacity Fade & Energy Attrition (MWh remaining vs. cumulative kWh lost)
-3. Figure 10.4.3 â€” Calendar vs. Cycle Fatigue Loss Decomposition (Arrhenius thermal vs. ASTM E1049 Rainflow wear)
-4. Figure 10.4.4 â€” Rainflow Cycle Range & Depth-of-Discharge (DOD) Histogram (Cycle fatigue spectrum)
-5. Figure 10.4.5 â€” Equivalent Full Cycles (EFC) Accumulation (Cumulative cycling duty vs. daily cycle rate)
-6. Figure 10.4.6 â€” Battery Degradation Wear Cost Accumulation (Cumulative wear penalty vs. incremental window cost)
+1. Figure 10.4.1 - State of Health (SOH) Degradation Trajectory (Capacity retention vs. EOL warranty)
+2. Figure 10.4.2 - Usable Capacity Fade & Energy Attrition (MWh remaining vs. cumulative kWh lost)
+3. Figure 10.4.3 - Calendar vs. Cycle Fatigue Loss Decomposition (Arrhenius thermal vs. ASTM E1049 Rainflow wear)
+4. Figure 10.4.4 - Rainflow Cycle Range & Depth-of-Discharge (DOD) Histogram (Cycle fatigue spectrum)
+5. Figure 10.4.5 - Equivalent Full Cycles (EFC) Accumulation (Cumulative cycling duty vs. daily cycle rate)
+6. Figure 10.4.6 - Battery Degradation Wear Cost Accumulation (Cumulative wear penalty vs. incremental window cost)
 """
 
 from __future__ import annotations
@@ -32,7 +32,7 @@ from visualization.figure_style import (
     format_axes,
     get_figure_dimensions,
     save_publication_figure,
-    set_ieee_style,
+    set_style,
 )
 
 
@@ -63,10 +63,10 @@ class DegradationFigureGenerator:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.formats = tuple(formats)
         self.dpi = dpi
-        set_ieee_style()
+        set_style()
 
     # ------------------------------------------------------------------------
-    # Figure 10.4.1 â€” State of Health (SOH) Degradation Trajectory
+    # Figure 10.4.1 - State of Health (SOH) Degradation Trajectory
     # ------------------------------------------------------------------------
     def plot_soh_curve(
         self,
@@ -75,7 +75,7 @@ class DegradationFigureGenerator:
         eol_threshold: float = 0.80,
         filename_stem: str = "Figure_10_4_1_SOH_Curve",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         n = len(degradation_df)
@@ -123,7 +123,7 @@ class DegradationFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.4.2 â€” Usable Capacity Fade & Energy Attrition
+    # Figure 10.4.2 - Usable Capacity Fade & Energy Attrition
     # ------------------------------------------------------------------------
     def plot_capacity_fade(
         self,
@@ -131,7 +131,7 @@ class DegradationFigureGenerator:
         nominal_capacity_mwh: float = 100.0,
         filename_stem: str = "Figure_10_4_2_Capacity_Fade",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax1 = plt.subplots(figsize=dims)
         ax2 = ax1.twinx()
 
@@ -167,14 +167,14 @@ class DegradationFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.4.3 â€” Calendar vs. Cycle Loss Breakdown
+    # Figure 10.4.3 - Calendar vs. Cycle Loss Breakdown
     # ------------------------------------------------------------------------
     def plot_calendar_vs_cycle_loss(
         self,
         degradation_df: pd.DataFrame,
         filename_stem: str = "Figure_10_4_3_Calendar_Cycle_Loss",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         n = len(degradation_df)
@@ -219,14 +219,14 @@ class DegradationFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.4.4 â€” Rainflow Cycle Range & DOD Histogram
+    # Figure 10.4.4 - Rainflow Cycle Range & DOD Histogram
     # ------------------------------------------------------------------------
     def plot_rainflow_histogram(
         self,
         dod_ranges: np.ndarray | None = None,
         filename_stem: str = "Figure_10_4_4_Rainflow_Histogram",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         if dod_ranges is None or len(dod_ranges) == 0:
@@ -261,14 +261,14 @@ class DegradationFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.4.5 â€” Equivalent Full Cycles (EFC) Accumulation
+    # Figure 10.4.5 - Equivalent Full Cycles (EFC) Accumulation
     # ------------------------------------------------------------------------
     def plot_efc_curve(
         self,
         degradation_df: pd.DataFrame,
         filename_stem: str = "Figure_10_4_5_EFC_Curve",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax1 = plt.subplots(figsize=dims)
         ax2 = ax1.twinx()
 
@@ -316,14 +316,14 @@ class DegradationFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.4.6 â€” Battery Degradation Wear Cost Accumulation
+    # Figure 10.4.6 - Battery Degradation Wear Cost Accumulation
     # ------------------------------------------------------------------------
     def plot_degradation_cost_curve(
         self,
         degradation_df: pd.DataFrame,
         filename_stem: str = "Figure_10_4_6_Degradation_Cost_Curve",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax1 = plt.subplots(figsize=dims)
         ax2 = ax1.twinx()
 

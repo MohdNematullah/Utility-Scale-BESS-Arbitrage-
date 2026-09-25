@@ -112,9 +112,9 @@ print(f"Throughput (MWh)            : {economics.throughput_mwh:.2f}")
 print(f"Equivalent Full Cycles      : {economics.equivalent_full_cycles:.3f}")
 print(f"Remaining SOH               : {economics.remaining_soh:.5f}")
 
-# ----------------------------------------------------
-# 7. Enhanced Dispatch Preview (Mentor Review #1 & #2 Verification)
-# ----------------------------------------------------
+# -------------------------------------
+# 7. Enhanced Dispatch Preview
+# -------------------------------------
 print("-" * 70)
 print("Dispatch Preview (First 3 Timesteps):")
 
@@ -131,9 +131,9 @@ preview_cols.extend([
 available_cols = [c for c in preview_cols if c in dispatch.columns]
 print(dispatch[available_cols].head(3))
 
-# ----------------------------------------------------
-# 8. SOC Semantics Check (Mentor Review #2 Verification)
-# ----------------------------------------------------
+# ------------------------------------
+# 8. SOC Semantics Check
+# ------------------------------------
 print("-" * 70)
 print(f"Initial SOC (Start of Day)  : {battery_summary.soc_initial:.2f} MWh")
 print(f"Terminal SOC (End of Day)   : {battery_summary.soc_terminal:.2f} MWh")

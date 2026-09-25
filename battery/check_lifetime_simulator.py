@@ -1,4 +1,4 @@
-"""
+﻿"""
 check_lifetime_simulator.py
 
 Verify lifetime simulation.
@@ -33,5 +33,5 @@ print("Saved:")
 print(path)
 
 print("=" * 70)
-print("Lifetime simulation verified successfully ✓")
+print("Lifetime simulation verified successfully âœ“")
 print("=" * 70)

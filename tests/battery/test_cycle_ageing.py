@@ -1,4 +1,4 @@
-from battery.cycle_ageing import CycleAgeingModel
+﻿from battery.cycle_ageing import CycleAgeingModel
 
 model = CycleAgeingModel()
 

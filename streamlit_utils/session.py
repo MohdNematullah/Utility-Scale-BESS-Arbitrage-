@@ -1,10 +1,11 @@
-"""
+﻿"""
 streamlit_utils/session.py
 ==========================
-Session State initialization and non-destructive parameter management for .
+Session State initialization and parameter management.
 """
 
 from __future__ import annotations
+
 from pathlib import Path
 import streamlit as st
 
@@ -35,10 +36,7 @@ def init_session_state() -> None:
 
 
 def reset_configuration() -> None:
-    """
-    Surgically resets user controls to baseline defaults without
-    destroying pipeline cache, telemetry datasets, or navigation state.
-    """
+    """Resets user controls to baseline defaults without clearing cached artifacts."""
     config_keys = [
         "power_mw",
         "capacity_mwh",
@@ -53,4 +51,5 @@ def reset_configuration() -> None:
         "selected_scenario_id",
     ]
     for k in config_keys:
-        st.session_state[k] = DEFAULTS[k]
+        if k in DEFAULTS:
+            st.session_state[k] = DEFAULTS[k]

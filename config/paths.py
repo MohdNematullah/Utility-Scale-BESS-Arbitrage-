@@ -1,12 +1,12 @@
-from pathlib import Path
+﻿from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT__ROOT = Path(__file__).resolve().parents[1]
 
-DATA_DIR = PROJECT_ROOT / "data"
-RESULTS_DIR = PROJECT_ROOT / "results"
-FIGURE_DIR = PROJECT_ROOT / "figures"
-LOG_DIR = PROJECT_ROOT / "logs"
-MODEL_DIR = PROJECT_ROOT / "models"
+DATA__DIR = PROJECT__ROOT / "data"
+RESULTS__DIR = PROJECT__ROOT / "results"
+FIGURE__DIR = PROJECT__ROOT / "figures"
+LOG__DIR = PROJECT__ROOT / "logs"
+MODEL__DIR = PROJECT__ROOT / "models"
 
-for folder in [RESULTS_DIR, FIGURE_DIR, LOG_DIR, MODEL_DIR]:
-    folder.mkdir(parents=True, exist_ok=True)
+for folder in [RESULTS__DIR, FIGURE__DIR, LOG__DIR, MODEL__DIR]:
+    folder.mkdir(parents=True, exist__ok=True)

@@ -7,14 +7,14 @@ Publication-Grade Scenario Comparison & Sensitivity Visualizations (Part 10.7)
 
 
 Generates the 8 core comparative and sensitivity analysis figures for Chapter 8:
-1. Figure 10.7.1 â€” Techno-Economic Pareto Frontier (Net revenue vs. final SOH longevity)
-2. Figure 10.7.2 â€” Parametric Tornado Sensitivity (Value swing ranking from baseline)
-3. Figure 10.7.3 â€” Composite Scenario Ranking (Top scenarios ranked by multi-objective score)
-4. Figure 10.7.4 â€” Scenario Evaluation Matrix Heatmap (Normalized score across categories)
-5. Figure 10.7.5 â€” Forecast Horizon & Model Benchmark (Persistence vs. 24h vs. 48h vs. Perfect Foresight)
-6. Figure 10.7.6 â€” Battery Chemistry Trade-Offs (NMC vs. LFP vs. LTO multi-metric comparison)
-7. Figure 10.7.7 â€” Arrhenius Thermal Acceleration Sensitivity (15Â°C to 45Â°C wear and fade)
-8. Figure 10.7.8 â€” Round-Trip Efficiency (RTE) Revenue Elasticity (85% to 95% AC-AC RTE)
+1. Figure 10.7.1 - Techno-Economic Pareto Frontier (Net revenue vs. final SOH longevity)
+2. Figure 10.7.2 - Parametric Tornado Sensitivity (Value swing ranking from baseline)
+3. Figure 10.7.3 - Composite Scenario Ranking (Top scenarios ranked by multi-objective score)
+4. Figure 10.7.4 - Scenario Evaluation Matrix Heatmap (Normalized score across categories)
+5. Figure 10.7.5 - Forecast Horizon & Model Benchmark (Persistence vs. 24h vs. 48h vs. Perfect Foresight)
+6. Figure 10.7.6 - Battery Chemistry Trade-Offs (NMC vs. LFP vs. LTO multi-metric comparison)
+7. Figure 10.7.7 - Arrhenius Thermal Acceleration Sensitivity (15Â°C to 45Â°C wear and fade)
+8. Figure 10.7.8 - Round-Trip Efficiency (RTE) Revenue Elasticity (85% to 95% AC-AC RTE)
 """
 
 from __future__ import annotations
@@ -34,7 +34,7 @@ from visualization.figure_style import (
     format_axes,
     get_figure_dimensions,
     save_publication_figure,
-    set_ieee_style,
+    set_style,
 )
 
 
@@ -67,17 +67,17 @@ class ScenarioFigureGenerator:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.formats = tuple(formats)
         self.dpi = dpi
-        set_ieee_style()
+        set_style()
 
     # ------------------------------------------------------------------------
-    # Figure 10.7.1 â€” Pareto Frontier (Revenue vs. Asset Longevity)
+    # Figure 10.7.1 - Pareto Frontier (Revenue vs. Asset Longevity)
     # ------------------------------------------------------------------------
     def plot_pareto_frontier(
         self,
         scenarios_df: pd.DataFrame,
         filename_stem: str = "Figure_10_7_1_Pareto_Frontier",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         df = scenarios_df.copy()
@@ -129,7 +129,7 @@ class ScenarioFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.7.2 â€” Parametric Tornado Sensitivity
+    # Figure 10.7.2 - Parametric Tornado Sensitivity
     # ------------------------------------------------------------------------
     def plot_tornado_sensitivity(
         self,
@@ -137,7 +137,7 @@ class ScenarioFigureGenerator:
         baseline_revenue_usd: float = 848333.00,
         filename_stem: str = "Figure_10_7_2_Tornado_Sensitivity",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         if not tornado_records:
@@ -180,7 +180,7 @@ class ScenarioFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.7.3 â€” Scenario Ranking & Relative Gains
+    # Figure 10.7.3 - Scenario Ranking & Relative Gains
     # ------------------------------------------------------------------------
     def plot_scenario_ranking(
         self,
@@ -188,7 +188,7 @@ class ScenarioFigureGenerator:
         top_n: int = 10,
         filename_stem: str = "Figure_10_7_3_Scenario_Ranking",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         df = scenarios_df.copy()
@@ -223,14 +223,14 @@ class ScenarioFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.7.4 â€” Scenario Heatmap Matrix
+    # Figure 10.7.4 - Scenario Heatmap Matrix
     # ------------------------------------------------------------------------
     def plot_scenario_heatmap(
         self,
         scenarios_df: pd.DataFrame,
         filename_stem: str = "Figure_10_7_4_Heatmap_Revenue_Across_Scenarios",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         df = scenarios_df.copy()
@@ -276,14 +276,14 @@ class ScenarioFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.7.5 â€” Horizon & Model Benchmark (Persistence vs 24h vs 48h vs PF)
+    # Figure 10.7.5 - Horizon & Model Benchmark (Persistence vs 24h vs 48h vs PF)
     # ------------------------------------------------------------------------
     def plot_horizon_comparison(
         self,
         benchmark_records: list[dict[str, Any]] | None = None,
         filename_stem: str = "Figure_10_7_5_Horizon_Comparison",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax1 = plt.subplots(figsize=dims)
         ax2 = ax1.twinx()
 
@@ -330,14 +330,14 @@ class ScenarioFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.7.6 â€” Battery Chemistry Comparison (NMC vs. LFP vs. LTO)
+    # Figure 10.7.6 - Battery Chemistry Comparison (NMC vs. LFP vs. LTO)
     # ------------------------------------------------------------------------
     def plot_chemistry_comparison(
         self,
         chemistry_records: list[dict[str, Any]] | None = None,
         filename_stem: str = "Figure_10_7_6_Chemistry_Comparison",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, (ax1, ax2) = plt.subplots(
             1, 2, figsize=dims, gridspec_kw={"width_ratios": [1.2, 1.0]}
         )
@@ -386,14 +386,14 @@ class ScenarioFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.7.7 â€” Arrhenius Thermal Sensitivity
+    # Figure 10.7.7 - Arrhenius Thermal Sensitivity
     # ------------------------------------------------------------------------
     def plot_temperature_sensitivity(
         self,
         thermal_records: list[dict[str, Any]] | None = None,
         filename_stem: str = "Figure_10_7_7_Temperature_Sensitivity",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax1 = plt.subplots(figsize=dims)
         ax2 = ax1.twinx()
 
@@ -436,14 +436,14 @@ class ScenarioFigureGenerator:
         return saved
 
     # ------------------------------------------------------------------------
-    # Figure 10.7.8 â€” Round-Trip Efficiency (RTE) Elasticity
+    # Figure 10.7.8 - Round-Trip Efficiency (RTE) Elasticity
     # ------------------------------------------------------------------------
     def plot_efficiency_sensitivity(
         self,
         efficiency_records: list[dict[str, Any]] | None = None,
         filename_stem: str = "Figure_10_7_8_Efficiency_Sensitivity",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         if not efficiency_records:

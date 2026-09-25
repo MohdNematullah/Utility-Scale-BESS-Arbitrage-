@@ -4,10 +4,8 @@ experiments/artifact_manifest.py
 
 Master Publication Artifact Manifest & Checksum Indexer (Part 12.4)
 
-
-
 Indexes every generated CSV, Excel, JSON, Markdown, LaTeX, PNG, PDF, SVG, TIFF file
-with cryptographic SHA256 checksums, byte sizes, and chapter mappings.
+with cryptographic SHA256 checksums, byte sizes, and relative paths.
 """
 
 from __future__ import annotations
@@ -32,9 +30,13 @@ class ArtifactEntry:
 
 
 class ArtifactManifestGenerator:
-    """Recursively catalogs and cryptographically validates all research deliverables."""
+    """Recursively catalogs and cryptographically validates all deliverables."""
 
-    def __init__(self, root_dir: Path | str = "results", output_dir: Path | str = "results/manifests"):
+    def __init__(
+        self,
+        root_dir: Path | str = "results",
+        output_dir: Path | str = "results/manifests",
+    ):
         self.root_dir = Path(root_dir)
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -53,7 +55,9 @@ class ArtifactManifestGenerator:
                         sha = compute_file_sha256(p)
                         size = p.stat().st_size
                         rel = str(p.relative_to(self.root_dir))
-                        ts = datetime.datetime.fromtimestamp(p.stat().st_mtime, tz=datetime.timezone.utc).isoformat()
+                        ts = datetime.datetime.fromtimestamp(
+                            p.stat().st_mtime, tz=datetime.timezone.utc
+                        ).isoformat()
                         entries.append(
                             ArtifactEntry(
                                 filename=p.name,

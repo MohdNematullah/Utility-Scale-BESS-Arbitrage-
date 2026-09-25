@@ -1,4 +1,4 @@
-"""
+﻿"""
 Unit tests for ASTM E1049 Rainflow Cycle Counter.
 """
 

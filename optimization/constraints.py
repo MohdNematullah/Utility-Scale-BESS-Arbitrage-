@@ -2,7 +2,7 @@
 constraints.py
 ==============
 
-battery operational constraints.
+Battery operational constraints.
 
 Implements:
 • End-of-interval SOC dynamics
@@ -10,10 +10,14 @@ Implements:
 • SOC operating boundaries
 • Initial SOC continuity
 • Terminal SOC targets
-• LP-compatible non-simultaneous charge/discharge constraints
+• Binary-enforced non-simultaneous charge/discharge constraints (MILP)
 """
 
-from pyomo.environ import Constraint
+from pyomo.environ import (
+    Binary,
+    Constraint,
+    Var,
+)
 
 
 # ============================================================
@@ -127,22 +131,36 @@ def terminal_soc_constraint(model):
 
 
 # ============================================================
-# LP-Compatible No Simultaneous Charge/Discharge
+# Non-Simultaneous Charge/Discharge (Binary MILP Formulation)
 # ============================================================
 
 def relaxed_operation_constraint(model):
-    """
-    LP relaxation: charge + discharge <= max_power.
-    """
-    limit = max(
-        float(model.max_charge_power.value),
-        float(model.max_discharge_power.value),
+    """Allow only one operating direction in each hour."""
+    # One switch for each hour: 1 allows charging, 0 allows discharging.
+    model.is_charging = Var(
+        model.T,
+        domain=Binary,
     )
+
+    def rule(m, t, direction):
+        if direction == "charge":
+            return (
+                m.charge_power[t]
+                <= m.max_charge_power
+                * m.remaining_capacity_fraction
+                * m.is_charging[t]
+            )
+        return (
+            m.discharge_power[t]
+            <= m.max_discharge_power
+            * m.remaining_capacity_fraction
+            * (1 - m.is_charging[t])
+        )
+
     return Constraint(
         model.T,
-        rule=lambda m, t: (
-            m.charge_power[t] + m.discharge_power[t] <= limit
-        ),
+        ("charge", "discharge"),
+        rule=rule,
     )
 
 

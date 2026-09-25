@@ -1,4 +1,4 @@
-"""
+﻿"""
 backtesting/check_sensitivity_analysis.py
 =========================================
 
@@ -114,10 +114,10 @@ print(f"Summary JSON       : {artifacts.summary_json.exists()} ({artifacts.summa
 figures = list(artifacts.figures_directory.glob("*.png"))
 print(f"\nGenerated Diagnostic Visualizations ({len(figures)} total):")
 for fig in sorted(figures):
-    print(f"  • {fig.name}")
+    print(f"  â€¢ {fig.name}")
 
 assert len(figures) == 5, f"Expected 5 figures, found {len(figures)}."
 
 print(LINE)
-print("Sensitivity analysis engine verified successfully ✓")
+print("Sensitivity analysis engine verified successfully âœ“")
 print(LINE)

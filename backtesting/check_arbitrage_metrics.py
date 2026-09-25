@@ -1,4 +1,4 @@
-"""
+﻿"""
 backtesting/check_arbitrage_metrics.py
 =====================================
 
@@ -105,10 +105,10 @@ print(f"KPIs JSON    : {artifacts.kpis_json.exists()} ({artifacts.kpis_json})")
 figures = list(artifacts.figures_directory.glob("*.png"))
 print(f"\nGenerated Publication Visualizations ({len(figures)} total):")
 for fig in sorted(figures):
-    print(f"  • {fig.name}")
+    print(f"  â€¢ {fig.name}")
 
 assert len(figures) == 5, f"Expected 5 figures, found {len(figures)}."
 
 print(LINE)
-print("Arbitrage metrics evaluation verified successfully ✓")
+print("Arbitrage metrics evaluation verified successfully âœ“")
 print(LINE)

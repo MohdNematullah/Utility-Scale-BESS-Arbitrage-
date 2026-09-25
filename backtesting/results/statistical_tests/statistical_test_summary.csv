@@ -1,7 +1,0 @@
-comparison_name,mean_difference,std_difference,t_statistic,t_p_value,wilcoxon_statistic,wilcoxon_p_value,is_t_significant,is_wilcoxon_significant
-XGBoost_vs_Persistence,490.4556,513.98,17.852,0.0,5495.0,0.0,True,True
-XGBoost_vs_Moving_Average,638.2303,565.6058,21.11,0.0,3401.0,0.0,True,True
-XGBoost_vs_Perfect_Foresight,-740.18,469.2877,-29.507,0.0,903.0,0.0,True,True
-Persistence_vs_Moving_Average,147.7747,631.4865,4.378,2e-05,22533.0,2e-05,True,True
-Persistence_vs_Perfect_Foresight,-1230.6355,508.5789,-45.269,0.0,1.0,0.0,True,True
-Moving_Average_vs_Perfect_Foresight,-1378.4102,563.7389,-45.744,0.0,28.0,0.0,True,True

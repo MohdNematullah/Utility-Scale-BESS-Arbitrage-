@@ -1,58 +1,61 @@
+﻿"""
+optimization/check_objective.py
+===============================
 
+Verification script for mathematical objective function attachment.
 """
-check_objective.py
 
-Verifies objective attachment.
-"""
+from __future__ import annotations
 
-from pyomo.environ import (
-    ConcreteModel,
-    RangeSet,
-    Param,
-    Var,
-    NonNegativeReals,
-)
+from pathlib import Path
+import sys
+
+# Ensure repository root is on sys.path
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+import pyomo.environ as pyo
+from pyomo.core.base.set_types import NonNegativeReals
 
 from optimization.objective import attach_objective
 
 
-model = ConcreteModel()
+model = pyo.ConcreteModel(name="BESS_Arbitrage_Verification")
 
-model.T = RangeSet(0, 23)
+# 24-Hour Optimization Horizon
+model.T = pyo.RangeSet(0, 23)
+model.delta_t = pyo.Param(initialize=1.0)
 
-model.delta_t = Param(initialize=1)
+prices = {t: 30.0 + float(t) for t in range(24)}
 
-prices = {
-    t: 30 + t
-    for t in range(24)
-}
-
-model.price = Param(
+model.price = pyo.Param(
     model.T,
     initialize=prices,
 )
 
-model.forecast_price = Param(
+model.forecast_price = pyo.Param(
     model.T,
     initialize=prices,
 )
 
-model.degradation_cost = Param(
+model.degradation_cost = pyo.Param(
     model.T,
-    initialize={t: 0 for t in range(24)},
+    initialize={t: 0.0 for t in range(24)},
 )
 
-model.charge_power = Var(
-    model.T,
-    domain=NonNegativeReals,
-)
-
-model.discharge_power = Var(
+model.charge_power = pyo.Var(
     model.T,
     domain=NonNegativeReals,
 )
 
-attach_objective(model)
+model.discharge_power = pyo.Var(
+    model.T,
+    domain=NonNegativeReals,
+)
+
+# Attach arbitrage objective expression
+attach_objective(model, objective_name="energy_arbitrage")
 
 print("=" * 60)
 print("OBJECTIVE CREATED SUCCESSFULLY")

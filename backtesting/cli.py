@@ -2,10 +2,10 @@
 backtesting/cli.py
 ==================
 
-Unified Command-Line Interface for  Research Pipeline (Part 8.5.5)
+Unified Command-Line Interface for  Pipeline (Part 8.5.5)
 
 Supported Subcommands:
-- list               : Lists all 28 predefined research scenarios.
+- list               : Lists all 28 predefined scenarios.
 - run <id>           : Executes a specific scenario by ID.
 - run-batch          : Executes a category or batch of scenarios (supports parallel workers).
 - compare            : Evaluates, ranks, and plots cross-scenario Pareto frontiers.
@@ -23,7 +23,7 @@ import pandas as pd
 
 from backtesting.comparison import ScenarioComparisonEngine
 from backtesting.dashboard_data import DashboardDataBuilder
-from backtesting.experiment_runner import ExperimentRunner, get_git_commit_hash
+from backtesting.experiment_runner import ExperimentRunner
 from backtesting.scenarios import (
     ScenarioCategory,
     build_scenario_configs,
@@ -65,7 +65,7 @@ def _load_runtime_environment():
 def handle_list(args):
     scenarios = list_scenarios()
     print("\n" + "=" * 80)
-    print(f" PREDEFINED RESEARCH SCENARIOS CATALOG ({len(scenarios)} TOTAL)")
+    print(f" PREDEFINED SCENARIOS CATALOG ({len(scenarios)} TOTAL)")
     print("=" * 80)
     print(f"{'Scenario ID':<30} {'Category':<24} {'Scenario Name'}")
     print("-" * 80)
@@ -188,12 +188,12 @@ def handle_resume(args):
 def main():
     parser = argparse.ArgumentParser(
         prog="python -m backtesting.cli",
-        description=" Research Backtesting & Scenario Experiment Orchestrator",
+        description=" Backtesting & Scenario Experiment Orchestrator",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     # 1. List Command
-    p_list = subparsers.add_parser("list", help="List predefined research scenarios.")
+    p_list = subparsers.add_parser("list", help="List predefined scenarios.")
     p_list.add_argument("--category", type=str, default=None, help="Filter scenarios by category.")
     p_list.set_defaults(func=handle_list)
 

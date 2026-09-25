@@ -1,4 +1,4 @@
-"""
+﻿"""
 Battery degradation package for .
 """
 from battery.calendar_ageing import CalendarAgeingModel

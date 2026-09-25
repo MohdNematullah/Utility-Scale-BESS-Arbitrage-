@@ -1,7 +1,0 @@
-parameter,swing_usd,sensitivity_rank
-System Duration / Sizing,1272450.0,1
-Degradation Hurdle Penalty,253700.0,2
-Forecast Look-Ahead,221351.0,3
-Round-Trip Efficiency,209380.0,4
-Operating Temperature,202960.0,5
-Battery Chemistry,146195.0,6

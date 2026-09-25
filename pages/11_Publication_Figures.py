@@ -4,18 +4,21 @@ pages/11_Publication_Figures.py
 Publication Figures Inspection and Multi-Format Export Suite.
 """
 
+from __future__ import annotations
+
 from pathlib import Path
 import streamlit as st
 from streamlit_utils.theme import apply_theme
 
 apply_theme()
-st.header("ðŸ–¼ Publication Figures Suite")
+st.header("🖼️ Publication Figures Suite")
 
 fig_dirs = [
     Path("results/_figures/png"),
     Path("results/figures/png"),
     Path("results/_figures"),
     Path("results/figures"),
+    Path("backtesting/results/_figures/png"),
 ]
 
 fig_dir = next((d for d in fig_dirs if d.exists() and any(d.glob("*.png"))), None)
@@ -34,10 +37,10 @@ if fig_dir is not None:
 
         with open(sel_path, "rb") as f:
             st.download_button(
-                label=f"â¬‡ Download {sel_fig_name} (PNG)",
+                label=f"⬇️ Download {sel_fig_name} (PNG)",
                 data=f.read(),
                 file_name=sel_fig_name,
                 mime="image/png",
             )
 else:
-    st.warning("Figures not found on disk. Click 'â–¶ Run Full' in the sidebar or run `python main.py --figures`.")
+    st.warning("Figures not found on disk. Run `python main.py --figures` to render the visualization suite.")

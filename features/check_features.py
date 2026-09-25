@@ -1,4 +1,4 @@
-"""
+﻿"""
 check_features.py
 
 Feature diagnostics for .
@@ -45,11 +45,11 @@ def main():
 
     print("\nFirst 15 Features")
     for column in features.columns[:15]:
-        print(f"  • {column}")
+        print(f"  â€¢ {column}")
 
     print("\nLast 5 Features")
     for column in features.columns[-5:]:
-        print(f"  • {column}")
+        print(f"  â€¢ {column}")
 
     print("\nFeature Matrix Shape")
     print(features.shape)

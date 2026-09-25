@@ -2,11 +2,21 @@
 visualization/check_visualization.py
 ====================================
 
-Master Production Verification & QA Script for Part 10 Visualization Package.
+Master Production Verification & QA Script for Visualization Package.
 """
 
 from pathlib import Path
-from visualization._figure_exporter import ThesisFigureExporter
+import sys
+
+# Ensure project root is on sys.path
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+try:
+    from visualization.figure_exporter import FigureExporter as MasterFigureExporter
+except ImportError:
+    from visualization.figure_exporter import ThesisFigureExporter as MasterFigureExporter
 
 LINE = "=" * 60
 
@@ -14,13 +24,13 @@ print(LINE)
 print("PUBLICATION VISUALIZATION CHECK")
 print(LINE + "\n")
 
-exporter = ThesisFigureExporter(
+exporter = MasterFigureExporter(
     output_directory="results/_figures",
     formats=("png", "pdf", "svg", "tiff"),
     dpi=300,
 )
 
-manifest = exporter.export_all_figures()
+manifest = exporter.export__all__figures()
 
 # 1. Section Verifications
 forecast_files = list(Path("results/_figures/png").glob("Figure_10_2_*.*"))
@@ -43,10 +53,10 @@ pdf_count = len(list(Path("results/_figures/pdf").glob("*.pdf")))
 svg_count = len(list(Path("results/_figures/svg").glob("*.svg")))
 tiff_count = len(list(Path("results/_figures/tiff").glob("*.tiff")))
 
-print(f"PNG Export ................. {'PASS' if png_count == 44 else 'FAIL'}")
-print(f"PDF Export ................. {'PASS' if pdf_count == 44 else 'FAIL'}")
-print(f"SVG Export ................. {'PASS' if svg_count == 44 else 'FAIL'}")
-print(f"TIFF Export ................ {'PASS' if tiff_count == 44 else 'FAIL'}\n")
+print(f"PNG Export .................. {'PASS' if png_count == 44 else 'FAIL'}")
+print(f"PDF Export .................. {'PASS' if pdf_count == 44 else 'FAIL'}")
+print(f"SVG Export .................. {'PASS' if svg_count == 44 else 'FAIL'}")
+print(f"TIFF Export ................. {'PASS' if tiff_count == 44 else 'FAIL'}\n")
 
 print(f"Total Figures Exported: {manifest.total_figures_count}\n")
 
@@ -59,5 +69,5 @@ assert catalog_file.exists() and catalog_file.stat().st_size > 1000
 assert manifest_file.exists() and manifest_file.stat().st_size > 1000
 
 print(LINE)
-print("Visualization package verified successfully.")
+print("Visualization package verified successfully ✓")
 print(LINE)

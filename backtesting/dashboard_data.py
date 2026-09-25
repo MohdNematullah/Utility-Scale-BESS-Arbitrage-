@@ -1,4 +1,4 @@
-"""
+﻿"""
 backtesting/dashboard_data.py
 =============================
 
@@ -343,7 +343,7 @@ class DashboardDataBuilder:
             ]).to_csv(out_path, index=False)
         return out_path
 
-    def export_all_dashboard_artifacts(
+    def export__all__dashboard_artifacts(
         self,
         dispatch_df: pd.DataFrame,
         degradation_df: pd.DataFrame,
@@ -386,7 +386,7 @@ class DashboardDataBuilder:
         if summary_dict is None:
             summary_dict = {"gross_revenue_usd": 100000.0, "net_revenue_usd": 80000.0}
 
-        return self.export_all_dashboard_artifacts(
+        return self.export__all__dashboard_artifacts(
             dispatch_df=dispatch_df,
             degradation_df=degradation_df,
             summary_dict=summary_dict,

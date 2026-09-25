@@ -1,4 +1,4 @@
-"""
+﻿"""
 backtesting/check_forecast_realism.py
 ====================================
 
@@ -60,16 +60,16 @@ print(f"Mean Absolute Error (MAE)        : ${metrics.mae:.2f}/MWh")
 print(f"Root Mean Square Error (RMSE)    : ${metrics.rmse:.2f}/MWh")
 print(f"WAPE / Volume MAPE               : {metrics.mape_pct:.2f}%")
 print(f"Symmetric MAPE (SMAPE)           : {metrics.smape_pct:.2f}%")
-print(f"Coefficient of Determination (R²): {metrics.r2_score:.4f}")
+print(f"Coefficient of Determination (RÂ²): {metrics.r2_score:.4f}")
 print(f"Mean Bias Error (MBE)            : ${metrics.bias:.2f}/MWh")
-print(f"Residual Std Deviation (σ)       : ${metrics.residual_std:.2f}/MWh")
+print(f"Residual Std Deviation (Ïƒ)       : ${metrics.residual_std:.2f}/MWh")
 print(f"Directional Trajectory Accuracy  : {metrics.directional_accuracy_pct:.2f}%")
 print(f"Value Capture Ratio (VCR)        : {metrics.value_capture_ratio_pct:.2f}%")
 print(f"Perfect Foresight Gap            : ${metrics.perfect_foresight_gap_usd:,.2f}")
 
 assert metrics.mae > 0.0, "MAE must be strictly positive."
 assert metrics.rmse >= metrics.mae, "RMSE must be mathematically greater than or equal to MAE."
-assert -1.0 <= metrics.r2_score <= 1.0, "R² must be bounded within standard limits."
+assert -1.0 <= metrics.r2_score <= 1.0, "RÂ² must be bounded within standard limits."
 assert 0.0 <= metrics.directional_accuracy_pct <= 100.0, "Directional accuracy must be within [0, 100]%."
 
 print("-" * 75)
@@ -82,10 +82,10 @@ print(f"Scorecard JSON: {artifacts.summary_json.exists()} ({artifacts.summary_js
 figures = list(artifacts.figures_directory.glob("*.png"))
 print(f"\nGenerated Diagnostic Visualizations ({len(figures)} total):")
 for fig in sorted(figures):
-    print(f"  • {fig.name}")
+    print(f"  â€¢ {fig.name}")
 
 assert len(figures) == 6, f"Expected exactly 6 figures, found {len(figures)}."
 
 print(LINE)
-print("Forecast realism evaluation verified successfully ✓")
+print("Forecast realism evaluation verified successfully âœ“")
 print(LINE)

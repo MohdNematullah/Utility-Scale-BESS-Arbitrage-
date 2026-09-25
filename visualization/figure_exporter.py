@@ -1,33 +1,16 @@
 ﻿"""
-visualization/_figure_exporter.py
-=======================================
-
-Master Publication Figure Exporter & Synthesis Engine (Part 10.8)
-
-
-
-Capabilities:
-1. Master Orchestration:
-   - Coordinates Parts 10.2 through 10.7 to generate all 38 domain figures.
-   - Generates 6 Master Executive figures (10.8.1 to 10.8.6) to complete
-     the full inventory of 44 publication-grade figures.
-2. Production Multi-Format Exporting:
-   - Organizes all figures into dedicated subdirectories:
-     * results/_figures/png/  (600 DPI raster for PDF)
-     * results/_figures/pdf/  (Vector format for LaTeX inclusion)
-     * results/_figures/svg/  (Vector format for Inkscape / Illustrator)
-     * results/_figures/tiff/ (300-600 DPI uncompressed for journal submission)
-3. Automated Publication Cataloging:
-   - Generates FIGURE_CATALOG.md with figure numbers, captions, and chapter mappings.
-   - Generates _figures_manifest.json indexing every exported artifact.
+visualization/figure_exporter.py
+================================
+Master Publication Figure Exporter & Synthesis Engine (Part 10.8).
+Orchestrates generation of all 44 publication figures across PNG, PDF, SVG, and TIFF.
 """
 
 from __future__ import annotations
 
 import json
-import shutil
 from dataclasses import asdict, dataclass
 from pathlib import Path
+import shutil
 from typing import Any, Sequence
 
 import matplotlib
@@ -43,7 +26,7 @@ from visualization.figure_style import (
     format_axes,
     get_figure_dimensions,
     save_publication_figure,
-    set_ieee_style,
+    set_style,
 )
 from visualization.financial_figures import FinancialFigureGenerator
 from visualization.forecast_figures import ForecastFigureGenerator
@@ -52,7 +35,7 @@ from visualization.scenario_figures import ScenarioFigureGenerator
 
 
 @dataclass(slots=True)
-class ThesisExportManifest:
+class ExportManifest:
     total_figures_count: int
     formats_exported: list[str]
     output_directory: str
@@ -60,31 +43,27 @@ class ThesisExportManifest:
     figures_inventory: list[dict[str, Any]]
 
 
-class ThesisFigureExporter:
-    """
-    Automates the generation and export of all 44 publication figures
-    into PNG, PDF, SVG, and TIFF formats.
-    """
+class FigureExporter:
+    """Automates generation and export of all 44 publication figures."""
 
     def __init__(
         self,
         output_directory: Path | str = "results/_figures",
         formats: Sequence[str] = ("png", "pdf", "svg", "tiff"),
         dpi: int = 600,
-    ):
+    ) -> None:
         self.output_dir = Path(output_directory)
         self.formats = tuple(f.lower().lstrip(".") for f in formats)
         self.dpi = dpi
 
-        # Initialize target format subdirectories
         self.format_dirs = {fmt: self.output_dir / fmt for fmt in self.formats}
         for d in self.format_dirs.values():
             d.mkdir(parents=True, exist_ok=True)
 
-        set_ieee_style()
+        set_style()
 
     # ------------------------------------------------------------------------
-    # 6 Master Executive Synthesis Figures (10.8.1 to 10.8.6)
+    # Executive Synthesis Figures (10.8.1 - 10.8.6)
     # ------------------------------------------------------------------------
 
     def plot_executive_kpi_dashboard(
@@ -92,14 +71,13 @@ class ThesisFigureExporter:
         summary_dict: dict[str, Any],
         filename_stem: str = "Figure_10_8_1_Executive_KPI_Dashboard",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full_tall")
+        dims = get_figure_dimensions("full_tall")
         fig, axes = plt.subplots(2, 2, figsize=dims)
 
         gross = float(summary_dict.get("gross_revenue_usd", 1102091.72)) / 1000.0
         deg = float(summary_dict.get("degradation_cost_usd", 253758.72)) / 1000.0
         ebitda = float(summary_dict.get("net_operating_profit_usd", 469725.99)) / 1000.0
 
-        # Subplot 1: Financial Waterfall Bars
         ax1 = axes[0, 0]
         f_labels = ["Gross", "Degrad.", "EBITDA"]
         f_vals = [gross, -deg, ebitda]
@@ -109,11 +87,10 @@ class ThesisFigureExporter:
             ax1.text(i, abs(v) + gross * 0.03, f"${abs(v):,.0f}k", ha="center", va="bottom", fontsize=8, fontweight="bold")
         format_axes(ax1, title="Financial Value Creation ($k)", ylabel="Capital ($k USD)")
 
-        # Subplot 2: SOH Durability Donut
         ax2 = axes[0, 1]
         soh_pct = float(summary_dict.get("final_soh", 0.9812)) * 100.0
         fade_pct = 100.0 - soh_pct
-        wedges, texts, autotexts = ax2.pie(
+        _, _, autotexts = ax2.pie(
             [soh_pct, fade_pct],
             labels=["Remaining SOH", "Capacity Fade"],
             colors=[COLOR_PALETTE.soh, COLOR_PALETTE.amber],
@@ -126,7 +103,6 @@ class ThesisFigureExporter:
             autotext.set_weight("bold")
         ax2.set_title("Asset Health Retention", pad=7.0, fontsize=10.5, fontweight="bold")
 
-        # Subplot 3: Unit Economics ($/MWh Throughput vs $/EFC)
         ax3 = axes[1, 0]
         u_labels = ["Gross/MWh", "Net/MWh", "Degrad/EFC ($/10)"]
         rev_mwh = float(summary_dict.get("gross_revenue_per_mwh_throughput", 28.98))
@@ -137,14 +113,13 @@ class ThesisFigureExporter:
             ax3.text(i, val + 1.0, f"${val:.1f}", ha="center", va="bottom", fontsize=8, fontweight="bold")
         format_axes(ax3, title="Normalized Unit Economics", ylabel="Unit Metric ($)")
 
-        # Subplot 4: Risk Scorecard Gauge
         ax4 = axes[1, 1]
         sharpe = float(summary_dict.get("sharpe_ratio", 77.326))
         var_95 = abs(float(summary_dict.get("historical_var_95_usd", -1654.10)))
         win_rate = float(summary_dict.get("profitable_days_pct", 100.0))
 
         metrics_y = [2, 1, 0]
-        vals = [win_rate, sharpe, var_95 / 20.0]  # Rescaled for visualization
+        vals = [win_rate, sharpe, var_95 / 20.0]
         ax4.barh(metrics_y, vals, color=[COLOR_PALETTE.charge, COLOR_PALETTE.forecast, COLOR_PALETTE.discharge], height=0.45)
         ax4.set_yticks(metrics_y)
         ax4.set_yticklabels([f"Win Rate ({win_rate:.0f}%)", f"Sharpe ({sharpe:.1f})", f"VaR 95% (${var_95:.0f})"])
@@ -159,7 +134,7 @@ class ThesisFigureExporter:
         nominal_capacity_mwh: float = 100.0,
         filename_stem: str = "Figure_10_8_2_System_Architecture_Energy_Balance",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         stages = [
@@ -233,23 +208,19 @@ class ThesisFigureExporter:
         self,
         filename_stem: str = "Figure_10_8_4_Risk_Return_Efficient_Frontier",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         np.random.seed(42)
-        # Synthetic risk-return profiles for evaluated scenario catalog
         volatilities = np.random.uniform(8.0, 18.0, 28)
         returns = 400.0 + volatilities * 38.0 + np.random.normal(0, 35.0, 28)
 
         ax.scatter(volatilities, returns, color="#7293cb", s=55, alpha=0.75, label="Experimental Scenarios (N=28)")
 
-        # Theoretical Efficient Frontier Line
         v_seq = np.linspace(8.0, 18.0, 100)
         ret_eff = 430.0 + v_seq * 42.0 - 0.5 * (v_seq - 13.0) ** 2
         ax.plot(v_seq, ret_eff, color=COLOR_PALETTE.loss, linestyle="--", linewidth=2.0, label="Risk-Return Efficient Frontier")
-
-        # Mark Core Baseline
-        ax.scatter([11.39], [848.33], color=COLOR_PALETTE.forecast, s=120, edgecolors="black", zorder=5, label="48h ML Baseline ($848.3k, Ïƒ=$11.4k)")
+        ax.scatter([11.39], [848.33], color=COLOR_PALETTE.forecast, s=120, edgecolors="black", zorder=5, label="48h ML Baseline ($848.3k, σ=$11.4k)")
 
         format_axes(
             ax,
@@ -267,7 +238,7 @@ class ThesisFigureExporter:
         self,
         filename_stem: str = "Figure_10_8_5_Degradation_Cost_Sensitivity_Surface",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
         temperatures = np.array([15, 20, 25, 30, 35, 40, 45])
@@ -282,25 +253,24 @@ class ThesisFigureExporter:
         format_axes(
             ax,
             title="Arrhenius Thermal Degradation Cost Across Wear Hurdle Policies",
-            xlabel="Battery Operating Temperature (Â°C)",
+            xlabel="Battery Operating Temperature (°C)",
             ylabel="Annual Degradation Wear Cost ($k USD)",
         )
         ax.set_xticks(temperatures)
-        ax.set_xticklabels([f"{t}Â°C" for t in temperatures])
+        ax.set_xticklabels([f"{t}°C" for t in temperatures])
         ax.legend(loc="upper left", framealpha=0.95)
 
         saved = save_publication_figure(fig, self.output_dir / filename_stem, formats=self.formats, dpi=self.dpi)
         plt.close(fig)
         return saved
 
-    def plot_comprehensive__scorecard(
+    def plot_comprehensive_scorecard(
         self,
-        filename_stem: str = "Figure_10_8_6_Comprehensive__Scorecard",
+        filename_stem: str = "Figure_10_8_6_Comprehensive_Scorecard",
     ) -> dict[str, Path]:
-        dims = get_figure_dimensions("_full")
+        dims = get_figure_dimensions("full")
         fig, ax = plt.subplots(figsize=dims)
 
-        # Quantitative Summary Bar Comparison of Core Research Questions
         dimensions = [
             "1. Forecasting Value Gain\n(ML vs. Persistence)",
             "2. Degradation Cost Fraction\n(% of Gross Revenue)",
@@ -319,7 +289,7 @@ class ThesisFigureExporter:
 
         format_axes(
             ax,
-            title="Research Question Quantitative Validation Summary",
+            title="Question Quantitative Validation Summary",
             xlabel="Observed Techno-Economic Impact Magnitude (%)",
         )
         ax.set_yticks(y_pos)
@@ -331,7 +301,7 @@ class ThesisFigureExporter:
         return saved
 
     # ------------------------------------------------------------------------
-    # Master Pipeline: Orchestrate All 44 Figures
+    # Master Orchestration
     # ------------------------------------------------------------------------
 
     def export_all_figures(
@@ -340,12 +310,7 @@ class ThesisFigureExporter:
         degradation_df: pd.DataFrame | None = None,
         scenarios_df: pd.DataFrame | None = None,
         summary_dict: dict[str, Any] | None = None,
-    ) -> ThesisExportManifest:
-        """
-        Executes the entire Part 10 publication figure generation pipeline.
-        Generates and organizes all 44 figures into PNG, PDF, SVG, and TIFF subfolders.
-        """
-        # 1. Resolve or Synthesize Robust Input Data
+    ) -> ExportManifest:
         disp_df = dispatch_df if dispatch_df is not None else self._load_or_synthesize_dispatch()
         deg_df = degradation_df if degradation_df is not None else self._load_or_synthesize_degradation()
         scen_df = scenarios_df if scenarios_df is not None else self._load_or_synthesize_scenarios()
@@ -354,9 +319,7 @@ class ThesisFigureExporter:
         all_figure_paths: list[dict[str, Path]] = []
         catalog_records: list[dict[str, Any]] = []
 
-        # --------------------------------------------------------------------
-        # Module 10.2: Forecast Figures (6 Figures)
-        # --------------------------------------------------------------------
+        # 10.2: Forecast Figures (6)
         f_gen = ForecastFigureGenerator(output_directory=self.output_dir, formats=self.formats, dpi=self.dpi)
         f_arts = f_gen.generate_all(disp_df)
         forecast_figs = [
@@ -369,11 +332,9 @@ class ThesisFigureExporter:
         ]
         for num, title, paths in forecast_figs:
             all_figure_paths.append(paths)
-            catalog_records.append({"id": num, "title": title, "chapter": "Chapter 4 â€” Forecasting Results", "paths": paths})
+            catalog_records.append({"id": num, "title": title, "chapter": "Chapter 4 - Forecasting Results", "paths": paths})
 
-        # --------------------------------------------------------------------
-        # Module 10.3: Dispatch Figures (7 Figures)
-        # --------------------------------------------------------------------
+        # 10.3: Dispatch Figures (7)
         d_gen = DispatchFigureGenerator(output_directory=self.output_dir, formats=self.formats, dpi=self.dpi)
         d_arts = d_gen.generate_all(disp_df)
         dispatch_figs = [
@@ -387,11 +348,9 @@ class ThesisFigureExporter:
         ]
         for num, title, paths in dispatch_figs:
             all_figure_paths.append(paths)
-            catalog_records.append({"id": num, "title": title, "chapter": "Chapter 5 â€” Rolling Optimization Results", "paths": paths})
+            catalog_records.append({"id": num, "title": title, "chapter": "Chapter 5 - Rolling Optimization Results", "paths": paths})
 
-        # --------------------------------------------------------------------
-        # Module 10.4: Degradation Figures (6 Figures)
-        # --------------------------------------------------------------------
+        # 10.4: Degradation Figures (6)
         deg_gen = DegradationFigureGenerator(output_directory=self.output_dir, formats=self.formats, dpi=self.dpi)
         deg_arts = deg_gen.generate_all(deg_df)
         degradation_figs = [
@@ -404,11 +363,9 @@ class ThesisFigureExporter:
         ]
         for num, title, paths in degradation_figs:
             all_figure_paths.append(paths)
-            catalog_records.append({"id": num, "title": title, "chapter": "Chapter 6 â€” Battery Ageing Analysis", "paths": paths})
+            catalog_records.append({"id": num, "title": title, "chapter": "Chapter 6 - Battery Ageing Analysis", "paths": paths})
 
-        # --------------------------------------------------------------------
-        # Module 10.5: Financial Figures (6 Figures)
-        # --------------------------------------------------------------------
+        # 10.5: Financial Figures (6)
         fin_gen = FinancialFigureGenerator(output_directory=self.output_dir, formats=self.formats, dpi=self.dpi)
         fin_arts = fin_gen.generate_all(disp_df, deg_df, sum_dict)
         financial_figs = [
@@ -421,11 +378,9 @@ class ThesisFigureExporter:
         ]
         for num, title, paths in financial_figs:
             all_figure_paths.append(paths)
-            catalog_records.append({"id": num, "title": title, "chapter": "Chapter 7 â€” Economic Analysis", "paths": paths})
+            catalog_records.append({"id": num, "title": title, "chapter": "Chapter 7 - Economic Analysis", "paths": paths})
 
-        # --------------------------------------------------------------------
-        # Module 10.6: Risk Figures (5 Figures)
-        # --------------------------------------------------------------------
+        # 10.6: Risk Figures (5)
         risk_gen = RiskFigureGenerator(output_directory=self.output_dir, formats=self.formats, dpi=self.dpi)
         risk_arts = risk_gen.generate_all(disp_df, deg_df)
         risk_figs = [
@@ -437,11 +392,9 @@ class ThesisFigureExporter:
         ]
         for num, title, paths in risk_figs:
             all_figure_paths.append(paths)
-            catalog_records.append({"id": num, "title": title, "chapter": "Chapter 8 â€” Risk & Sensitivity Analysis", "paths": paths})
+            catalog_records.append({"id": num, "title": title, "chapter": "Chapter 8 - Risk & Sensitivity Analysis", "paths": paths})
 
-        # --------------------------------------------------------------------
-        # Module 10.7: Scenario Figures (8 Figures)
-        # --------------------------------------------------------------------
+        # 10.7: Scenario Figures (8)
         scen_gen = ScenarioFigureGenerator(output_directory=self.output_dir, formats=self.formats, dpi=self.dpi)
         scen_arts = scen_gen.generate_all(scen_df)
         scenario_figs = [
@@ -456,17 +409,15 @@ class ThesisFigureExporter:
         ]
         for num, title, paths in scenario_figs:
             all_figure_paths.append(paths)
-            catalog_records.append({"id": num, "title": title, "chapter": "Chapter 8 â€” Risk & Sensitivity Analysis", "paths": paths})
+            catalog_records.append({"id": num, "title": title, "chapter": "Chapter 8 - Risk & Sensitivity Analysis", "paths": paths})
 
-        # --------------------------------------------------------------------
-        # Module 10.8: Executive Synthesis Figures (6 Figures)
-        # --------------------------------------------------------------------
+        # 10.8: Executive Synthesis Figures (6)
         exec_1 = self.plot_executive_kpi_dashboard(sum_dict)
         exec_2 = self.plot_system_architecture_energy_balance()
         exec_3 = self.plot_multi_objective_radar_synthesis()
         exec_4 = self.plot_risk_return_efficient_frontier()
         exec_5 = self.plot_degradation_cost_sensitivity_surface()
-        exec_6 = self.plot_comprehensive__scorecard()
+        exec_6 = self.plot_comprehensive_scorecard()
 
         executive_figs = [
             ("Figure 10.8.1", "Executive Master KPI Synthesis Dashboard", exec_1),
@@ -474,15 +425,13 @@ class ThesisFigureExporter:
             ("Figure 10.8.3", "Multi-Objective Radar Synthesis Across Chemistries", exec_3),
             ("Figure 10.8.4", "Risk-Return Efficient Frontier & Sharpe Spectrum", exec_4),
             ("Figure 10.8.5", "Thermal Degradation Cost vs. Wear Hurdle Sensitivity", exec_5),
-            ("Figure 10.8.6", "Comprehensive Research Question Scorecard", exec_6),
+            ("Figure 10.8.6", "Comprehensive Question Scorecard", exec_6),
         ]
         for num, title, paths in executive_figs:
             all_figure_paths.append(paths)
-            catalog_records.append({"id": num, "title": title, "chapter": "Chapter 8 / Appendix â€” Executive Synthesis", "paths": paths})
+            catalog_records.append({"id": num, "title": title, "chapter": "Chapter 8 / Appendix - Executive Synthesis", "paths": paths})
 
-        # --------------------------------------------------------------------
-        # Relocate & Organize into results/_figures/{png,pdf,svg,tiff}/
-        # --------------------------------------------------------------------
+        # Copy to results/_figures/{format}/
         for record in catalog_records:
             for fmt, src_path in record["paths"].items():
                 target_dest = self.format_dirs[fmt] / src_path.name
@@ -490,17 +439,12 @@ class ThesisFigureExporter:
                     shutil.copy2(src_path, target_dest)
                 record["paths"][fmt] = target_dest
 
-        # --------------------------------------------------------------------
-        # 4. Generate FIGURE_CATALOG.md
-        # --------------------------------------------------------------------
+        # Generate Metadata and Catalog Artifacts
         catalog_path = self.output_dir / "FIGURE_CATALOG.md"
         self._generate_catalog_markdown(catalog_path, catalog_records)
 
-        # --------------------------------------------------------------------
-        # 5. Export JSON Manifest
-        # --------------------------------------------------------------------
         manifest_path = self.output_dir / "_figures_manifest.json"
-        manifest = ThesisExportManifest(
+        manifest = ExportManifest(
             total_figures_count=len(catalog_records),
             formats_exported=list(self.formats),
             output_directory=str(self.output_dir),
@@ -520,19 +464,19 @@ class ThesisFigureExporter:
 
         return manifest
 
-    def export(self, *args, **kwargs) -> ThesisExportManifest:
-        """Alias for export_all_figures to maintain API compatibility."""
+    def export__all__figures(self, *args, **kwargs) -> ExportManifest:
+        """Backward-compatibility alias."""
         return self.export_all_figures(*args, **kwargs)
 
-    # ------------------------------------------------------------------------
-    # Internal Fallback Helpers
-    # ------------------------------------------------------------------------
+    def export(self, *args, **kwargs) -> ExportManifest:
+        """Alias for export_all_figures."""
+        return self.export_all_figures(*args, **kwargs)
 
     def _generate_catalog_markdown(self, catalog_path: Path, records: list[dict[str, Any]]) -> None:
         lines = [
-            "# Master Publication Figure Catalog ()",
+            "# Master Publication Figure Catalog",
             "",
-            "This catalog indexes all **44 publication-quality research figures** generated for the .",
+            "This catalog indexes all **44 publication-quality figures** generated by the pipeline.",
             "Each figure is exported across four standardized formats: `PNG` (600 DPI), `PDF` (Vector), `SVG` (Vector), and `TIFF` (Print).",
             "",
             "| Figure ID | Descriptive Caption | Chapter Mapping | Available Formats |",
@@ -542,11 +486,7 @@ class ThesisFigureExporter:
             fmts_str = ", ".join(f"`{fmt.upper()}`" for fmt in r["paths"].keys())
             lines.append(f"| **{r['id']}** | {r['title']} | {r['chapter']} | {fmts_str} |")
 
-        lines.extend([
-            "",
-            "---",
-            "*Generated automatically by  Figure Exporter.*",
-        ])
+        lines.extend(["", "---", "*Generated automatically by Figure Exporter.*"])
         catalog_path.write_text("\n".join(lines), encoding="utf-8")
 
     @staticmethod
@@ -632,5 +572,15 @@ class ThesisFigureExporter:
         }
 
 
-# Public module alias
-ThesisFigureGenerator = ThesisFigureExporter
+# Compatibility Aliases
+FigureGenerator = FigureExporter
+ThesisFigureGenerator = FigureExporter
+ThesisFigureExporter = FigureExporter
+
+__all__ = [
+    "ExportManifest",
+    "FigureExporter",
+    "FigureGenerator",
+    "ThesisFigureGenerator",
+    "ThesisFigureExporter",
+]

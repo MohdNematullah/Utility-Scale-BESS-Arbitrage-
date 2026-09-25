@@ -1,23 +1,19 @@
-﻿
-"""
-objective.py
-============
+﻿"""
+optimization/objective.py
+=========================
 
-objective functions for  battery arbitrage optimization.
+Objective functions for BESS arbitrage optimization.
 
-This module defines the optimization objective separately from the model
-builder so future experiments can compare:
-
-1. Forecast-based arbitrage.
-2. Perfect foresight arbitrage.
-3. Forecast + degradation cost.
-4. Multi-market arbitrage.
-
-References:
-- Rolling-horizon BESS arbitrage LP formulation.
-- Forecast-aware battery scheduling literature.
+This module defines optimization objectives separately from the model builder:
+1. Forecast-based arbitrage (energy_arbitrage / forecast_value)
+2. Perfect foresight arbitrage
+3. Forecast + electrochemical degradation penalty (degradation_penalty)
+4. Multi-market arbitrage
 """
 
+from __future__ import annotations
+
+import pyomo.environ as pyo
 from pyomo.environ import Objective, maximize
 
 
@@ -25,24 +21,18 @@ from pyomo.environ import Objective, maximize
 # Energy Arbitrage Objective
 # ============================================================
 
-def energy_arbitrage_objective(model):
+def energy_arbitrage_objective(model: pyo.ConcreteModel) -> pyo.Objective:
     """
     Maximize arbitrage profit over the optimization horizon.
 
-    Profit = Î£ price Ã— (discharge - charge) Ã— Î”t
-
-    Forecast prices are supplied from the recursive forecasting module.
+    Profit = sum(price[t] * (discharge_power[t] - charge_power[t]) * delta_t)
     """
-
     dt = model.delta_t
 
     return Objective(
         expr=sum(
             model.price[t]
-            * (
-                model.discharge_power[t]
-                - model.charge_power[t]
-            )
+            * (model.discharge_power[t] - model.charge_power[t])
             * dt
             for t in model.T
         ),
@@ -54,24 +44,18 @@ def energy_arbitrage_objective(model):
 # Forecast Value Objective
 # ============================================================
 
-def forecast_value_objective(model):
+def forecast_value_objective(model: pyo.ConcreteModel) -> pyo.Objective:
     """
-    Same arbitrage objective but separated for future experiments.
+    Arbitrage objective formulated over look-ahead forecast prices.
 
-    Used when comparing:
-    - Perfect foresight.
-    - Forecast-based optimization.
+    Profit = sum(forecast_price[t] * (discharge_power[t] - charge_power[t]) * delta_t)
     """
-
     dt = model.delta_t
 
     return Objective(
         expr=sum(
             model.forecast_price[t]
-            * (
-                model.discharge_power[t]
-                - model.charge_power[t]
-            )
+            * (model.discharge_power[t] - model.charge_power[t])
             * dt
             for t in model.T
         ),
@@ -80,25 +64,20 @@ def forecast_value_objective(model):
 
 
 # ============================================================
-# Arbitrage + Degradation Placeholder
+# Arbitrage + Degradation Cost Penalty
 # ============================================================
 
-def degradation_penalty_objective(model):
+def degradation_penalty_objective(model: pyo.ConcreteModel) -> pyo.Objective:
     """
-    Placeholder objective for Part 7.
+    Net arbitrage profit penalizing dynamic battery cell wear.
 
-    Revenue
-      - degradation cost.
+    Objective = Revenue - Cell Degradation Cost
     """
-
     dt = model.delta_t
 
     revenue = sum(
         model.price[t]
-        * (
-            model.discharge_power[t]
-            - model.charge_power[t]
-        )
+        * (model.discharge_power[t] - model.charge_power[t])
         * dt
         for t in model.T
     )
@@ -119,6 +98,11 @@ def degradation_penalty_objective(model):
 # ============================================================
 
 OBJECTIVES = {
+    # Standard snake_case identifiers
+    "energy_arbitrage": energy_arbitrage_objective,
+    "forecast_value": forecast_value_objective,
+    "degradation_penalty": degradation_penalty_objective,
+    # Backward compatibility mappings
     "energy_arbitrage": energy_arbitrage_objective,
     "forecast_value": forecast_value_objective,
     "degradation_penalty": degradation_penalty_objective,
@@ -126,20 +110,16 @@ OBJECTIVES = {
 
 
 def attach_objective(
-    model,
-    objective_name="energy_arbitrage",
-):
+    model: pyo.ConcreteModel,
+    objective_name: str = "energy_arbitrage",
+) -> pyo.ConcreteModel:
     """
-    Attach one objective to the model.
+    Attaches selected objective expression to the Pyomo concrete model.
     """
-
     if objective_name not in OBJECTIVES:
         raise ValueError(
-            f"Unknown objective: {objective_name}"
+            f"Unknown objective '{objective_name}'. Supported: {list(OBJECTIVES.keys())}"
         )
 
-    model.objective = OBJECTIVES[
-        objective_name
-    ](model)
-
+    model.objective = OBJECTIVES[objective_name](model)
     return model

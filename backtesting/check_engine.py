@@ -76,9 +76,9 @@ print("Starting rolling backtest...")
 result = engine.run()
 print("Rolling horizon completed   : âœ“")
 
-# ----------------------------------------------------
-# 5. Regression Assertions (Mentor Review #1 & #2)
-# ----------------------------------------------------
+# -------------------------------------
+# 5. Regression Assertions
+# -------------------------------------
 assert "actual_price" in result.dispatch_history.columns, (
     "Regression Error: 'actual_price' column missing from dispatch history."
 )
@@ -113,9 +113,9 @@ for key, value in result.summary.items():
     else:
         print(f"{key:<28}: {value}")
 
-# ----------------------------------------------------
-# 7. Realized Settlement Preview (Mentor Review #1)
-# ----------------------------------------------------
+# --------------------------------------
+# 7. Realized Settlement Preview
+# --------------------------------------
 print("-" * 70)
 print("Dispatch Preview (Realized Settlement Verification):")
 
@@ -132,9 +132,9 @@ preview_cols = [
 ]
 print(result.dispatch_history[preview_cols].head(3))
 
-# ----------------------------------------------------
-# 8. SOC Continuity & Ageing Verification (Mentor Review #2)
-# ----------------------------------------------------
+# -------------------------------------------------
+# 8. SOC Continuity & Ageing Verification
+# -------------------------------------------------
 print("-" * 70)
 print("Degradation & Continuity Diagnostics:")
 print(f"Maximum Hourly SOC Delta    : {max_hourly_soc_delta:.3f} MWh (Physical Limit: 50.00 MWh)")

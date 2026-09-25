@@ -11,8 +11,8 @@ import openpyxl
 import pytest
 
 from backtesting.report_generator import (
-    ThesisReportArtifacts,
-    ThesisReportGenerator,
+    ReportArtifacts,
+    ReportGenerator,
 )
 
 
@@ -62,8 +62,8 @@ class TestReportGeneratorPipeline:
         f_json, a_json, r_json, s_json, t_json = mock_evaluation_payloads
         output_dir = tmp_path / "_out"
 
-        generator = ThesisReportGenerator(output_directory=output_dir)
-        artifacts = generator.generate_all_reports(
+        generator = ReportGenerator(output_directory=output_dir)
+        artifacts = generator.generate__all__reports(
             forecast_json_path=f_json,
             arbitrage_json_path=a_json,
             risk_json_path=r_json,
@@ -71,7 +71,7 @@ class TestReportGeneratorPipeline:
             statistical_json_path=t_json,
         )
 
-        assert isinstance(artifacts, ThesisReportArtifacts)
+        assert isinstance(artifacts, ReportArtifacts)
         assert artifacts.report_markdown.exists()
         assert artifacts.master_excel.exists()
         assert artifacts.manifest_json.exists()

@@ -1,4 +1,4 @@
-"""
+﻿"""
 backtesting/check_export_reports.py
 ==================================
 
@@ -35,7 +35,7 @@ summary_file = Path("backtesting/results/rolling_summary.csv")
 # 1. Acquire Backtest Result (Reuse existing or run fresh)
 # ---------------------------------------------------------------------
 if dispatch_file.exists() and degradation_file.exists() and summary_file.exists():
-    print("Loading existing backtest results from disk ✓")
+    print("Loading existing backtest results from disk âœ“")
     dispatch_df = pd.read_csv(dispatch_file)
     degradation_df = pd.read_csv(degradation_file)
     summary_dict = pd.read_csv(summary_file).iloc[0].to_dict()
@@ -64,14 +64,14 @@ else:
 
     model = XGBoostForecaster()
     model.load(model_path)
-    print("Forecast model loaded ✓")
+    print("Forecast model loaded âœ“")
 
     engine = RollingBacktestEngine(
         forecaster=model,
         feature_dataframe=features,
     )
     result = engine.run()
-    print("Rolling backtest completed ✓")
+    print("Rolling backtest completed âœ“")
 
 # ---------------------------------------------------------------------
 # 2. Export Reports & Figures
@@ -79,7 +79,7 @@ else:
 exporter = BacktestExportEngine()
 exports = exporter.export(result)
 
-print("Reports exported ✓")
+print("Reports exported âœ“")
 
 print("-" * 70)
 print("CSV FILES")
@@ -112,5 +112,5 @@ for fig in figures:
     print(f"{fig.name:<30} {fig.exists()}")
 
 print(LINE)
-print("Backtest export reports verified successfully ✓")
+print("Backtest export reports verified successfully âœ“")
 print(LINE)

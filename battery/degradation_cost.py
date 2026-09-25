@@ -1,4 +1,4 @@
-"""
+﻿"""
 battery/degradation_cost.py
 ===========================
 

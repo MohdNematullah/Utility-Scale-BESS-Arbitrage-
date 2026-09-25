@@ -1,12 +1,10 @@
-"""
+﻿"""
 experiments/integration_tests.py
 ================================
 
 Automated End-to-End Scientific Pipeline Integration Suite (Part 12.6)
 
-
-
-Verifies all 12 stages programmatically against rigorous research invariants.
+Verifies all 12 stages programmatically against rigorous invariants.
 """
 
 from __future__ import annotations
@@ -14,11 +12,12 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import pandas as pd
 
 
 class PipelineIntegrationTester:
-    """Performs end-to-end scientific validation of research pipeline artifacts."""
+    """Performs end-to-end scientific validation of pipeline artifacts."""
 
     def __init__(self, results_dir: Path | str = "backtesting/results"):
         self.results_dir = Path(results_dir)
@@ -38,7 +37,11 @@ class PipelineIntegrationTester:
         if not deg_path.exists():
             return False
         df = pd.read_csv(deg_path)
-        col = "soh_end" if "soh_end" in df.columns else ("soh" if "soh" in df.columns else None)
+        col = None
+        for candidate in ("soh_end", "soh", "soh_end"):
+            if candidate in df.columns:
+                col = candidate
+                break
         if not col:
             return False
         soh = df[col].to_numpy(dtype=float)
@@ -50,7 +53,7 @@ class PipelineIntegrationTester:
             return False
         df = pd.read_csv(sum_path)
         kpis = dict(zip(df["metric"], df["value"].astype(float)))
-        gross = kpis.get("gross_revenue_usd", 0.0)
-        deg = kpis.get("degradation_cost_usd", 0.0)
-        net = kpis.get("net_revenue_usd", 0.0)
+        gross = kpis.get("gross_revenue_usd", kpis.get("gross_revenue_usd", 0.0))
+        deg = kpis.get("degradation_cost_usd", kpis.get("degradation_cost_usd", 0.0))
+        net = kpis.get("net_revenue_usd", kpis.get("net_revenue_usd", 0.0))
         return bool(abs((gross - deg) - net) < 1.0)

@@ -1,4 +1,4 @@
-
+﻿
 """
 provenance.py
 =============
@@ -29,7 +29,7 @@ FEATURE_REGISTRY = [
     FeatureInfo(
         "hour",
         "calendar",
-        "Hour of day (0–23).",
+        "Hour of day (0â€“23).",
         "hour",
     ),
     FeatureInfo(

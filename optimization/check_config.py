@@ -1,4 +1,4 @@
-
+﻿
 """
 check_config.py
 

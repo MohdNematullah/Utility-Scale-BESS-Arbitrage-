@@ -1,4 +1,4 @@
-"""
+﻿"""
 backtesting/check_metrics.py
 ============================
 
@@ -37,5 +37,5 @@ for k, v in result.summary.items():
     print(f"{k:<30}: {v}")
 
 print("=" * 70)
-print("Backtest metrics verified successfully ✓")
+print("Backtest metrics verified successfully âœ“")
 print("=" * 70)

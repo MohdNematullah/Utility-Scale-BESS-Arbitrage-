@@ -1,4 +1,4 @@
-"""
+﻿"""
 Verification script for Rainflow Cycle Counting.
 """
 
@@ -41,5 +41,5 @@ for i, cycle in enumerate(summary.cycles, start=1):
     )
 
 print("=" * 70)
-print("Rainflow counting verified successfully ✓")
+print("Rainflow counting verified successfully âœ“")
 print("=" * 70)

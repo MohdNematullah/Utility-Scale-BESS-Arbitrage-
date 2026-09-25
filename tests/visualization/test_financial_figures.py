@@ -1,4 +1,4 @@
-"""
+﻿"""
 tests/visualization/test_financial_figures.py
 =============================================
 

@@ -1,4 +1,4 @@
-"""
+﻿"""
 tests/visualization/test_degradation_figures.py
 ==============================================
 

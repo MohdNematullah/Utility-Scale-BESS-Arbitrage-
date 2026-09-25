@@ -1,7 +1,7 @@
-"""
+﻿"""
 check_calendar_ageing.py
 
-Verification script for Part 7.2A — Calendar Ageing Model.
+Verification script for Part 7.2A â€” Calendar Ageing Model.
 """
 
 from battery.calendar_ageing import CalendarAgeingModel
@@ -21,7 +21,7 @@ result = model.update_soh(
 
 print(f"Storage Days             : {result.days:.0f}")
 print(f"Average SOC              : {result.average_soc*100:.1f} %")
-print(f"Temperature              : {result.temperature_c:.1f} °C")
+print(f"Temperature              : {result.temperature_c:.1f} Â°C")
 print()
 
 print(f"Capacity Loss            : {result.capacity_loss_fraction:.6f}")
@@ -37,5 +37,5 @@ print(
 )
 
 print()
-print("Calendar ageing verified successfully ✓")
+print("Calendar ageing verified successfully âœ“")
 print("=" * 70)

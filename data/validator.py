@@ -1,4 +1,4 @@
-"""
+﻿"""
 validator.py
 
 Validates hourly electricity price datasets before forecasting.

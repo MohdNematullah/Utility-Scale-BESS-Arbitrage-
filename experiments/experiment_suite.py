@@ -1,12 +1,10 @@
-"""
+﻿"""
 experiments/experiment_suite.py
 ===============================
 
-Master 28-Scenario Empirical Research Suite (Part 12.1)
+Master 28-Scenario Empirical Suite (Part 12.1)
 
-
-
-Executes all 28 predefined experimental scenarios across 7 research dimensions:
+Executes all 28 predefined experimental scenarios across 7 dimensions:
 1. Forecast Horizon: 12h, 24h, 36h, 48h, 72h (5 scenarios)
 2. Forecast Strategy: Persistence, Moving Average, Recursive XGBoost, Perfect Foresight (4 scenarios)
 3. Battery Chemistry: NMC 811 Baseline, LFP Stationary, LTO Heavy Duty (3 scenarios)
@@ -58,7 +56,7 @@ class ExperimentSuiteRunner:
 
     @staticmethod
     def get_predefined_scenarios() -> list[dict[str, Any]]:
-        """Returns the complete 28-scenario experimental research matrix."""
+        """Returns the complete 28-scenario experimental matrix."""
         return [
             # 1. Forecast Horizons (5)
             {"id": "SCN_HORIZON_12H", "cat": "Forecast_Horizon", "param": "Horizon", "val": "12h", "mult": 0.802, "fade": 0.0170, "efc": 165.2, "dur": 2.0},
@@ -108,7 +106,7 @@ class ExperimentSuiteRunner:
         base_gross: float = 4_982_570.0,
         base_deg: float = 253_757.0,
     ) -> pd.DataFrame:
-        """Executes all 28 research scenarios, isolates subfolders, and outputs master matrix."""
+        """Executes all 28 scenarios, isolates subfolders, and outputs master matrix."""
         scenarios = self.get_predefined_scenarios()
         records: list[ScenarioExecutionRecord] = []
         pf_gross = base_gross * 1.145

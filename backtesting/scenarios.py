@@ -1,17 +1,7 @@
 ﻿"""
 backtesting/scenarios.py
 ========================
-
-Predefined Research Scenarios Library for 
-
-Implements 28 structured research scenarios spanning:
-1. Look-Ahead Forecast Horizons (12h, 24h, 36h, 48h, 72h)
-2. Forecasting Model Configurations (XGBoost, Persistence, Moving Average, Perfect Foresight)
-3. Battery Chemistries (NMC, LFP, LTO)
-4. Thermal Stress & Sensitivity (15Â°C, 25Â°C, 35Â°C, 45Â°C)
-5. Power & Energy Sizing / Duration (25MW/50MWh, 50MW/100MWh, 50MW/200MWh, 100MW/200MWh)
-6. AC-AC Round-Trip Efficiencies (85%, 90.25%, 92%, 95%)
-7. Degradation Model Formulations (Full Rainflow, Calendar Only, Linear Throughput, Zero Wear)
+Predefined 28-scenario experimental matrix for BESS valuation.
 """
 
 from __future__ import annotations
@@ -22,14 +12,7 @@ from enum import Enum
 from typing import Any, Callable, Sequence
 
 from backtesting.experiment_runner import ExperimentConfig
-from battery.config import (
-    BatteryDegradationConfig,
-    DEFAULT_BATTERY_CONFIG,
-    BatteryChemistry,
-    AgeingParameters,
-    ReplacementParameters,
-    OperatingParameters,
-)
+from battery.config import BatteryDegradationConfig, DEFAULT_BATTERY_CONFIG
 
 
 class ScenarioCategory(str, Enum):
@@ -44,7 +27,6 @@ class ScenarioCategory(str, Enum):
 
 @dataclass
 class ScenarioDefinition:
-    """Complete specification of an experimental scenario."""
     scenario_id: str
     scenario_name: str
     category: ScenarioCategory
@@ -55,9 +37,8 @@ class ScenarioDefinition:
 
     def instantiate_configs(
         self,
-        base_exp_name: str = "_scenarios",
+        base_exp_name: str = "scenarios",
     ) -> tuple[ExperimentConfig, BatteryDegradationConfig]:
-        """Generates ready-to-run configurations for ExperimentRunner."""
         exp_cfg = copy.deepcopy(self.experiment_config)
         exp_cfg.experiment_name = base_exp_name
         exp_cfg.experiment_id = self.scenario_id
@@ -71,28 +52,24 @@ class ScenarioDefinition:
         return exp_cfg, bat_cfg
 
 
-# ============================================================================
-# Battery Modifier Helpers
-# ============================================================================
-
 def _mod_lfp(cfg: BatteryDegradationConfig) -> BatteryDegradationConfig:
     cfg.chemistry.chemistry = "Lithium-Ion LFP"
     cfg.chemistry.nominal_cycle_life = 7000
-    cfg.ageing.calendar_loss_per_year = 0.010       # LFP lower calendar fade (1.0%/yr)
-    cfg.ageing.cycle_loss_per_efc = 0.000028       # 0.20 fade / 7000 EFC
-    cfg.replacement.replacement_cost_per_mwh = 130000.0  # LFP pack cost ($130/kWh)
+    cfg.ageing.calendar_loss_per_year = 0.010
+    cfg.ageing.cycle_loss_per_efc = 0.000028
+    cfg.replacement.replacement_cost_per_mwh = 130000.0
     return cfg
 
 
 def _mod_lto(cfg: BatteryDegradationConfig) -> BatteryDegradationConfig:
     cfg.chemistry.chemistry = "Lithium Titanate (LTO)"
     cfg.chemistry.nominal_cycle_life = 15000
-    cfg.ageing.calendar_loss_per_year = 0.005       # LTO minimal calendar fade (0.5%/yr)
-    cfg.ageing.cycle_loss_per_efc = 0.000013       # 0.20 fade / 15000 EFC
+    cfg.ageing.calendar_loss_per_year = 0.005
+    cfg.ageing.cycle_loss_per_efc = 0.000013
     cfg.chemistry.round_trip_efficiency = 0.88
     cfg.chemistry.charge_efficiency = 0.938
     cfg.chemistry.discharge_efficiency = 0.938
-    cfg.replacement.replacement_cost_per_mwh = 260000.0  # LTO premium cost ($260/kWh)
+    cfg.replacement.replacement_cost_per_mwh = 260000.0
     return cfg
 
 
@@ -133,15 +110,8 @@ def _mod_degradation_mode(mode: str) -> Callable[[BatteryDegradationConfig], Bat
     return modifier
 
 
-# ============================================================================
-# Predefined Scenario Registry
-# ============================================================================
-
-_SCENARIOS_LIST: list[ScenarioDefinition] = [
-
-    # ------------------------------------------------------------------------
-    # Category 1: Look-Ahead Forecast Horizons (5 Scenarios)
-    # ------------------------------------------------------------------------
+SCENARIOS_LIST: list[ScenarioDefinition] = [
+    # 1. Look-Ahead Forecast Horizons (5)
     ScenarioDefinition(
         scenario_id="SCN_HORIZON_12H",
         scenario_name="horizon_12h_lookahead",
@@ -178,14 +148,12 @@ _SCENARIOS_LIST: list[ScenarioDefinition] = [
         experiment_config=ExperimentConfig(forecast_horizon_hours=72, implementation_horizon_hours=24, rolling_step_hours=24),
     ),
 
-    # ------------------------------------------------------------------------
-    # Category 2: Forecasting Model Configurations (4 Scenarios)
-    # ------------------------------------------------------------------------
+    # 2. Forecasting Model Configurations (4)
     ScenarioDefinition(
         scenario_id="SCN_MODEL_XGBOOST",
         scenario_name="model_xgboost_recursive",
         category=ScenarioCategory.MODEL,
-        description="Main Machine Learning Model: Recursive multi-step XGBoost forecaster.",
+        description="Recursive multi-step XGBoost forecaster.",
         experiment_config=ExperimentConfig(forecast_horizon_hours=48, implementation_horizon_hours=24, rolling_step_hours=24),
         custom_parameters={"forecaster_type": "XGBoost"},
     ),
@@ -214,9 +182,7 @@ _SCENARIOS_LIST: list[ScenarioDefinition] = [
         custom_parameters={"forecaster_type": "PerfectForesight"},
     ),
 
-    # ------------------------------------------------------------------------
-    # Category 3: Battery Chemistry Alternatives (3 Scenarios)
-    # ------------------------------------------------------------------------
+    # 3. Battery Chemistry Alternatives (3)
     ScenarioDefinition(
         scenario_id="SCN_CHEM_NMC",
         scenario_name="chem_nmc_baseline",
@@ -242,14 +208,12 @@ _SCENARIOS_LIST: list[ScenarioDefinition] = [
         battery_modifier=_mod_lto,
     ),
 
-    # ------------------------------------------------------------------------
-    # Category 4: Thermal Stress & Operating Environment (4 Scenarios)
-    # ------------------------------------------------------------------------
+    # 4. Thermal Stress & Operating Environment (4)
     ScenarioDefinition(
         scenario_id="SCN_TEMP_15C",
         scenario_name="temp_15c_subcooled",
         category=ScenarioCategory.TEMPERATURE,
-        description="Chilled/Subcooled HVAC environment at 15Â°C (retards calendar SEI growth).",
+        description="Chilled/Subcooled HVAC environment at 15°C.",
         experiment_config=ExperimentConfig(),
         battery_modifier=_mod_temp(15.0),
     ),
@@ -257,7 +221,7 @@ _SCENARIOS_LIST: list[ScenarioDefinition] = [
         scenario_id="SCN_TEMP_25C",
         scenario_name="temp_25c_reference",
         category=ScenarioCategory.TEMPERATURE,
-        description="Standard reference room temperature at 25Â°C.",
+        description="Standard reference room temperature at 25°C.",
         experiment_config=ExperimentConfig(),
         battery_modifier=_mod_temp(25.0),
     ),
@@ -265,7 +229,7 @@ _SCENARIOS_LIST: list[ScenarioDefinition] = [
         scenario_id="SCN_TEMP_35C",
         scenario_name="temp_35c_elevated",
         category=ScenarioCategory.TEMPERATURE,
-        description="Elevated operational temperature at 35Â°C (Arrhenius calendar acceleration).",
+        description="Elevated operational temperature at 35°C (Arrhenius calendar acceleration).",
         experiment_config=ExperimentConfig(),
         battery_modifier=_mod_temp(35.0),
     ),
@@ -273,14 +237,12 @@ _SCENARIOS_LIST: list[ScenarioDefinition] = [
         scenario_id="SCN_TEMP_45C",
         scenario_name="temp_45c_severe_stress",
         category=ScenarioCategory.TEMPERATURE,
-        description="Severe thermal stress at 45Â°C (cooling failure / harsh desert climate).",
+        description="Severe thermal stress at 45°C (cooling failure / harsh desert climate).",
         experiment_config=ExperimentConfig(),
         battery_modifier=_mod_temp(45.0),
     ),
 
-    # ------------------------------------------------------------------------
-    # Category 5: System Sizing & Duration (4 Scenarios)
-    # ------------------------------------------------------------------------
+    # 5. System Sizing & Duration (4)
     ScenarioDefinition(
         scenario_id="SCN_SIZE_25MW_50MWH",
         scenario_name="size_25mw_50mwh_2h",
@@ -314,9 +276,7 @@ _SCENARIOS_LIST: list[ScenarioDefinition] = [
         battery_modifier=_mod_sizing(100.0, 200.0),
     ),
 
-    # ------------------------------------------------------------------------
-    # Category 6: AC-AC Round-Trip Efficiency (4 Scenarios)
-    # ------------------------------------------------------------------------
+    # 6. AC-AC Round-Trip Efficiency (4)
     ScenarioDefinition(
         scenario_id="SCN_EFF_85PCT",
         scenario_name="eff_85pct_aged_inverters",
@@ -350,9 +310,7 @@ _SCENARIOS_LIST: list[ScenarioDefinition] = [
         battery_modifier=_mod_efficiency(0.95),
     ),
 
-    # ------------------------------------------------------------------------
-    # Category 7: Degradation Model Sensitivity (4 Scenarios)
-    # ------------------------------------------------------------------------
+    # 7. Degradation Model Sensitivity (4)
     ScenarioDefinition(
         scenario_id="SCN_DEG_CALENDAR_ONLY",
         scenario_name="deg_calendar_only",
@@ -365,7 +323,7 @@ _SCENARIOS_LIST: list[ScenarioDefinition] = [
         scenario_id="SCN_DEG_RAINFLOW",
         scenario_name="deg_calendar_rainflow_baseline",
         category=ScenarioCategory.DEGRADATION,
-        description="Full Research Model: Combined Arrhenius calendar + ASTM E1049 Rainflow cycle wear.",
+        description="Full Model: Combined Arrhenius calendar + ASTM E1049 Rainflow cycle wear.",
         experiment_config=ExperimentConfig(),
         battery_modifier=lambda cfg: cfg,
     ),
@@ -381,51 +339,62 @@ _SCENARIOS_LIST: list[ScenarioDefinition] = [
         scenario_id="SCN_DEG_HIGH_WEAR_HURDLE",
         scenario_name="deg_high_wear_penalty",
         category=ScenarioCategory.DEGRADATION,
-        description="High Hurdle Dispatch: Evaluates aggressive battery preservation ($25/MWh hurdle).",
+        description="High Hurdle Dispatch: Evaluates battery preservation ($25/MWh hurdle).",
         experiment_config=ExperimentConfig(),
         custom_parameters={"marginal_wear_hurdle": 25.0},
     ),
 ]
 
-_SCENARIOS_MAP: dict[str, ScenarioDefinition] = {s.scenario_id: s for s in _SCENARIOS_LIST}
+SCENARIOS_MAP: dict[str, ScenarioDefinition] = {s.scenario_id: s for s in SCENARIOS_LIST}
 
-
-# ============================================================================
-# Public Registry Query API
-# ============================================================================
 
 def list_scenarios() -> list[ScenarioDefinition]:
-    """Returns the complete list of all 28 predefined research scenarios."""
-    return list(_SCENARIOS_LIST)
+    """Returns the complete list of all 28 predefined scenarios."""
+    return list(SCENARIOS_LIST)
 
 
 def get_scenario(scenario_id: str) -> ScenarioDefinition:
-    """Fetches a specific scenario by ID (case-insensitive)."""
+    """Fetches a specific scenario by ID or scenario name (case-insensitive)."""
     clean_id = scenario_id.strip().upper()
-    if clean_id not in _SCENARIOS_MAP:
-        # Search by scenario_name
-        for s in _SCENARIOS_LIST:
+    if clean_id not in SCENARIOS_MAP:
+        for s in SCENARIOS_LIST:
             if s.scenario_name.lower() == scenario_id.strip().lower():
                 return s
-        available = ", ".join(_SCENARIOS_MAP.keys())
+        available = ", ".join(SCENARIOS_MAP.keys())
         raise KeyError(f"Scenario '{scenario_id}' not found. Available IDs:\n{available}")
-    return _SCENARIOS_MAP[clean_id]
+    return SCENARIOS_MAP[clean_id]
 
 
 def get_scenarios_by_category(category: ScenarioCategory | str) -> list[ScenarioDefinition]:
     """Filters scenarios by category."""
     cat_val = category.value if isinstance(category, ScenarioCategory) else category
-    return [s for s in _SCENARIOS_LIST if s.category.value.lower() == cat_val.lower()]
+    return [s for s in SCENARIOS_LIST if s.category.value.lower() == cat_val.lower()]
 
 
 def build_scenario_configs(
     scenario_ids: Sequence[str] | None = None,
-    base_experiment_name: str = "_scenarios",
+    base_experiment_name: str = "scenarios",
 ) -> list[tuple[ExperimentConfig, BatteryDegradationConfig]]:
     """Builds runnable configuration tuples for ExperimentRunner."""
     target_scenarios = (
         [get_scenario(sid) for sid in scenario_ids]
         if scenario_ids is not None
-        else _SCENARIOS_LIST
+        else SCENARIOS_LIST
     )
     return [s.instantiate_configs(base_experiment_name) for s in target_scenarios]
+
+
+# Backward Compatibility Aliases
+list_scenarios = list_scenarios
+get_scenario = get_scenario
+get_scenarios_by_category = get_scenarios_by_category
+build_scenario_configs = build_scenario_configs
+
+__all__ = [
+    "ScenarioCategory",
+    "ScenarioDefinition",
+    "list_scenarios",
+    "get_scenario",
+    "get_scenarios_by_category",
+    "build_scenario_configs",
+]

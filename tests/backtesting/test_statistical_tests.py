@@ -1,4 +1,4 @@
-"""
+﻿"""
 tests/backtesting/test_statistical_tests.py
 ==========================================
 
