@@ -3,10 +3,10 @@
     "version": "5.0.0",
     "python_version": "3.14.2",
     "os_environment": "Windows 10 (AMD64)",
-    "git_commit": "344ee6c",
-    "timestamp_utc": "2026-09-25T20:20:17.182939+00:00",
+    "git_commit": "9956211",
+    "timestamp_utc": "2026-09-27T18:03:32.255971+00:00",
     "execution_mode": "FULL_RUN",
-    "runtime_seconds": 577.39,
+    "runtime_seconds": 165.89,
     "parameters": {
         "system_power_mw": 50.0,
         "system_capacity_mwh": 100.0,
